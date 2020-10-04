@@ -119,10 +119,10 @@ void do_dump() {
     for (const auto& map_node : *map) {
         switch(map_node.item) {
             case BOMB:
-                std::cerr << "bomb " << map_node.id << std::endl;
+                std::cerr << "bomb " << static_cast<int>(map_node.id) << std::endl;
                 break;
             case BLOCK:
-                std::cerr << "barrier " << map_node.id << std::endl;
+                std::cerr << "barrier " << static_cast<int>(map_node.id) << std::endl;
                 break;
             case NONE:
             default:
