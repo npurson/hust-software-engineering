@@ -32,16 +32,37 @@ int parse_cmd(std::string cmd) {
         std::string::size_type space_pos = cmd.find(' ');
         do_preset(cmd.substr(space_pos + 1));
         return 0;
-    } else if (std::regex_match(cmd, std::regex("Roll"))) {
+    } else if (std::regex_match(cmd, std::regex("^Roll.*"))) {
         do_roll();
     } else if (word_vec[0] == "dump") {
         do_dump();
+    } else if (std::regex_match(cmd, std::regex("^Sell.*"))){
+        sell_estate(*get_map(), *next_player, next_player->n_pos);
+    } else if (std::regex_match(cmd, std::regex("^Block.*"))){
+        do_block(next_player->n_pos);
+    } else if (std::regex_match(cmd, std::regex("^Bomb.*"))){
+        do_bomb(next_player->n_pos);
+    } else if (std::regex_match(cmd, std::regex("^Robort"))){
+        do_robot(next_player->n_pos);
     }
     return -1;
 
 }
 
 int do_roll() {
+    return 0;
+}
+
+int do_block(std::uint8_t pos){
+    return 0;
+}
+int do_sell(std::uint8_t pos){
+    return 0;
+}
+int do_bomb(std::uint8_t pos){
+    return 0;
+}
+int do_robot(std::uint8_t pos){
     return 0;
 }
 
