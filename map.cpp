@@ -42,7 +42,38 @@ void plot_map()
 
 void buy_estate(map_t& map, player_t& player, uint8_t map_node_idx)
 {
+    // basic rules
+    if (map[map_node_idx].type != VACANCY ||
+        map[map_node_idx].owner != nullptr){
+        return;
+    }
 
+    char map_node_input[10];
+    int update;
+    while (true){
+        std::cout << "是否购买房产(1:购买 2:不购买)： ";
+        std::cin >> map_node_input;
+        update = std::stoi(map_node_input);
+        if (update == 1) break;
+        if (update == 2) return;
+        std::cout << "输入有误";
+    }
+
+    // lack of money
+    if (map[map_node_idx].value > player.n_money){
+        printf("购买失败");
+        return;
+    }
+
+    // update player info
+    player.n_money -= map[map_node_idx].value;
+    player.estate.push_back(&map);
+
+    // update estate info
+    map[map_node_idx].estate_lvl = 0;
+    map[map_node_idx].owner = &player;
+
+    printf("升级成功");
 }
 
 
@@ -50,6 +81,7 @@ void update_estate(map_t& map, player_t& player, uint8_t map_node_idx)
 {
     // basic rules
     if (map[map_node_idx].type != VACANCY ||
+        map[map_node_idx].owner == nullptr ||
         map[map_node_idx].owner->uid != player.uid ||
         map[map_node_idx].estate_lvl == SKYSCRAPER){
         return;
@@ -92,6 +124,7 @@ void sell_estate(map_t& map, player_t& player, uint8_t map_node_idx)
     // basic rules
     if (player.b_sell_estate == 1 ||
         map[map_node_idx].type != VACANCY ||
+        map[map_node_idx].owner == nullptr ||
         map[map_node_idx].owner->uid != player.uid)
     {
         printf("卖出失败");
