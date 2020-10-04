@@ -2,5 +2,5 @@ preset user AQ
 preset userloc A 10 0
 preset fund A 400
 step 1
-N
+n
 dump

@@ -1,7 +1,7 @@
 user AQS
-fund A 0
-fund Q 0
-fund S 0
+fund A 10000
+fund Q 10000
+fund S 10000
 credit A 0
 credit Q 0
 credit S 0
