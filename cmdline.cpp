@@ -9,6 +9,11 @@
 
 extern p_player_t next_player;
 
+
+void choose_player() {
+    std::cout << "请选择参与的玩家数量(2-4人): ";
+}
+
 std::vector<std::string> split_cmd(std::string cmd) {
     std::vector<std::string> word_vec;
     while (!cmd.empty()) {
@@ -27,26 +32,41 @@ std::vector<std::string> split_cmd(std::string cmd) {
 }
 
 int parse_cmd(std::string cmd) {
+    static bool start = false;
     std::vector<std::string> word_vec = split_cmd(cmd);
-    if (std::regex_match(cmd, std::regex("^preset.*"))) {
-        std::string::size_type space_pos = cmd.find(' ');
-        do_preset(cmd.substr(space_pos + 1));
-        return 0;
-    } else if (std::regex_match(cmd, std::regex("^Roll.*"))) {
-        do_roll();
-    } else if (word_vec[0] == "dump") {
-        do_dump();
-    } else if (std::regex_match(cmd, std::regex("^Sell.*"))){
-        sell_estate(*get_map(), *next_player, next_player->n_pos);
-    } else if (std::regex_match(cmd, std::regex("^Block.*"))){
-        do_block(next_player->n_pos);
-    } else if (std::regex_match(cmd, std::regex("^Bomb.*"))){
-        do_bomb(next_player->n_pos);
-    } else if (std::regex_match(cmd, std::regex("^Robort"))){
-        do_robot(next_player->n_pos);
+    if (!start) {
+        if (word_vec[0] == "preset") {
+            std::string::size_type space_pos = cmd.find(' ');
+            do_preset(cmd.substr(space_pos + 1));
+            start = true;
+            return 0;
+        } else if (word_vec[0] == "Start") {
+            choose_player();
+            start = true;
+        } else {
+            std::cout << "无效的命令" << std::endl;
+        }
+    } else {
+        if (word_vec[0] == "preset") {
+            std::string::size_type space_pos = cmd.find(' ');
+            do_preset(cmd.substr(space_pos + 1));
+            return 0;
+        } else if (word_vec[0] == "Roll") {
+            do_roll();
+        } else if (word_vec[0] == "dump") {
+            do_dump();
+        } else if (word_vec[0] == "Sell") {
+            sell_estate(*get_map(), *next_player, next_player->n_pos);
+        } else if (word_vec[0] == "Block") {
+            do_block(next_player->n_pos);
+        } else if (word_vec[0] == "Bomb") {
+            do_bomb(next_player->n_pos);
+        } else if (word_vec[0] == "Robot") {
+            do_robot(next_player->n_pos);
+        }
     }
-    return -1;
 
+    return -1;
 }
 
 int do_roll() {
