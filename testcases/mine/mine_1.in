@@ -5,13 +5,12 @@ preset credit A 20480   # $20480 for A
 preset credit Q 5000   # $5000 for Q
 preset credit S 100   # $1 for S
 
-preset userloc A 14 0  # A is at Hospital(14) but dose not stay
-preset userloc S 26 0  # Q is at 26,near the tool house
+preset userloc A 63 0  # A is at Hospital(14) but dose not stay
+preset userloc S 63 0  # Q is at 26,near the tool house
 
-preset nextuser Q    # next interactive player is S
+preset nextuser S    # next interactive player is S
 
 step 2  #Q
-N 
-sell 60  #S 
+step 2
 
 dump 
