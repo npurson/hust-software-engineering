@@ -237,12 +237,6 @@ void buy_item(player_t& player)
 }
 
 
-void (player_t& player)
-{
-
-}
-
-
 bool roll_dice(map_t& map, player_t& player)
 {
     return step_forward(map, player, rand() % 6 + 1);
