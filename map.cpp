@@ -40,19 +40,19 @@ void plot_map()
 }
 
 
-void buy_estate(map_t& map, uint8_t player_idx, uint8_t map_node_idx)
+void buy_estate(map_t& map, player_t& player)
 {
 
 }
 
 
-void update_estate(map_t& map, uint8_t player_idx, uint8_t map_node_idx)
+void update_estate(map_t& map, player_t& player)
 {
 
 }
 
 
-void sell_estate(map_t& map, player_t& player, uint8_t map_node_idx)
+void sell_estate(map_t& map, player_t& player)
 {
     if (player.b_sell_estate == 1 ||
         map[map_node_idx].type != VACANCY ||
