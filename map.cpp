@@ -236,8 +236,29 @@ void buy_item(player_t& player)
 
 void get_gift(player_t& player)
 {
-    printf("选择礼物 1：sdfkjksldkfj 2. sdjfhl");
-    // TODO scanf switch
+    uint8_t choice;
+    cout << "[礼品屋] 欢迎光临礼品屋，请选择一件你喜欢的礼品：" << endl;
+    cout << "        1. 奖金    2. 点数卡    3. 财神" << endl;
+    // TODO 调用提示符显示接口
+    cin >> choice;
+
+    switch (choice) {
+        case 1:
+            player.n_money += 2000;
+            cout << "[奖金] 获得奖金 2000 元" << endl;
+            return;
+        case 2:
+            player.n_points += 200;
+            cout << "[点数] 获得点数 200 点" << endl;
+            return;
+        case 3:
+            player.n_god_buff = 5;
+            cout << "[财神] 获得财神附身 5 回合" << endl;
+            return;
+        default:
+            cout << "[好家伙] 生而手残，我很抱歉" << endl;
+            return;
+    }
 }
 
 
@@ -254,24 +275,26 @@ bool step_forward(map_t& map, player_t& player, uint8_t steps)
         // item judge
         if (map[player.n_pos].item == BLOCK) {
             map[player.n_pos].item = NONE;
+            cout << "[路障] 噢！在这儿停顿" << endl;
             break;
         }
         else if (map[player.n_pos].item == BOMB) {
             map[player.n_pos].item = NONE;
             player.n_pos = HOSPITAL_POS;
             player.n_empty_rounds = 3;
-            printf("Bomb! 移动至医院");
+            cout << "[炸弹] 你炸了！移动至医院，轮空三回合" << endl;
         }
     }
     // payment judge
     map[player.n_pos].players.push_back(&player);
     switch (map[player.n_pos].type) {
         case VACANCY:
-            if (map[player.n_pos].owner) {
+            if (map[player.n_pos].owner && !map[player.n_pos].owner->n_empty_rounds) {
                 uint8_t payment = get_estate_price(map[player.n_pos]);
+                cout << "[租金] 需支付过路费 " << payment << " 元" << endl;
                 if (player.n_money < payment) {
                     map[player.n_pos].owner->n_money += player.n_money;
-                    printf("嘤嘤嘤破产辽");
+                    cout << "[破产] 嘤嘤嘤破产辽，游戏结束" << endl;
                     return true;
                 }
                 map[player.n_pos].owner->n_money += payment;
@@ -282,11 +305,11 @@ bool step_forward(map_t& map, player_t& player, uint8_t steps)
         case GIFT_HOUSE: get_gift(player); return false;
         case MINE:
             player.n_points += map[player.n_pos].value;
-            printf("获得点数");
+            cout << "[矿地] 家里有矿，获得 " << map[player.n_pos].value << " 点数" << endl;
             return false;
         case PRISON:
             player.n_empty_rounds = 2;
-            printf("打工是不可能打工的，这辈子都不可能打工的");
+            cout << "[入狱] 打工是不可能打工的，这辈子都不可能打工的" << endl;
             return false;
         default: return false;
     }
