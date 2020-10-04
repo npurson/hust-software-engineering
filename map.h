@@ -74,5 +74,5 @@ bool roll_dice(map_t& map, player_t& player);
 bool step_forward(map_t& map, player_t& player, uint8_t steps);
 // 获取某地房产的价值，返回true则破产
 uint8_t get_estate_price(const map_node_t& map_node);
-
+void do_estate(map_t& map, player_t& player);
 #endif // RICH_MAP_H

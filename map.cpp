@@ -79,6 +79,12 @@ void plot_map()
 }
 
 
+void do_estate(map_t& map, player_t& player){
+    buy_estate(map, player);
+    update_estate(map, player);
+}
+
+
 void buy_estate(map_t& map, player_t& player)
 {
     uint8_t map_node_idx = player.n_pos;
