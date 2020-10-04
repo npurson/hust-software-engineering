@@ -6,11 +6,11 @@ fund A 2020
 fund Q 5000
 fund S 100   
 
-credit A 0
-credit Q 0
-credit S 0
+credit A 180
+credit Q 5000
+credit S 100
 
-userloc A 14 0
+userloc A 68 0
 userloc Q 26 0
 userloc S 0 0
 
