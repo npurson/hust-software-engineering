@@ -106,8 +106,12 @@ void step_forward(map_t& map, player_t& player, uint8_t steps)
             map[player.n_pos].item = NONE;
             player.n_pos = HOSPITAL_POS;
             player.n_empty_rounds = 3;
+            cout << "Bomb! 移动至医院" << endl;
         }
     }
     // 租金判定
     map[player.n_pos].players.push_back(&player);
+    if (map[player.n_pos].owner) {
+
+    }
 }

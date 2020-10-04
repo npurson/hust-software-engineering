@@ -19,7 +19,12 @@
 #define MAP_SIZE            70
 
 using std::vector;
-using std::uint8_t, std::uint16_t;
+using std::uint8_t;
+using std::uint16_t;
+
+using std::cin;
+using std::cout;
+using std::endl;
 
 
 // 地图结点类型
@@ -27,7 +32,7 @@ enum NodeType { START, VACANCY, ITEM_HOUSE, GIFT_HOUSE, MAGIC_HOUSE, HOSPITAL, P
 // 房产等级
 enum EstateLevel { WASTELAND, HUT, HOUSE, SKYSCRAPER };
 // 道具类型
-enum ItemType { BLOCK = 1, BOMB, ROBOT };
+enum ItemType { NONE, BLOCK, BOMB, ROBOT };
 
 typedef struct map_node {
     uint8_t id;                     // 地块序号，用于查询角色拥有的地块
@@ -52,9 +57,9 @@ p_map_t get_map();
 // 绘制地图
 void plot_map();
 // 购买房产
-void buy_estate(map_t& map, uint8_t player_idx, uint8_t map_node_idx);
+void buy_estate(map_t& map, player_t& player, uint8_t map_node_idx);
 // 升级房产
-void update_estate(map_t& map, uint8_t player_idx, uint8_t map_node_idx);
+void update_estate(map_t& map, player_t& player, uint8_t map_node_idx);
 // 卖出房产
 void sell_estate(map_t& map, player_t& player, uint8_t map_node_idx);
 // 使用道具
