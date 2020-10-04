@@ -137,34 +137,6 @@ void update_estate(map_t& map, player_t& player)
 }
 
 
-void do_sell(map_t& map, player_t& player, uint8_t map_node_idx)
-{
-    // basic rules
-    if (player.b_sell_estate == 1 ||
-        map[map_node_idx].type != VACANCY ||
-        map[map_node_idx].owner == nullptr ||
-        map[map_node_idx].owner->uid != player.uid) {
-//        cout << "[卖房] 卖出房产失败" << endl;
-        return;
-    }
-
-    // update player info
-    player.b_sell_estate = 1;
-    player.n_money += 2 * get_estate_price(map[map_node_idx]);
-    for (auto it = player.estate.begin(); it != player.estate.end(); ++it) {
-        if (*it == &map[map_node_idx]) {
-            player.estate.erase(it);
-            break;
-        }
-    }
-
-    // update estate info
-    map[map_node_idx].owner = nullptr;
-    map[map_node_idx].estate_lvl = WASTELAND;
-    cout << "[卖房] 卖出房产成功" << endl;
-}
-
-
 void apply_item(map_t& map, player_t& player, uint8_t item, uint8_t pos=0)
 {
     if (item == BLOCK) {
