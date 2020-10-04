@@ -40,6 +40,9 @@ void tolower(std::string &str) {
 int parse_cmd(const std::string& cmd) {
     static bool start = false;
     std::vector<std::string> word_vec = split_cmd(cmd);
+    if (cmd.empty()) {
+        return -1;
+    }
     tolower(word_vec[0]);
     if (!start) {
         if (word_vec[0] == "preset") {
