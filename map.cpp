@@ -140,21 +140,16 @@ void update_estate(map_t& map, player_t& player)
     }
 
     // lack of money
-    int update_price;
-    if      (map_node_idx < 28)  update_price = 200;
-    else if (map_node_idx < 35) update_price = 500;
-    else    update_price = 300;
-    if (update_price > player.n_money){
+    if (map[map_node_idx].value > player.n_money){
         printf("升级失败");
         return;
     }
 
     // update player info
-    player.n_money -= update_price;
+    player.n_money -= map[map_node_idx].value;
 
     // update estate info
     map[map_node_idx].estate_lvl += 1;
-    map[map_node_idx].value += update_price;
 
     printf("升级成功");
 }
@@ -174,8 +169,8 @@ void sell_estate(map_t& map, player_t& player, uint8_t map_node_idx)
 
     // update player info
     player.b_sell_estate = 1;
-    player.n_money += 2 * 0;  // TODO
-    for (std::vector<p_map_node_t>::iterator it = player.estate.begin(); it != player.estate.end(); ++it){
+    player.n_money += 2 * get_estate_price(map);
+    for (auto it = player.estate.begin(); it != player.estate.end(); ++it){
         if ((*it)->id == map_node_idx){
             player.estate.erase(it);
             break;
@@ -185,9 +180,6 @@ void sell_estate(map_t& map, player_t& player, uint8_t map_node_idx)
     // update estate info
     map[map_node_idx].owner = nullptr;
     map[map_node_idx].estate_lvl = WASTELAND;
-    if (map_node_idx < 28)  map[map_node_idx].value = 200;
-    else if (map_node_idx < 35) map[map_node_idx].value = 500;
-    else map[map_node_idx].value = 300;
 
     printf("卖出成功");
 }
