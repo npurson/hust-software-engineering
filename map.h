@@ -25,7 +25,7 @@ using std::uint16_t;
 using std::cin;
 using std::cout;
 using std::endl;
-typedef struct player player_t, *p_player_t;
+
 
 // 地图结点类型
 enum NodeType { START, VACANCY, ITEM_HOUSE, GIFT_HOUSE, MAGIC_HOUSE, HOSPITAL, PRISON, MINE };
@@ -34,8 +34,10 @@ enum EstateLevel { WASTELAND, HUT, HOUSE, SKYSCRAPER };
 // 道具类型
 enum ItemType { NONE, BLOCK, BOMB, ROBOT };
 
+typedef struct player player_t, * p_player_t;
+
 typedef struct map_node {
-    uint8_t id;                     // 地块序号，用于查询角色拥有的地块
+    uint8_t id;
     uint8_t type;                   // 地图结点类型，枚举类型为NodeType
     uint8_t estate_lvl;             // 房产等级，type==VACANCY时有效。枚举类型为EstateLevel
     p_player_t owner;               // 房产的拥有者，type==VACANCY时有效。枚举类型为PlayerIdx
@@ -43,8 +45,8 @@ typedef struct map_node {
     uint8_t item;                   // 当前置于该结点的道具。枚举类型为ItemType或None
     uint16_t value;                 // type==VACANCY时为空地价格，计算房产价值时乘以（房产等级+1）；type==MINE时为可获取的点数
 
-    map_node(uint8_t t) :type(t), estate_lvl(), owner(), players(), item(), value() {}
-    map_node(uint8_t t, uint16_t v) :type(t), value(v), estate_lvl(), owner(), players(), item() {}
+    map_node(uint8_t i, uint8_t t) :id(i), type(t), estate_lvl(), owner(), players(), item(), value() {}
+    map_node(uint8_t i, uint8_t t, uint16_t v) :id(i), type(t), value(v), estate_lvl(), owner(), players(), item() {}
 } map_node_t, * p_map_node_t;
 
 typedef vector<map_node_t> map_t, * p_map_t;
@@ -74,5 +76,5 @@ bool roll_dice(map_t& map, player_t& player);
 bool step_forward(map_t& map, player_t& player, uint8_t steps);
 // 获取某地房产的价值，返回true则破产
 uint8_t get_estate_price(const map_node_t& map_node);
-void do_estate(map_t& map, player_t& player);
+
 #endif // RICH_MAP_H

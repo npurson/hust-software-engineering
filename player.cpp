@@ -1,15 +1,19 @@
-#include "player.h"
 #include <map>
-static std::vector<player_t> player_vec;
-std::uint64_t init_money;
+#include "player.h"
 
 
-std::vector<player_t>* get_player_vec() {
+static vector<player_t> player_vec;
+
+uint64_t init_money;
+
+
+vector<player_t>* get_player_vec() {
     return &player_vec;
 }
 
+
 void add_player(char uid) {
-    static std::map<char, std::string> player_names = {
+    static std::map<char, string> player_names = {
             {'Q', "钱夫人"},
             {'A', "阿土伯"},
             {'S', "孙小美"},
@@ -45,6 +49,7 @@ void add_player(char uid) {
     player_vec.push_back(next_player);
 }
 
+
 p_player_t get_player_by_uid(char uid) {
     for (auto &player : player_vec) {
         if (player.uid == uid) {
@@ -54,8 +59,9 @@ p_player_t get_player_by_uid(char uid) {
     return nullptr;
 }
 
+
 p_player_t skip_player(p_player_t next_player){
-    if (next_player->n_money >= 0 && next_player->n_empty_rounds == 0)  return next_player;
+    if (next_player->n_money >= 0 && next_player->n_empty_rounds == 0) return next_player;
     else{
         char last_uid = next_player->uid;
         auto players = get_player_vec();

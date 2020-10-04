@@ -6,9 +6,9 @@ set(CMAKE_CXX_STANDARD 14)
 include_directories(.)
 
 add_executable(rich
+        main.cpp
         cmdline.cpp
         cmdline.h
-        main.cpp
         map.cpp
         map.h
         player.cpp

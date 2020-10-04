@@ -1,11 +1,9 @@
-//
-// Created by asterwyx on 2020/10/4.
-//
+#include <iostream>
 #include <cstdlib>
+
 #include "cmdline.h"
 #include "player.h"
 #include "map.h"
-#include <iostream>
 
 extern p_player_t next_player;
 
