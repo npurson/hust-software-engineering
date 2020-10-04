@@ -86,7 +86,7 @@ void plot_map()
         //player
         if(map[hash_table[i]].players.empty() == false){
             buf=map[hash_table[i]].players.back()->uid;
-            switch(map[hash_table[i]].players.back()->e_color){
+            switch (map[hash_table[i]].players.back()->e_color) {
                 case RED:
                     SetConsoleTextAttribute(h_out, FOREGROUND_RED|FOREGROUND_INTENSITY);
                     break;
@@ -316,6 +316,13 @@ bool roll_dice(map_t& map, player_t& player)
 
 bool step_forward(map_t& map, player_t& player, uint8_t steps)
 {
+    for (auto it = map[player.n_pos].players.begin();
+         it != map[player.n_pos].players.end(); ++it) {
+        if (*it == &player) {
+            map[player.n_pos].players.erase(it);
+            break;
+        }
+    }
     while (steps--) {
         player.n_pos = (player.n_pos + 1) % MAP_SIZE;
         // item judge
@@ -342,7 +349,7 @@ bool step_forward(map_t& map, player_t& player, uint8_t steps)
                 !map[player.n_pos].owner->n_empty_rounds
                 ) {
                 uint8_t payment = get_estate_price(map[player.n_pos]) / 2;
-                cout << "[租金] 需支付过路费 " << payment << " 元" << endl;
+                cout << "[租金] 需支付过路费 " << (int)payment << " 元" << endl;
                 if (player.n_god_buff)
                     cout << "[财神] 财神附身，无需付钱" << endl;
                 else if (player.n_money < payment) {
