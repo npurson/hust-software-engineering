@@ -3,7 +3,29 @@
 
 map_t init_map()
 {
+    map_t map;
+    for (int i = 0; i < 70; ++i) {
+        // 地段1
+        if (i >= 1 && i <=27 && i != 14) {
 
+        }
+        // 地段2
+        else if (i >= 29 && i <=34) {
+
+        }
+        // 地段3
+        else if (i >= 36 && i <= 62 && i != 49) {
+
+        }
+        // 起点
+        else if (i == 0) {
+
+        }
+        else if (i == 14) {
+
+        }
+        else if (i == )
+    }
 }
 
 

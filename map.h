@@ -27,6 +27,8 @@ typedef struct map_node {
     vector<uint8_t> players;    // 当前处于该结点的玩家。枚举类型为PlayerIdx
     uint8_t item;               // 当前置于该结点的道具。枚举类型为ItemType或None
     uint16_t value;             // type==VACANCY时为空地价格，计算房产价值时乘以（房产等级+1）；type==MINE时为可获取的点数
+
+    map_node(uint8_t t, uint16_t v) :type(t), value(v), estate_lvl(), owner(), players(), item() {}
 } map_node;
 
 typedef vector<map_node> map_t;
