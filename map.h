@@ -62,6 +62,6 @@ void apply_item(map_t& map, uint8_t item_type, uint8_t pos);
 // 投骰子，并且调用step_forward
 void roll_dice(map_t& map, player_t& player);
 // 向前行进指定步数
-void step_forward(player_t& player, uint8_t steps);
+void step_forward(map_t& map, player_t& player, uint8_t steps);
 
 #endif // RICH_MAP_H

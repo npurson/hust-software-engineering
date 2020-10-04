@@ -89,19 +89,25 @@ void apply_item(map_t& map, uint8_t item_type, uint8_t pos)
 
 void roll_dice(map_t& map, player_t& player)
 {
-   for (int dice = rand() % 6 + 1; dice; --dice) {
-       player.n_pos = (player.n_pos + 1) % MAP_SIZE;
-       // 道具判定
-       if (map[player.n_pos].item == BLOCK) {
-           map[player.n_pos].item = NONE;
-           break;
-       }
-       else if (map[player.n_pos].item == BOMB) {
-           map[player.n_pos].item = NONE;
-           player.n_pos = HOSPITAL_POS;
-           player.n_empty_rounds = 3;
-       }
-   }
-   // 租金判定
-   map[player.n_pos].players.push_back();
+    step_forward(map, player, rand() % 6 + 1);
+}
+
+
+void step_forward(map_t& map, player_t& player, uint8_t steps)
+{
+    while (steps--) {
+        player.n_pos = (player.n_pos + 1) % MAP_SIZE;
+        // 道具判定
+        if (map[player.n_pos].item == BLOCK) {
+            map[player.n_pos].item = NONE;
+            break;
+        }
+        else if (map[player.n_pos].item == BOMB) {
+            map[player.n_pos].item = NONE;
+            player.n_pos = HOSPITAL_POS;
+            player.n_empty_rounds = 3;
+        }
+    }
+    // 租金判定
+    map[player.n_pos].players.push_back(&player);
 }
