@@ -11,9 +11,13 @@
 #include "player.h"
 
 using std::vector;
-using std::uint8_t;
-using std::uint16_t;
-
+using std::uint8_t, std::uint16_t;
+#define START_POS           0
+#define HOSPITAL_POS        14
+#define PROP_HOUSE_POS      28
+#define GIFT_HOUSE_POS      35
+#define PRISON_POS          49
+#define MAGIC_HOUSE_POS     63
 
 // 地图结点类型
 enum NodeType { START, VACANCY, ITEM_HOUSE, GIFT_HOUSE, MAGIC_HOUSE, HOSPITAL, PRISON, MINE };
@@ -27,6 +31,7 @@ const uint8_t kStartPos = 0, kHospitalPos = 14,  kItemHousePos = 28, \
               kGiftHousePos = 35, kPrisonPos = 49, kMagicHousePos = 63;
 
 typedef struct map_node {
+    uint8_t id;                 // 地块序号，用于查询角色拥有的地块
     uint8_t type;               // 地图结点类型，枚举类型为NodeType
     uint8_t estate_lvl;         // 房产等级，type==VACANCY时有效。枚举类型为EstateLevel
     uint8_t owner;              // 房产的拥有者，type==VACANCY时有效。枚举类型为PlayerIdx
@@ -52,7 +57,7 @@ void buy_estate(map_t& map, uint8_t player_idx, uint8_t map_node_idx);
 // 升级房产
 void update_estate(map_t& map, uint8_t player_idx, uint8_t map_node_idx);
 // 卖出房产
-void sell_estate(map_t& map, uint8_t player_idx, uint8_t map_node_idx);
+void sell_estate(map_t& map, player_t& player, uint8_t map_node_idx);
 // 使用道具
 void apply_item(map_t& map, uint8_t item_type, uint8_t pos);
 // 投骰子，并且调用step_forward
