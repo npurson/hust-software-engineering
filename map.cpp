@@ -10,26 +10,26 @@ p_map_t init_map()
 {
     for (int i = 0; i < MAP_SIZE; ++i) {
         switch (i) {
-            case START_POS: map.emplace_back(START); break;
-            case HOSPITAL_POS: map.emplace_back(HOSPITAL); break;
-            case ITEM_HOUSE_POS: map.emplace_back(ITEM_HOUSE); break;
-            case GIFT_HOUSE_POS: map.emplace_back(GIFT_HOUSE); break;
-            case PRISON_POS: map.emplace_back(PRISON); break;
-            case MAGIC_HOUSE_POS: map.emplace_back(MAGIC_HOUSE); break;
+            case START_POS: map.emplace_back(i, START); break;
+            case HOSPITAL_POS: map.emplace_back(i, HOSPITAL); break;
+            case ITEM_HOUSE_POS: map.emplace_back(i, ITEM_HOUSE); break;
+            case GIFT_HOUSE_POS: map.emplace_back(i, GIFT_HOUSE); break;
+            case PRISON_POS: map.emplace_back(i, PRISON); break;
+            case MAGIC_HOUSE_POS: map.emplace_back(i, MAGIC_HOUSE); break;
 
-            case 64: map.emplace_back(MINE, 60); break;
+            case 64: map.emplace_back(i, MINE, 60); break;
             case 65:
-            case 68: map.emplace_back(MINE, 80); break;
-            case 66: map.emplace_back(MINE, 40); break;
-            case 67: map.emplace_back(MINE, 100); break;
-            case 69: map.emplace_back(MINE, 20); break;
+            case 68: map.emplace_back(i, MINE, 80); break;
+            case 66: map.emplace_back(i, MINE, 40); break;
+            case 67: map.emplace_back(i, MINE, 100); break;
+            case 69: map.emplace_back(i, MINE, 20); break;
             default:
                 if (i > START_POS && i < ITEM_HOUSE_POS && i != HOSPITAL_POS)
-                    map.emplace_back(VACANCY, 200);
+                    map.emplace_back(i, VACANCY, 200);
                 else if (i > ITEM_HOUSE_POS && i < GIFT_HOUSE_POS)
-                    map.emplace_back(VACANCY, 500);
+                    map.emplace_back(i, VACANCY, 500);
                 else if (i > GIFT_HOUSE_POS && i <= MAGIC_HOUSE_POS && i != PRISON_POS)
-                    map.emplace_back(VACANCY, 300);
+                    map.emplace_back(i, VACANCY, 300);
         }
     }
     return &map;
@@ -84,37 +84,29 @@ void plot_map()
 void buy_estate(map_t& map, player_t& player)
 {
     uint8_t map_node_idx = player.n_pos;
-    // basic rules
     if (map[map_node_idx].type != VACANCY ||
         map[map_node_idx].owner != nullptr)
         return;
 
-    char map_node_input[10];
-    int update;
-    while (true){
-        cout << "[买房] 是否购买房产(1.购买 2.不购买)： ";
-        cin >> map_node_input;
-        update = std::stoi(map_node_input);
-        if (update == 1) break;
-        if (update == 2) return;
-        cout << "输入有误";
+    string choice;
+    cout << "[买房] 是否购买房产？(y/n)" << endl;
+    show_cmd();
+
+    while (true) {
+        cin >> choice;
+        if (choice == "y") {
+            if (player.n_money >= map[map_node_idx].value) {
+                player.n_money -= map[map_node_idx].value;
+                player.estate.push_back(&map[map_node_idx]);
+                map[map_node_idx].owner = &player;
+            }
+            else cout << "[升级] 资金不足，无法升级建筑" << endl;
+            break;
+        }
+        else if (choice == "n") break;
+        else cout << "[好家伙] 生而手残，我很抱歉" << endl;
     }
-
-    // lack of money
-    if (map[map_node_idx].value > player.n_money){
-        printf("购买失败");
-        return;
-    }
-
-    // update player info
-    player.n_money -= map[map_node_idx].value;
-    player.estate.push_back(&map[map_node_idx]);
-
-    // update estate info
-    map[map_node_idx].estate_lvl = 0;
-    map[map_node_idx].owner = &player;
-
-    printf("升级成功");
+    return;
 }
 
 
@@ -132,7 +124,8 @@ void update_estate(map_t& map, player_t& player)
     cout << "[升级] 升级需支付 " << map[player.n_pos].value << " 元" << endl;
     cout << "      是否需要升级？(y/n)" << endl;
     show_cmd();
-    while (1) {
+
+    while (true) {
         cin >> choice;
         if (choice == "y") {
             if (map[map_node_idx].estate_lvl == SKYSCRAPER)
@@ -231,7 +224,7 @@ void buy_item(player_t& player)
     cout << "        1. 路障    2. 机器娃娃    3. 炸弹" << endl;
     show_cmd();
 
-    while (1) {
+    while (true) {
         cin >> choice;
         if (choice == "1") {
             if (player.n_points < 50) {
@@ -274,29 +267,31 @@ void buy_item(player_t& player)
 
 void get_gift(player_t& player)
 {
-    uint8_t choice;
+    string choice;
     cout << "[礼品屋] 欢迎光临礼品屋，请选择一件你喜欢的礼品：" << endl;
     cout << "        1. 奖金    2. 点数卡    3. 财神" << endl;
     show_cmd();
-    cin >> choice;
 
-    switch (choice) {
-        case 1:
+    while (true) {
+        cin >> choice;
+        if (choice == "1") {
             player.n_money += 2000;
             cout << "[奖金] 获得奖金 2000 元" << endl;
-            return;
-        case 2:
+            break;
+        }
+        else if (choice == "2") {
             player.n_points += 200;
             cout << "[点数] 获得点数 200 点" << endl;
-            return;
-        case 3:
+            break;
+        }
+        else if (choice == "3") {
             player.n_god_buff = 5;
             cout << "[财神] 获得财神附身 5 回合" << endl;
-            return;
-        default:
-            cout << "[好家伙] 生而手残，我很抱歉" << endl;
-            return;
+            break;
+        }
+        else cout << "[好家伙] 生而手残，我很抱歉" << endl;
     }
+    return;
 }
 
 

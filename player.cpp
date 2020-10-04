@@ -59,6 +59,7 @@ p_player_t get_player_by_uid(char uid) {
     return nullptr;
 }
 
+
 p_player_t skip_player(p_player_t next_player){
     if (next_player->n_money >= 0 && next_player->n_empty_rounds == 0) return next_player;
     else{
