@@ -67,12 +67,49 @@ int do_robot(std::uint8_t pos){
 }
 
 void do_dump() {
-    std::string dump_text = "preset user";
+    std::string dump_text = "user ";
     auto player_vec = get_player_vec();
 
     for (const auto& player : *player_vec) {
         dump_text += player.uid;
     }
+    std::cerr << dump_text << std::endl;
+    for (const auto& player : *player_vec) {
+        for (const auto& p_estate : player.estate) {
+            std::cerr << "map " << p_estate->id << " " << player.uid << " " << p_estate->estate_lvl << std::endl;
+        }
+        std::cerr << "fund " << player.uid << " " << player.n_money << std::endl;
+        std::cerr << "credit " << player.uid << " " << player.n_points << std::endl;
+        std::cerr << "userloc " << player.uid << " " << player.n_pos  << " "  << player.n_empty_rounds << std::endl;
+        if (player.n_boom != 0) {
+            std::cerr << "gift " << player.uid << " bomb " << static_cast<int>(player.n_boom) << std::endl;
+        }
+        if (player.n_block != 0) {
+            std::cerr << "gift " << player.uid << " barrier " << static_cast<int>(player.n_block) << std::endl;
+        }
+        if (player.n_robot != 0) {
+            std::cerr << "gift " << player.uid << " robot " << static_cast<int>(player.n_robot) << std::endl;
+        }
+        if (player.n_god_buff != 0) {
+            std::cerr << "gift " << player.uid << " god " << static_cast<int>(player.n_god_buff) << std::endl;
+        }
+    }
+    auto map = get_map();
+    for (const auto& map_node : *map) {
+        switch(map_node.item) {
+            case BOMB:
+                std::cerr << "bomb " << map_node.id << std::endl;
+                break;
+            case BLOCK:
+                std::cerr << "barrier " << map_node.id << std::endl;
+                break;
+            case NONE:
+            default:
+                break;
+        }
+    }
+    std::cerr << "nextuser " << next_player->uid << std::endl;
+    exit(EXIT_SUCCESS);
 }
 
 void show_cmd() {
