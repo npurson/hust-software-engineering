@@ -27,6 +27,8 @@ void start_game() {
         printf("%d", num_players);
         std::cout<< "位角色: Q-钱夫人 A-阿土伯 S-孙小美 J-金贝贝" << std::endl;
         std::cin >> inputs;
+        std::cin.clear();
+        std::cin.sync();
         if (inputs.length() != num_players){
             std::cout << "输入角色个数有误"<< std::endl;
             continue;
@@ -236,11 +238,13 @@ int do_roll() {
 
     // switch to next player
     auto players = get_player_vec();
-    char last_uid = players->end()->uid;
     std::uint8_t c = 0;
     for (auto & it : *players) {
-        if (last_uid == it.uid) next_player = &(*(get_player_vec()))[c];
-        last_uid = it.uid;
+        if (it.uid == next_player->uid){
+            if (c + 1 > players->size() - 1)    next_player = &(*(get_player_vec()))[0];
+            else    next_player = &(*(get_player_vec()))[c + 1];
+            break;
+        }
         c += 1;
     }
     return 0;
