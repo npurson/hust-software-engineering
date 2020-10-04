@@ -8,6 +8,8 @@
 #include <vector>
 #include <windows.h>
 
+#include "player.h"
+
 using std::vector;
 using std::uint8_t;
 using std::uint16_t;
@@ -39,19 +41,19 @@ typedef vector<map_node_t> map_t, * p_map_t;
 
 // 初始化地图
 map_t init_map();
-//// 读取地图
-//p_map_t get_map();
-//// 绘制地图
-//void plot_map();
-//// 购买房产
-//void buy_estate(map_t& map, uint8_t player_idx, uint8_t map_node_idx);
-//// 升级房产
-//void update_estate(map_t& map, uint8_t player_idx, uint8_t map_node_idx);
-//// 卖出房产
-//void sell_estate(map_t& map, uint8_t player_idx, uint8_t map_node_idx);
-//// 使用道具
-//void apply_item(map_t& map, uint8_t item_type, uint8_t pos);
-//// 投骰子，行走过程中判定道具、地段、破产  TODO 破产处理应在主调函数中？
-//void roll_dice(map_t& map, player_t& player);
+// 读取地图
+p_map_t get_map();
+// 绘制地图
+void plot_map();
+// 购买房产
+void buy_estate(map_t& map, uint8_t player_idx, uint8_t map_node_idx);
+// 升级房产
+void update_estate(map_t& map, uint8_t player_idx, uint8_t map_node_idx);
+// 卖出房产
+void sell_estate(map_t& map, uint8_t player_idx, uint8_t map_node_idx);
+// 使用道具
+void apply_item(map_t& map, uint8_t item_type, uint8_t pos);
+// 投骰子，行走过程中判定道具、地段、破产  TODO 破产处理应在主调函数中？
+void roll_dice(map_t& map, player_t& player);
 
 #endif // RICH_MAP_H
