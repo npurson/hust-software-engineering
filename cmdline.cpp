@@ -158,8 +158,7 @@ int parse_cmd(const std::string& cmd) {
                 std::cerr << "命令格式错误，robot命令格式为：robot" << std::endl;
                 return -1;
             }
-            auto robot_step = std::strtol(word_vec[1].c_str(), nullptr, 10);
-            do_robot(static_cast<uint8_t>(robot_step), next_player);
+            do_robot(next_player);
         } else if (word_vec[0] == "step") {
             if (word_vec.size() != 2) {
                 std::cerr << "命令格式错误，step命令格式为：step n，n为指定的步数" << std::endl;
@@ -184,8 +183,8 @@ int parse_cmd(const std::string& cmd) {
     return -1;
 }
 
-void do_robot(std::uint8_t step, p_player_t player) {
-
+void do_robot(p_player_t player) {
+    apply_item(*get_map(), *player, ROBOT);
 }
 void do_sell(map_t& map, player_t& player, uint8_t map_node_idx)
 {
@@ -216,11 +215,11 @@ void do_sell(map_t& map, player_t& player, uint8_t map_node_idx)
 
 
 void do_bomb(std::uint8_t step, p_player_t player) {
-
+    apply_item(*get_map(), *player, BOMB, static_cast<int>(step));
 }
 
 void do_block(std::uint8_t step, p_player_t player) {
-
+    apply_item(*get_map(), *player, BLOCK, static_cast<int>(step));
 }
 
 

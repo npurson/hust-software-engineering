@@ -173,7 +173,7 @@ void update_estate(map_t& map, player_t& player)
 }
 
 
-void apply_item(map_t& map, player_t& player, uint8_t item, uint8_t pos=0)
+void apply_item(map_t& map, player_t& player, int item, int pos)
 {
     if (item == BLOCK) {
         if (!player.n_block) {

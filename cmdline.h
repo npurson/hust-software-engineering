@@ -15,7 +15,7 @@ void tolower(std::string &str);
 int do_preset(std::string cmd);
 int do_roll();
 void do_dump();
-void do_robot(std::uint8_t step, p_player_t player);
+void do_robot(p_player_t player);
 void do_bomb(std::uint8_t step, p_player_t player);
 void do_block(std::uint8_t step, p_player_t player);
 void do_sell(map_t& map, player_t& player, uint8_t map_node_idx);
