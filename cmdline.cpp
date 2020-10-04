@@ -159,6 +159,12 @@ int parse_cmd(const std::string& cmd) {
             }
             auto step = std::strtol(word_vec[1].c_str(), nullptr, 10);
             do_step(static_cast<uint8_t>(step));
+        } else if (word_vec[0] == "query") {
+            if (word_vec.size() != 1) {
+                std::cerr << "命令格式错误，query命令格式为：query" << std::endl;
+                return -1;
+            }
+            do_query(*next_player);
         }
     }
     return -1;
@@ -386,10 +392,10 @@ int do_query(player_t& player)
     std::cout << "资金: " << player.n_money << std::endl;
     std::cout << "点数: " << player.n_points << std::endl;
     std::cout << "固定资产: ";
-    for (auto it = player.estate.begin(); it != player.estate.end(); ++it) {
-        std::cout << (*it)->id << ' ';
+    for (auto & it : player.estate) {
+        std::cout << static_cast<int>(it->id) << ' ';
     }
     std::cout << std::endl;
-    std::cout << "道具: 炸弹*" << player.n_bomb << " 路障*" << player.n_block << " 机器娃娃*" << player.n_robot << std::endl;
+    std::cout << "道具: 炸弹*" << static_cast<int>(player.n_bomb) << " 路障*" << static_cast<int>(player.n_block) << " 机器娃娃*" << static_cast<int>(player.n_robot) << std::endl;
     return 0;
 }
