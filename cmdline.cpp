@@ -54,13 +54,11 @@ int parse_cmd(std::string cmd) {
         } else if (word_vec[0] == "dump") {
             do_dump();
         } else if (word_vec[0] == "Sell") {
-            sell_estate(*get_map(), *next_player, next_player->n_pos);
-        } else if (word_vec[0] == "Block") {
-            do_block(next_player->n_pos);
-        } else if (word_vec[0] == "Bomb") {
-            do_bomb(next_player->n_pos);
-        } else if (word_vec[0] == "Robot") {
-            do_robot(next_player->n_pos);
+            do_sell(*get_map(), *next_player, next_player->n_pos);
+        } else if (word_vec[0] == "Block" || word_vec[0] == "Bomb" || word_vec[0] == "Robot") {
+            do_item(*get_map(), *next_player);
+        } else if (word_vec[0] == "Query") {
+            do_query(*next_player);
         } else if (word_vec[0] == "Step") {
             std::uint8_t step = atoi(word_vec[1].c_str());
             do_step(step);
@@ -70,22 +68,30 @@ int parse_cmd(std::string cmd) {
     return -1;
 }
 
-int do_roll() {
+int do_item(map_t& map, player_t& player){
+    apply_item(map, player);
     return 0;
 }
 
-int do_block(std::uint8_t pos){
+int do_roll() {
+    if (roll_dice(*get_map(), *next_player)){
+        next_player->n_money = -1;
+        next_player->n_points = 0;
+        next_player->n_pos = 0;
+        next_player->n_empty_rounds = 0;
+        next_player->n_god_buff = 0;
+        next_player->estate.clear();
+        next_player->n_block = 0;
+        next_player->n_boom = 0;
+        next_player->n_robot = 0;
+        next_player->b_sell_estate = 0;
+    }
+    next_player->b_sell_estate = 0;
+    if (next_player->n_god_buff > 0)    next_player->n_god_buff -= 1;
+    if (next_player->n_empty_rounds > 0)    next_player->n_empty_rounds -= 1;
     return 0;
 }
-int do_sell(std::uint8_t pos){
-    return 0;
-}
-int do_bomb(std::uint8_t pos){
-    return 0;
-}
-int do_robot(std::uint8_t pos){
-    return 0;
-}
+
 
 void do_dump() {
     std::string dump_text = "user ";
@@ -224,3 +230,16 @@ int do_preset(std::string cmd) {
     return 0;
 }
 
+
+int do_query(player_t& player)
+{
+    std::cout << "资金: " << player.n_money << std::endl;
+    std::cout << "点数: " << player.n_points << std::endl;
+    std::cout << "固定资产: ";
+    for (auto it = player.estate.begin(); it != player.estate.end(); ++it) {
+        std::cout << (*it)->id << ' ';
+    }
+    std::cout << std::endl;
+    std::cout << "道具: 炸弹*" << player.n_boom << " 路障*" << player.n_block << " 机器娃娃*" << player.n_robot << std::endl;
+    return 0;
+}

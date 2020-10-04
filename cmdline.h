@@ -8,20 +8,17 @@
 #include <string>
 #include <regex>
 #include "player.h"
+#include "map.h"
 
 int parse_cmd(std::string cmd);
 int do_preset(std::string cmd);
 int do_roll();
 void do_dump();
-int do_block(std::uint8_t pos);
-int do_sell(std::uint8_t pos);
-int do_bomb(std::uint8_t pos);
-int do_robot(std::uint8_t pos);
-int do_step(std::uint8_t step);
-int do_query();
+int do_item(map_t& map, player_t& player);
+int do_query(player_t& player);
 int do_help();
 int do_quit();
 void show_cmd();
-
+int do_step(std::uint8_t step);
 
 #endif //RICH_CMDLINE_H
