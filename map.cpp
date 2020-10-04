@@ -13,6 +13,18 @@ void plot_map()
 }
 
 
+void buy_estate(map_t& map, uint8_t player_idx, uint8_t map_node_idx)
+{
+
+}
+
+
+void update_estate(map_t& map, uint8_t player_idx, uint8_t map_node_idx)
+{
+
+}
+
+
 void sell_estate(map_t& map, uint8_t player_idx, uint8_t map_node_idx)
 {
 

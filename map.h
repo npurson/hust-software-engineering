@@ -7,6 +7,9 @@
 #include <ctime>
 #include <vector>
 
+using std::vector;
+using std::uint8_t, std::uint16_t;
+
 
 // 地图结点类型
 enum NodeType { START, VACANCY, ITEM_HOUSE, GIFT_HOUSE, MAGIC_HOUSE, HOSPITAL, PRISON, MINE };
@@ -16,9 +19,6 @@ enum EstateLevel { WASTELAND, HUT, HOUSE, SKYSCRAPER };
 enum PlayerIdx { NONE, PLAYER_1, PLAYER_2, PLAYER_3 };
 // 道具类型
 enum ItemType { BLOCK = 1, BOMB, ROBOT };
-
-using std::vector;
-using std::uint8_t, std::uint16_t;
 
 typedef struct map_node {
     uint8_t type;               // 地图结点类型，枚举类型为NodeType
