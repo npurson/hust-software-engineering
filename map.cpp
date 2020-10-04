@@ -125,7 +125,7 @@ void apply_item(map_t& map, uint8_t item_type, uint8_t pos)
 }
 
 
-void buy_item(map_t& map, uint8_t item_type, uint8_t pos)
+void buy_item(player_t& player)
 {
     
 }
@@ -155,15 +155,28 @@ bool step_forward(map_t& map, player_t& player, uint8_t steps)
     }
     // 租金判定
     map[player.n_pos].players.push_back(&player);
-    if (map[player.n_pos].owner) {      // TODO 检查type非VACANCY的情况下owner不应非空
-        uint8_t payment = get_estate_price(map[player.n_pos]);
-        if (player.n_money < payment) {
-            map[player.n_pos].owner->n_money += player.n_money;
-            printf("嘤嘤嘤破产辽");
-            return true;
-        }
-        map[player.n_pos].owner->n_money += payment;
-        player.n_money -= payment;
+    switch (map[player.n_pos].type) {
+        case VACANCY:
+            if (map[player.n_pos].owner) {
+                uint8_t payment = get_estate_price(map[player.n_pos]);
+                if (player.n_money < payment) {
+                    map[player.n_pos].owner->n_money += player.n_money;
+                    printf("嘤嘤嘤破产辽");
+                    return true;
+                }
+                map[player.n_pos].owner->n_money += payment;
+                player.n_money -= payment;
+            }
+            return false;
+        case ITEM_HOUSE: BUY_ITEM(); return false;
+        case MINE:
+            player.n_points += map[player.n_pos].value;
+            print("获得点数");
+            return false;
+        case PRISON:
+            player.n_empty_rounds = 2;
+            printf("打工是不可能打工的，这辈子都不可能打工的");
+            return false;
+        default: return false;
     }
-    return false;
 }
