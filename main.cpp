@@ -1,5 +1,8 @@
 #include <iostream>
 #include "map.h"
+#include "player.h"
+
+p_player_t next_player;
 
 
 int main() {

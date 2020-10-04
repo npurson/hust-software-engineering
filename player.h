@@ -26,5 +26,7 @@ typedef struct player {
 } player_t, *p_player_t;
 
 void add_player(char uid);
+p_player_t get_player_by_uid(char uid);
+std::vector<player_t> *get_player_vec();
 
 #endif // RICH_PLAYERS_H

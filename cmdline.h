@@ -7,13 +7,14 @@
 
 #include <string>
 #include <regex>
+#include "player.h"
 
 int parse_cmd(std::string cmd);
 int do_preset(std::string cmd);
 int do_roll();
 int do_block(std::uint8_t pos);
 int do_sell(std::uint8_t pos);
-int do_bomb(std::uin8_t pos);
+int do_bomb(std::uint8_t pos);
 int do_robot(std::uint8_t pos);
 int do_query();
 int do_help();

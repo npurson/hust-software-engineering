@@ -4,7 +4,6 @@
 #include <iostream>
 #include <cstdlib>
 #include <cstdint>
-#include <cstdbool>
 #include <ctime>
 #include <vector>
 #include <windows.h>
@@ -32,6 +31,8 @@ using std::endl;
 enum NodeType { START, VACANCY, ITEM_HOUSE, GIFT_HOUSE, MAGIC_HOUSE, HOSPITAL, PRISON, MINE };
 // 房产等级
 enum EstateLevel { WASTELAND, HUT, HOUSE, SKYSCRAPER };
+// 玩家索引
+enum PlayerIdx { NONE, PLAYER_1, PLAYER_2, PLAYER_3 };
 // 道具类型
 enum ItemType { NONE, BLOCK, BOMB, ROBOT };
 
