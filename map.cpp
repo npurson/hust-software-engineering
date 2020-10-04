@@ -53,42 +53,26 @@ void plot_map()
             64, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 34,
             63, 62, 61, 60, 59, 58, 57, 56, 55, 54, 53, 52, 51, 50, 49, 48, 47, 46, 45, 44, 43, 42, 41, 40, 39, 38, 37, 36, 35
     };
-
     static const char type_table[8] = {'S','0','T','G','M','H','P','$'};
-    static const char player_color_table[4] = {'Q','A','S','J'};
+    static const unsigned short color_table[4] = {FOREGROUND_RED,FOREGROUND_GREEN,FOREGROUND_BLUE,FOREGROUND_RED|FOREGROUND_GREEN};
     static const char item_table[4] = {'\0','#','@','R'};
+
     HANDLE h_out;
     h_out=GetStdHandle(STD_OUTPUT_HANDLE);
-
-    char buf=0;
     system("cls");
-    SetConsoleCursorPosition(h_out,(COORD){0,0});
+    SetConsoleCursorPosition(h_out,(COORD){-1,0});
 
     for(int i=0; i<29*8; i++){
         SetConsoleTextAttribute(h_out, FOREGROUND_BLUE|FOREGROUND_GREEN|FOREGROUND_RED|FOREGROUND_INTENSITY);
-
+        //empty space
         if(hash_table[i] == 0 && i!=0) { putchar(' '); continue; }
 
         // basic map
-        buf = type_table[ map[hash_table[i]].type ];
+        char buf = type_table[ map[hash_table[i]].type ];
         if(buf == '0') {
             buf += map[hash_table[i]].estate_lvl;
             if(map[hash_table[i]].owner!=NULL){
-                switch(map[hash_table[i]].owner->e_color){
-                    case RED:
-                        SetConsoleTextAttribute(h_out, FOREGROUND_RED);
-                        break;
-                    case GREEN:
-                        SetConsoleTextAttribute(h_out, FOREGROUND_GREEN);
-                        break;
-                    case YELLOW:
-                        SetConsoleTextAttribute(h_out, FOREGROUND_GREEN|FOREGROUND_RED);
-                        break;
-                    case BLUE:
-                        SetConsoleTextAttribute(h_out, FOREGROUND_BLUE);
-                        break;
-                    default:break;
-                }
+                SetConsoleTextAttribute(h_out, color_table[ map[hash_table[i]].owner->e_color ]);
             }
         }
 
@@ -100,25 +84,11 @@ void plot_map()
         //player
         if(map[hash_table[i]].players.empty() == false){
             buf=map[hash_table[i]].players.back()->uid;
-            switch (map[hash_table[i]].players.back()->e_color) {
-                case RED:
-                    SetConsoleTextAttribute(h_out, FOREGROUND_RED);
-                    break;
-                case GREEN:
-                    SetConsoleTextAttribute(h_out, FOREGROUND_GREEN);
-                    break;
-                case YELLOW:
-                    SetConsoleTextAttribute(h_out, FOREGROUND_GREEN|FOREGROUND_RED);
-                    break;
-                case BLUE:
-                    SetConsoleTextAttribute(h_out, FOREGROUND_BLUE);
-                    break;
-                default:break;
-            }
+            SetConsoleTextAttribute(h_out, color_table[ map[hash_table[i]].players.back()->e_color ]);
         }
+        //render
         putchar(buf);
         if((i % 29) == 28) printf("\n");
-
     }
     SetConsoleCursorPosition(h_out,(COORD){0,10});
 }
