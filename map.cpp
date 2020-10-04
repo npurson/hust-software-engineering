@@ -193,7 +193,7 @@ void apply_item(map_t& map, uint8_t item_type, uint8_t pos)
 }
 
 
-void buy_item(player_t& player)
+void buy_item(map_t& map, uint8_t item_type, uint8_t pos)
 {
     if((player.n_num_props>=10)||(player.n_credit<30))
     {
