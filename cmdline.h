@@ -11,6 +11,7 @@
 #include "map.h"
 
 int parse_cmd(const std::string& cmd);
+void tolower(std::string &str);
 int do_preset(std::string cmd);
 int do_roll();
 void do_dump();
