@@ -173,7 +173,7 @@ void update_estate(map_t& map, player_t& player)
 }
 
 
-void apply_item(map_t& map, player_t& player, uint8_t item, uint8_t pos=0)
+void apply_item(map_t& map, player_t& player, int item, int pos)
 {
     if (item == BLOCK) {
         if (!player.n_block) {
@@ -196,7 +196,7 @@ void apply_item(map_t& map, player_t& player, uint8_t item, uint8_t pos=0)
         else {
             for (int i = 0; i < 10; ++i)
                 map[player.n_pos + i].item = NONE;
-            player.n_robot -= 1;
+            player.n_robot -= 1; // TODO 机器娃娃效果
             cout << "[机器娃娃] 机器娃娃使用成功" << endl;
         }
     }
@@ -214,7 +214,6 @@ void apply_item(map_t& map, player_t& player, uint8_t item, uint8_t pos=0)
             }
         }
     }
-    return;
 }
 
 
