@@ -41,7 +41,7 @@ void add_player(char uid) {
     next_player.n_money = init_money;
     next_player.e_color = player_color[uid];
     next_player.n_block = 0;
-    next_player.n_boom = 0;
+    next_player.n_bomb = 0;
     next_player.n_robot = 0;
     next_player.n_pos = 0;
     next_player.n_empty_rounds = 0;

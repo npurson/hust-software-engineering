@@ -218,7 +218,7 @@ void apply_item(map_t& map, player_t& player, uint8_t item, uint8_t pos=0)
 
 void buy_item(player_t& player)
 {
-    if (player.n_boom + player.n_robot + player.n_block >= 10) {
+    if (player.n_bomb + player.n_robot + player.n_block >= 10) {
         cout << "[道具] 道具栏已满，无法购买道具" << endl;
         return;
     }
@@ -260,7 +260,7 @@ void buy_item(player_t& player)
             }
             else {
                 player.n_points -= 50;
-                player.n_boom += 1;
+                player.n_bomb += 1;
                 cout << "[炸弹] 购买炸弹，失去点数 50 点" << endl;
             }
             break;

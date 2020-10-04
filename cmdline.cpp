@@ -169,7 +169,7 @@ int do_roll() {
         next_player->n_god_buff = 0;
         next_player->estate.clear();
         next_player->n_block = 0;
-        next_player->n_boom = 0;
+        next_player->n_bomb = 0;
         next_player->n_robot = 0;
         next_player->b_sell_estate = 0;
     }
@@ -208,8 +208,8 @@ void do_dump() {
         std::cerr << "fund " << player.uid << " " << player.n_money << std::endl;
         std::cerr << "credit " << player.uid << " " << player.n_points << std::endl;
         std::cerr << "userloc " << player.uid << " " << static_cast<int>(player.n_pos) << " "  << static_cast<int>(player.n_empty_rounds) << std::endl;
-        if (player.n_boom != 0) {
-            std::cerr << "gift " << player.uid << " bomb " << static_cast<int>(player.n_boom) << std::endl;
+        if (player.n_bomb != 0) {
+            std::cerr << "gift " << player.uid << " bomb " << static_cast<int>(player.n_bomb) << std::endl;
         }
         if (player.n_block != 0) {
             std::cerr << "gift " << player.uid << " barrier " << static_cast<int>(player.n_block) << std::endl;
@@ -295,7 +295,7 @@ int do_preset(std::string cmd) {
         auto prop_name = word_vec[2];
         int number = atoi(word_vec[3].c_str());
         if (prop_name == "bomb") {
-            player->n_boom = number;
+            player->n_bomb = number;
         } else if (prop_name == "barrier") {
             player->n_block = number;
         } else if (prop_name == "robot") {
@@ -342,6 +342,6 @@ int do_query(player_t& player)
         std::cout << (*it)->id << ' ';
     }
     std::cout << std::endl;
-    std::cout << "道具: 炸弹*" << player.n_boom << " 路障*" << player.n_block << " 机器娃娃*" << player.n_robot << std::endl;
+    std::cout << "道具: 炸弹*" << player.n_bomb << " 路障*" << player.n_block << " 机器娃娃*" << player.n_robot << std::endl;
     return 0;
 }

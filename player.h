@@ -10,31 +10,28 @@ using std::string;
 using std::uint8_t;
 using std::uint64_t;
 
-
 enum color_t { RED, GREEN, BLUE, YELLOW };
 
 typedef struct map_node map_node_t, * p_map_node_t;
 
 typedef struct player {
-    char uid;
-    string name;
-    uint64_t n_money;
-    uint64_t n_points;
-    uint8_t n_pos;
-    uint8_t n_empty_rounds;
-    uint8_t n_god_buff;
-    color_t e_color;
-    vector<p_map_node_t> estate;
-    uint8_t n_block;
-    uint8_t n_boom;
-    uint8_t n_robot;
+    char uid; // 标识角色的字符, A,Q,S,J
+    string name; // 角色的名字, 如钱夫人
+    uint64_t n_money; // 玩家的资金
+    uint64_t n_points; // 玩家的点数
+    uint8_t n_pos; // 玩家在地图上的位置
+    uint8_t n_empty_rounds; // 玩家轮空的轮数
+    uint8_t n_god_buff; // 玩家现有的财神buff的轮数
+    color_t e_color; // 玩家显示的颜色
+    vector<p_map_node_t> estate; // 玩家的地产
+    uint8_t n_block; // 玩家的路障道具数量
+    uint8_t n_bomb; // 玩家的炸弹道具数量
+    uint8_t n_robot; // 玩家的机器娃娃道具数量
     uint8_t b_sell_estate;  // TODO set 0 in the beginning of every round
 } player_t, *p_player_t;
 
-
 void add_player(char uid);
 vector<player_t> *get_player_vec();
-
 p_player_t get_player_by_uid(char uid);
 p_player_t skip_player(p_player_t next_player);
 
