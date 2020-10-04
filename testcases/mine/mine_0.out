@@ -1,0 +1,17 @@
+user AQS
+
+map 60 Q 0 
+
+fund A 2020
+fund Q 5000
+fund S 100   
+
+credit A 180
+credit Q 5000
+credit S 100
+
+userloc A 68 0
+userloc Q 26 0
+userloc S 0 0
+
+nextuser A

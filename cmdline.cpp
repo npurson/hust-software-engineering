@@ -80,27 +80,28 @@ int parse_cmd(const std::string& cmd) {
                 return -1;
             }
             int map_id = atoi(word_vec[1].c_str());
-            sell_estate(*get_map(), *next_player, map_id);
+            do_sell(*get_map(), *next_player, map_id);
         } else if (word_vec[0] == "block") {
             if (word_vec.size() != 2) {
                 std::cerr << "无效的命令" << std::endl;
                 return -1;
             }
             int block_step = atoi(word_vec[1].c_str());
-            do_block(block_step);
+            do_block(block_step, next_player);
         } else if (word_vec[0] == "bomb") {
             if (word_vec.size() != 2) {
                 std::cerr << "无效的命令" << std::endl;
                 return -1;
             }
             int bomb_step = atoi(word_vec[1].c_str());
-            do_bomb(bomb_step);
+            do_bomb(bomb_step, next_player);
         } else if (word_vec[0] == "robot") {
             if (word_vec.size() != 1) {
                 std::cerr << "无效的命令" << std::endl;
                 return -1;
             }
-            do_robot(next_player->n_pos);
+            int robot_step = atoi(word_vec[1].c_str());
+            do_robot(robot_step, next_player);
         } else if (word_vec[0] == "step") {
             if (word_vec.size() != 2) {
                 std::cerr << "无效的命令" << std::endl;
@@ -114,23 +115,65 @@ int parse_cmd(const std::string& cmd) {
     return -1;
 }
 
+void do_robot(std::uint8_t step, p_player_t player) {
+
+}
+void do_sell(map_t& map, player_t& player, uint8_t map_node_idx)
+{
+    // basic rules
+    if (player.b_sell_estate == 1 ||
+        map[map_node_idx].type != VACANCY ||
+        map[map_node_idx].owner == nullptr ||
+        map[map_node_idx].owner->uid != player.uid) {
+//        cout << "[卖房] 卖出房产失败" << endl;
+        return;
+    }
+
+    // update player info
+    player.b_sell_estate = 1;
+    player.n_money += 2 * get_estate_price(map[map_node_idx]);
+    for (auto it = player.estate.begin(); it != player.estate.end(); ++it) {
+        if (*it == &map[map_node_idx]) {
+            player.estate.erase(it);
+            break;
+        }
+    }
+
+    // update estate info
+    map[map_node_idx].owner = nullptr;
+    map[map_node_idx].estate_lvl = WASTELAND;
+    cout << "[卖房] 卖出房产成功" << endl;
+}
+
+
+void do_bomb(std::uint8_t step, p_player_t player) {
+
+}
+
+void do_block(std::uint8_t step, p_player_t player) {
+
+}
+
+
 int do_roll() {
-    roll_dice(*get_map(), *next_player);
+    if (roll_dice(*get_map(), *next_player)){
+        next_player->n_money = -1;
+        next_player->n_points = 0;
+        next_player->n_pos = 0;
+        next_player->n_empty_rounds = 0;
+        next_player->n_god_buff = 0;
+        next_player->estate.clear();
+        next_player->n_block = 0;
+        next_player->n_boom = 0;
+        next_player->n_robot = 0;
+        next_player->b_sell_estate = 0;
+    }
+    next_player->b_sell_estate = 0;
+    if (next_player->n_god_buff > 0)    next_player->n_god_buff -= 1;
+    if (next_player->n_empty_rounds > 0)    next_player->n_empty_rounds -= 1;
     return 0;
 }
 
-int do_block(std::uint8_t pos){
-    return 0;
-}
-int do_sell(std::uint8_t pos){
-    return 0;
-}
-int do_bomb(std::uint8_t pos){
-    return 0;
-}
-int do_robot(std::uint8_t pos){
-    return 0;
-}
 
 void do_dump() {
     std::string dump_text = "user ";
@@ -271,3 +314,16 @@ int do_preset(std::string cmd) {
     return 0;
 }
 
+
+int do_query(player_t& player)
+{
+    std::cout << "资金: " << player.n_money << std::endl;
+    std::cout << "点数: " << player.n_points << std::endl;
+    std::cout << "固定资产: ";
+    for (auto it = player.estate.begin(); it != player.estate.end(); ++it) {
+        std::cout << (*it)->id << ' ';
+    }
+    std::cout << std::endl;
+    std::cout << "道具: 炸弹*" << player.n_boom << " 路障*" << player.n_block << " 机器娃娃*" << player.n_robot << std::endl;
+    return 0;
+}
