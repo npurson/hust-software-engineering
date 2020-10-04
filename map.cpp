@@ -40,8 +40,9 @@ void plot_map()
 }
 
 
-void buy_estate(map_t& map, player_t& player, uint8_t map_node_idx)
+void buy_estate(map_t& map, player_t& player)
 {
+    uint8_t map_node_idx = player.n_pos;
     // basic rules
     if (map[map_node_idx].type != VACANCY ||
         map[map_node_idx].owner != nullptr){
@@ -77,8 +78,9 @@ void buy_estate(map_t& map, player_t& player, uint8_t map_node_idx)
 }
 
 
-void update_estate(map_t& map, player_t& player, uint8_t map_node_idx)
+void update_estate(map_t& map, player_t& player)
 {
+    uint8_t map_node_idx = player.n_pos;
     // basic rules
     if (map[map_node_idx].type != VACANCY ||
         map[map_node_idx].owner == nullptr ||
@@ -201,10 +203,10 @@ bool step_forward(map_t& map, player_t& player, uint8_t steps)
                 player.n_money -= payment;
             }
             return false;
-        case ITEM_HOUSE: BUY_ITEM(); return false;
+        case ITEM_HOUSE: buy_item(player); return false;
         case MINE:
             player.n_points += map[player.n_pos].value;
-            print("获得点数");
+            printf("获得点数");
             return false;
         case PRISON:
             player.n_empty_rounds = 2;
