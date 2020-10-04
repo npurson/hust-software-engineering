@@ -2,7 +2,6 @@
 #define RICH_PLAYERS_H
 #include <cstdint>
 #include <vector>
-#include "map.h"
 
 
 typedef enum color {
