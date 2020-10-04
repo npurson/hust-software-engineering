@@ -99,6 +99,7 @@ void buy_estate(map_t& map, player_t& player)
             player.n_money -= map[map_node_idx].value;
             player.estate.push_back(&map[map_node_idx]);
             map[map_node_idx].owner = &player;
+            break;
         }
         else if (choice == "n") break;
         else cout << "[好家伙] 生而手残，我很抱歉" << endl;

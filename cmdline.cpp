@@ -171,6 +171,15 @@ int do_roll() {
     next_player->b_sell_estate = 0;
     if (next_player->n_god_buff > 0)    next_player->n_god_buff -= 1;
     if (next_player->n_empty_rounds > 0)    next_player->n_empty_rounds -= 1;
+
+    char last_uid = next_player->uid;
+    auto players = get_player_vec();
+    std::uint8_t c = 0;
+    for (auto & it : *players) {
+        if (last_uid == it.uid) next_player = &(*(get_player_vec()))[c];
+        last_uid = it.uid;
+        c += 1;
+    }
     return 0;
 }
 
