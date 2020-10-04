@@ -195,7 +195,46 @@ void apply_item(map_t& map, uint8_t item_type, uint8_t pos)
 
 void buy_item(player_t& player)
 {
-    
+    if((player.n_num_props>=10)||(player.n_credit<30))
+    {
+        printf("您无法购买道具！");
+        //退出函数
+        return;
+    }
+    else
+    {
+        printf("欢迎光临道具屋，请选择您所需要的道具:");
+        scanf("%d",&a);
+        if (a==1)
+        {
+            if(player.n_credit<50)
+            {
+                printf("您的点数不足以购买路障\n");
+                return;
+            }
+            player.n_block += 1;
+            player.n_credit -= 50;
+        }
+        else if (a==2)
+        {
+            player.n_robot += 1;
+            player.n_credit -= 30;
+        }
+        else if (a==3)
+        {
+            if(player.n_credit<50)
+            {
+                printf("您的点数不足以购买炸弹\n");
+                return;
+            }
+            player.n_boom += 1;
+            player.n_credit -= 50;
+        }
+	else 
+	{
+	    printf("输入无效");
+	}
+    }
 }
 
 
