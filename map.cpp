@@ -1,10 +1,11 @@
 #include "map.h"
 #include "player.h"
 
+static map_t map;
 
-map_t init_map()
+p_map_t init_map()
 {
-    map_t map;
+    static map_t map;
     for (int i = 0; i < MAP_SIZE; ++i) {
         switch (i) {
             case START_POS: map.emplace_back(START); break;
@@ -30,7 +31,12 @@ map_t init_map()
                     map.emplace_back(VACANCY, 300);
         }
     }
-    return map;
+    return &map;
+}
+
+
+p_map_t get_map() {
+    return &map;
 }
 
 
@@ -195,51 +201,51 @@ void apply_item(map_t& map, uint8_t item_type, uint8_t pos)
 
 void buy_item(player_t& player)
 {
-//    if((player.n_num_props>=10)||(player.n_credit<30))
-//    {
-//        printf("您无法购买道具！");
-//        return;
-//    }
-//    else
-//    {
-//        printf("欢迎光临道具屋，请选择您所需要的道具:");
-//        scanf("%d",&a);
-//        if (a==1)
-//        {
-//            if(player.n_credit<50)
-//            {
-//                printf("您的点数不足以购买路障\n");
-//                return;
-//            }
-//            player.n_block += 1;
-//            player.n_credit -= 50;
-//        }
-//        else if (a==2)
-//        {
-//            player.n_robot += 1;
-//            player.n_credit -= 30;
-//        }
-//        else if (a==3)
-//        {
-//            if(player.n_credit<50)
-//            {
-//                printf("您的点数不足以购买炸弹\n");
-//                return;
-//            }
-//            player.n_boom += 1;
-//            player.n_credit -= 50;
-//        }
-//	else
-//	{
-//	    printf("输入无效");
-//	}
-//    }
+    if((player.n_num_props>=10)||(player.n_credit<30))
+    {
+        printf("您无法购买道具！");
+        return;
+    }
+    else
+    {
+        printf("欢迎光临道具屋，请选择您所需要的道具:");
+        scanf("%d",&a);
+        if (a==1)
+        {
+            if(player.n_credit<50)
+            {
+                printf("您的点数不足以购买路障\n");
+                return;
+            }
+            player.n_block += 1;
+            player.n_credit -= 50;
+        }
+        else if (a==2)
+        {
+            player.n_robot += 1;
+            player.n_credit -= 30;
+        }
+        else if (a==3)
+        {
+            if(player.n_credit<50)
+            {
+                printf("您的点数不足以购买炸弹\n");
+                return;
+            }
+            player.n_boom += 1;
+            player.n_credit -= 50;
+        }
+	else {
+	    printf("输入无效");
+	}
+    }
 }
 
 
 void get_gift(player_t& player)
 {
-
+    printf("选择礼物 1：sdfkjksldkfj 2. sdjfhl");
+    // TODO scanf switch
 }
 
 
@@ -270,7 +276,7 @@ bool step_forward(map_t& map, player_t& player, uint8_t steps)
     switch (map[player.n_pos].type) {
         case VACANCY:
             if (map[player.n_pos].owner) {
-                uint8_t payment = 0; //  TODO get_estate_price(map[player.n_pos]);
+                uint8_t payment = get_estate_price(map[player.n_pos]);
                 if (player.n_money < payment) {
                     map[player.n_pos].owner->n_money += player.n_money;
                     printf("嘤嘤嘤破产辽");
@@ -292,4 +298,10 @@ bool step_forward(map_t& map, player_t& player, uint8_t steps)
             return false;
         default: return false;
     }
+}
+
+
+uint8_t get_estate_price(const map_node_t& map_node)
+{
+    return map_node.value * (map_node.estate_lvl + 1);
 }
