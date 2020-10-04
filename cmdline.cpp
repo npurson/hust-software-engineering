@@ -172,7 +172,7 @@ int do_roll() {
     if (next_player->n_god_buff > 0)    next_player->n_god_buff -= 1;
     if (next_player->n_empty_rounds > 0)    next_player->n_empty_rounds -= 1;
 
-    char last_uid = next_player->uid;
+    char last_uid = 0;
     auto players = get_player_vec();
     std::uint8_t c = 0;
     for (auto & it : *players) {
@@ -180,6 +180,7 @@ int do_roll() {
         last_uid = it.uid;
         c += 1;
     }
+    next_player = &(*(get_player_vec()))[get_player_vec()->size() - 1];
     return 0;
 }
 
