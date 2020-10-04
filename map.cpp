@@ -173,43 +173,68 @@ void sell_estate(map_t& map, player_t& player, uint8_t map_node_idx)
 }
 
 
-void apply_item(map_t& map, uint8_t item_type, uint8_t pos,player_t& player)
+void apply_item(map_t& map, player_t& player)
 {
-    if ((player.n_boom+player.n_robot+player.n_block)==0)
-    {
-        printf("您没有道具!\n");
-        return;
-    }
-    else
-    {
-        int b;
-        printf("请输入你想使用的道具：\n");
-        scanf("%d",&b);
-        switch(b)
-        {
-            int c;
-            case 1: //选择使用路障道具
-                printf("请输入你想要放置的地块：\n");
-                scanf("%d",&c);
-
-                break;
-
-            case 2: //选择使用机器娃娃道具
-                printf("请输入你想要放置的地块：\n");
-                scanf("%d",&c);
-
-                break;
-
-            case 3: //选择使用炸弹道具
-                printf("请输入你想要放置的地块：\n");
-                scanf("%d",&c);
-
-                break;
-
-            default: //输入了其他数字
-                printf("您的输入有误！\n");
+    string choice;
+    cout << "[道具] 请选择你使用的道具" << endl;
+    cout << "      1. 路障    2. 机器娃娃    3. 炸弹";
+    show_cmd();
+    
+    while (true) {
+        cin >> choice;
+        if (choice == "1") {
+            if (!player.n_block) {
+                cout << "[道具] 没有路障，无法使用道具" << endl;
+            }
+            else {
+                cout << "[路障] 输入放置路障的位置" << endl;
+                show_cmd();
+                cin >> choice;
+                if (std::stoi(choice) > 10 || std::stoi(choice) < -10 ||
+                    map[(player.n_pos + std::stoi(choice)) % MAP_SIZE].item)
+                    cout << "[路障] 无法在所选位置放置路障" << endl;
+                else {
+                    map[(player.n_pos + std::stoi(choice)) % MAP_SIZE].item = BLOCK;
+                    cout << "[路障] 路障放置成功" << endl;
+                }                
+            }
+            break;
         }
+        else if (choice == "2") {
+            if (!player.n_robot) {
+                cout << "[道具] 没有娃娃，无法使用道具" << endl;
+            }
+            else {
+                for (int i = 0; i < 10; ++i)
+                    map[player.n_pos + i].item = NONE;
+                player.n_robot -= 1;
+                cout << "[机器娃娃] 机器娃娃使用成功" << endl;
+            }
+            break;
+        }
+        else if (choice == "3") {
+            if (!player.n_block) {
+                cout << "[道具] 没有炸弹，无法使用道具" << endl;
+            }
+            else {
+                cout << "[炸弹] 阿姨，开始你的炸弹秀" << endl;
+                cout << "      输入放置炸弹的位置" << endl;
+                show_cmd();
+                cin >> choice;
+                if (std::stoi(choice) > 10 || std::stoi(choice) < -10 ||
+                    map[(player.n_pos + std::stoi(choice)) % MAP_SIZE].item)
+                    cout << "[炸弹] 无法在所选位置放置路障" << endl;
+                else {
+                    map[(player.n_pos + std::stoi(choice)) % MAP_SIZE].item = BLOCK;
+                    cout << "[炸弹] 炸弹放置成功" << endl;
+                    cout << "      阿姨，炸他，炸他" << endl;
+                }                
+            }
+            break;
+        }
+        else cout << "[好家伙] 生而手残，我很抱歉" << endl;
     }
+    return;
 }
 
 
