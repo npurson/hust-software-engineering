@@ -94,6 +94,7 @@ void buy_estate(map_t& map, player_t& player)
     show_cmd();
 
     while (true) {
+        show_cmd();
         cin >> choice;
         if (choice == "y") {
             player.n_money -= map[map_node_idx].value;
@@ -122,9 +123,9 @@ void update_estate(map_t& map, player_t& player)
     string choice;
     cout << "[升级] 升级需支付 " << map[player.n_pos].value << " 元" << endl;
     cout << "      是否需要升级？(y/n)" << endl;
-    show_cmd();
 
     while (true) {
+        show_cmd();
         cin >> choice;
         if (choice == "y") {
             player.n_money -= map[map_node_idx].value;
@@ -192,9 +193,9 @@ void buy_item(player_t& player)
     string choice;
     cout << "[道具屋] 欢迎光临道具屋，请选择你需要的道具：" << endl;
     cout << "        1. 路障    2. 机器娃娃    3. 炸弹" << endl;
-    show_cmd();
 
     while (true) {
+        show_cmd();
         cin >> choice;
         if (choice == "1") {
             if (player.n_points < 50) {
@@ -240,9 +241,9 @@ void get_gift(player_t& player)
     string choice;
     cout << "[礼品屋] 欢迎光临礼品屋，请选择一件你喜欢的礼品：" << endl;
     cout << "        1. 奖金    2. 点数卡    3. 财神" << endl;
-    show_cmd();
 
     while (true) {
+        show_cmd();
         cin >> choice;
         if (choice == "1") {
             player.n_money += 2000;
