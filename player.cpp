@@ -1,7 +1,7 @@
 #include "player.h"
 #include <map>
 static std::vector<player_t> player_vec;
-static std::uint64_t init_money;
+std::uint64_t init_money;
 
 
 std::vector<player_t>* get_player_vec() {

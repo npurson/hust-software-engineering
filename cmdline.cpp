@@ -5,19 +5,9 @@
 #include "cmdline.h"
 #include "player.h"
 #include "map.h"
+#include <iostream>
 
 extern p_player_t next_player;
-
-
-int parse_cmd(std::string cmd) {
-    if (std::regex_match(cmd, std::regex("^preset.*"))) {
-        std::string::size_type space_pos = cmd.find(' ');
-        do_preset(cmd.substr(space_pos + 1));
-        return 0;
-    }
-    return -1;
-
-}
 
 std::vector<std::string> split_cmd(std::string cmd) {
     std::vector<std::string> word_vec;
@@ -36,6 +26,38 @@ std::vector<std::string> split_cmd(std::string cmd) {
     return word_vec;
 }
 
+int parse_cmd(std::string cmd) {
+    std::vector<std::string> word_vec = split_cmd(cmd);
+    if (std::regex_match(cmd, std::regex("^preset.*"))) {
+        std::string::size_type space_pos = cmd.find(' ');
+        do_preset(cmd.substr(space_pos + 1));
+        return 0;
+    } else if (std::regex_match(cmd, std::regex("Roll"))) {
+        do_roll();
+    } else if (word_vec[0] == "dump") {
+        do_dump();
+    }
+    return -1;
+
+}
+
+int do_roll() {
+    return 0;
+}
+
+void do_dump() {
+    std::string dump_text = "preset user";
+    auto player_vec = get_player_vec();
+
+    for (const auto& player : *player_vec) {
+        dump_text += player.uid;
+    }
+}
+
+void show_cmd() {
+    std::cout << std::endl;
+    std::cout << next_player->name << ">";
+}
 
 
 int do_preset(std::string cmd) {
