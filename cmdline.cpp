@@ -63,6 +63,8 @@ int parse_cmd(std::string cmd) {
             do_bomb(next_player->n_pos);
         } else if (word_vec[0] == "Robot") {
             do_robot(next_player->n_pos);
+        } else if (word_vec[0] == "Step") {
+
         }
     }
 
@@ -100,7 +102,7 @@ void do_dump() {
         }
         std::cerr << "fund " << player.uid << " " << player.n_money << std::endl;
         std::cerr << "credit " << player.uid << " " << player.n_points << std::endl;
-        std::cerr << "userloc " << player.uid << " " << player.n_pos  << " "  << player.n_empty_rounds << std::endl;
+        std::cerr << "userloc " << player.uid << " " << static_cast<int>(player.n_pos) << " "  << static_cast<int>(player.n_empty_rounds) << std::endl;
         if (player.n_boom != 0) {
             std::cerr << "gift " << player.uid << " bomb " << static_cast<int>(player.n_boom) << std::endl;
         }
@@ -133,10 +135,16 @@ void do_dump() {
 }
 
 void show_cmd() {
-    std::cout << std::endl;
-    std::cout << next_player->name << ">";
+    if (next_player != nullptr) {
+        std::cout << next_player->name;
+    }
+    std::cout << ">";
 }
 
+int do_step(std::uint8_t step) {
+    step_forward(*get_map(), *next_player, step);
+    return 0;
+}
 
 int do_preset(std::string cmd) {
     if (cmd.back() == '\n') {
@@ -149,12 +157,13 @@ int do_preset(std::string cmd) {
         for (char uid : cmd) {
             add_player(uid);
         }
+        next_player = &player_vec->front();
     } else if(std::regex_match(cmd, std::regex("^map.*"))) {
         auto first_pos = cmd.find(' ');
         auto second_pos = cmd.find(' ', first_pos + 1);
         auto map_id = cmd.substr(first_pos + 1, second_pos - first_pos - 1);
         int n_map = atoi(map_id.c_str());
-        p_map_t map = nullptr;
+        p_map_t map;
         if (n_map == START_POS || n_map == HOSPITAL_POS || n_map == ITEM_HOUSE_POS || n_map == GIFT_HOUSE_POS || n_map == PRISON_POS || n_map == MAGIC_HOUSE_POS) {
             return -1;
         } else {

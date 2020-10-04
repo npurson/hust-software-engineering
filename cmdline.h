@@ -17,10 +17,10 @@ int do_block(std::uint8_t pos);
 int do_sell(std::uint8_t pos);
 int do_bomb(std::uint8_t pos);
 int do_robot(std::uint8_t pos);
+int do_step(std::uint8_t step);
 int do_query();
 int do_help();
 int do_quit();
-int do_step(uint8_t step);
 void show_cmd();
 
 
