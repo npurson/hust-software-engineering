@@ -1,6 +1,6 @@
 preset user AQ
-preset userloc A 10 0
-preset fund A 500
+preset userloc A 27 0
+preset fund A 1000
 step 1
-Y
+y
 dump

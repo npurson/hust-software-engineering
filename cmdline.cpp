@@ -133,6 +133,12 @@ int parse_cmd(const std::string& cmd) {
             }
             auto map_id = std::strtol(word_vec[1].c_str(), nullptr, 10);
             do_sell(*get_map(), *next_player, static_cast<int>(map_id));
+        } else if (word_vec[0] == "query") {
+            if (word_vec.size() != 1) {
+                std::cerr << "命令格式错误，query命令格式为：query" << std::endl;
+                return -1;
+            }
+            do_query(*next_player);
         } else if (word_vec[0] == "block") {
             if (word_vec.size() != 2) {
                 std::cerr << "命令格式错误，block命令格式为：block n，n指定与当前位置的相对距离，范围为[-10,10]" << std::endl;
@@ -311,7 +317,40 @@ void show_cmd() {
 }
 
 int do_step(std::uint8_t step) {
-    step_forward(*get_map(), *next_player, step);
+    if (step_forward(*get_map(), *next_player, step)){
+        for (auto & it : next_player->estate){
+            it->estate_lvl = 0;
+            it->owner = nullptr;
+        }
+        // empty broken player info
+        next_player->n_money = -1;
+        next_player->n_points = 0;
+        next_player->n_pos = 0;
+        next_player->n_empty_rounds = 0;
+        next_player->n_god_buff = 0;
+        next_player->estate.clear();
+        next_player->n_block = 0;
+        next_player->n_bomb = 0;
+        next_player->n_robot = 0;
+        next_player->b_sell_estate = 0;
+    }
+
+    // do count
+    next_player->b_sell_estate = 0;
+    if (next_player->n_god_buff > 0)    next_player->n_god_buff -= 1;
+    if (next_player->n_empty_rounds > 0)    next_player->n_empty_rounds -= 1;
+
+    // switch to next player
+    auto players = get_player_vec();
+    std::uint8_t c = 0;
+    for (auto & it : *players) {
+        if (it.uid == next_player->uid){
+            if (c + 1 > players->size() - 1)    next_player = &(*(get_player_vec()))[0];
+            else    next_player = &(*(get_player_vec()))[c + 1];
+            break;
+        }
+        c += 1;
+    }
     return 0;
 }
 
@@ -403,10 +442,15 @@ int do_query(player_t& player)
     std::cout << "点数: " << player.n_points << std::endl;
     std::cout << "固定资产: ";
     for (auto & it : player.estate) {
-        std::cout << static_cast<int>(it->id) << ' ';
+        printf("%d号房屋 ", it->id);
     }
     std::cout << std::endl;
-    std::cout << "道具: 炸弹*" << static_cast<int>(player.n_bomb) << " 路障*" << static_cast<int>(player.n_block) << " 机器娃娃*" << static_cast<int>(player.n_robot) << std::endl;
+    std::cout << "道具: 炸弹*";
+    printf("%d", player.n_bomb);
+    std::cout << " 路障*";
+    printf("%d", player.n_block);
+    std::cout <<" 机器娃娃*";
+    printf("%d\n", player.n_robot);
     return 0;
 }
 

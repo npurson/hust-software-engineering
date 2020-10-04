@@ -2,16 +2,27 @@
 import argparse
 import configparser
 import csv
+import json
+import operator
 import os
 import re
 import subprocess
-import time
+import time  # time_ns() is new in python3.7
 from subprocess import Popen
+import signal
 
 from openpyxl import Workbook
 from openpyxl.styles import PatternFill
 from tqdm import tqdm
 from tqdm.contrib.concurrent import process_map, thread_map
+
+# basic config here
+CONFIG_JSON_NAME = "config.json"
+CAPTURE_CMD = (
+    'preset', 'user', 'map', 'fund', 'credit',
+    'gift', 'bomb', 'barrier', 'userloc', 'nextuser'
+)
+# end config
 
 green = PatternFill(start_color="7FFF00",
                     end_color="7FFF00", fill_type="solid")
@@ -23,7 +34,7 @@ args.add_argument('-d', '--dir', help='testcase dir',
 args.add_argument('-w', '--workers',
                   help='work process number', default=4, type=int)
 args.add_argument('-n', '--name', help='process name',
-                  default='../richman', type=str)
+                  default='../richman/richman', type=str)
 args.add_argument('-e', '--export', help='export to file',
                   default=True, type=bool)
 args.add_argument('-f', '--exportfile', help='export file name',
@@ -31,52 +42,182 @@ args.add_argument('-f', '--exportfile', help='export file name',
 args = args.parse_args()
 basedir = args.dir
 
-all_testcases = os.listdir(basedir)
-testcases = list(
-    set((os.path.splitext(casename)[0] for casename in all_testcases if os.path.splitext(casename)[1] in ['.in', '.out'])))
-testcases.sort()
-for casename in testcases:
-    assert casename+'.in' in all_testcases and casename+'.out' in all_testcases
-
 kv_pat = re.compile(r'([a-zA-Z]+)(?:\s+(\w+))(?:\s+(\w+))?(?:\s+(\w+))?')
 
+test_list = dict()
 
-def prase_kv(lines):
+
+def trim_line(line):
+    if not line:
+        return ''
+
+    line = re.sub(r'(#|\/\/).*$', ' ', line)  # comment
+    line = re.sub(r'\s+', ' ', line.strip())  # strip and merge empty char
+    if not line:
+        return ''
+    line = line.lower()  # lowercase
+
+    if not any(line.startswith(c + ' ') for c in CAPTURE_CMD):
+        return ''  # check first word
+
+    return line
+
+
+def parse_key_value_pairs(lines):
     ret = []
     for line in lines:
+        line = trim_line(line)
         if not line:
             continue
-        if '#' in line:
-            line = line[:line.index('#')]
         mat = kv_pat.match(line)
         if mat:
-            ret.append('_'.join((e for e in mat.groups() if e)))
+            ret.append('+'.join((e for e in mat.groups() if e)))
         else:
             print('error at: ', line)
-            assert False
+            # assert False
+    # print(ret)
+    ret.sort()
     return ret
 
 
-def check(casename):
-    with open(os.path.join(basedir, casename+'.in'), 'r') as f:
-        testcase_input = f.read()
-    with open(os.path.join(basedir, casename+'.out'), 'r') as f:
+def check(case):
+    '''
+        case[0] = test name
+        case[1] = testcase path
+    '''
+    with open(os.path.join(basedir, case[1]+'.in'), 'r') as fin:
+        testcase_input = fin.read()
+        pass
+    with open(os.path.join(basedir, case[1]+'.out'), 'r') as f:
         testcase_answer = f.read()
-    proc = Popen(args.name, shell=True, stdout=subprocess.PIPE,
-                 stderr=subprocess.PIPE)
+    proc = Popen(
+        args.name, shell=True,
+        stdin=subprocess.PIPE,
+        stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+        universal_newlines=True
+    )
+
+    output = ''
     try:
-        t = time.time_ns()
-        _ , out = proc.communicate(testcase_input, timeout=5)
-        t = time.time_ns()-t
+        t = time.time()
+        _, output = proc.communicate(testcase_input + '\n', timeout=5)
+        t = time.time() - t
     except subprocess.TimeoutExpired:
-        t = time.time_ns()-t
-    out_kv = prase_kv(out.decode().splitlines())
-    ans_kv = prase_kv(testcase_answer.splitlines())
-    return (casename, not any((e not in out_kv for e in ans_kv)), t/1e6)
+        t = time.time() - t
+        # proc.terminate()
+        # os.killpg(proc.pid, signal.SIGKILL)
+
+    # print('output:', output)
+    if output:
+        out_kv = parse_key_value_pairs(output.splitlines())
+    else:
+        out_kv = list()
+    ans_kv = parse_key_value_pairs(testcase_answer.splitlines())
+    # print(ans_kv, out_kv)
+    return (
+        case[0],
+        os.path.basename(case[1]),
+        # (not any((e not in out_kv for e in ans_kv))) and
+        # (not any((e not in ans_kv for e in out_kv))),
+        operator.eq(out_kv, ans_kv),
+        t / 1e6
+    )
 
 
+def add_case(testname, casedir):
+    print('case <', testname, '>', casedir)
+    if testname not in test_list.keys():
+        test_list[testname] = list()
+    test_list[testname].append(casedir)
+    return
+
+
+def get_all_case_filename(dir):
+    return list(
+        set(
+            os.path.splitext(casename)[0]
+            for casename in os.listdir(dir)
+            if os.path.splitext(casename)[1] in ['.in', '.out']
+        )
+    )
+
+
+def run_dir(currdir, basename='', maxlevel=1000):
+    dir_list = os.listdir(currdir)
+    if CONFIG_JSON_NAME in dir_list:
+        # with json configuration file
+        with open(os.path.join(currdir, CONFIG_JSON_NAME), 'r') as conf:
+            conf = json.load(conf)
+
+        name = os.path.basename(currdir)
+        if 'name' in conf.keys():
+            name = conf['name']
+
+        if 'maxlevel' in conf.keys():
+            maxlevel = min(maxlevel, int(conf['maxlevel']))
+
+        if 'import' in conf.keys():
+            # import other dir
+            for i in conf['import']:
+                d = os.path.join(currdir, i)
+                if not os.path.isdir(d):
+                    continue  # is not a dir
+                if basename:
+                    n = '%s.%s' % (basename, name)
+                else:
+                    n = name
+                # print("import>", d, ',', n, ',', maxlevel)
+                run_dir(d, n, maxlevel)
+            pass
+
+        if 'case' in conf.keys():
+            if basename:
+                n = '%s.%s' % (basename, name)
+            else:
+                n = name
+            for item in conf['case']:
+                if int(item[1]) <= maxlevel:
+                    add_case(n, os.path.join(currdir, item[0]))
+
+        pass
+    elif maxlevel >= 0:
+        # only testcases in dir
+        c = get_all_case_filename(currdir)
+        for item in c:
+            add_case(
+                '%s.%s' % (basename, os.path.basename(currdir)),
+                os.path.join(currdir, item)
+            )
+    return
+
+
+run_dir(basedir, '')
+# print(test_list)
+
+testcases = list()
+keys = list(test_list.keys())
+keys.sort()
+for k in keys:
+    for v in test_list[k]:
+        testcases.append((k, v))
+testcases = set(testcases)
+# print(testcases)
+
+print('run', args.name)
 res = thread_map(check, testcases, max_workers=args.workers)
-res.sort(key=lambda x: x[0])
+# res.sort(key=lambda x: (x[0], x[1]))
+# print(res)
+
+test_res = dict()
+for item in res:
+    if item[0] not in test_res:
+        test_res[item[0]] = list()
+    test_res[item[0]].append(item)
+for item in test_res:
+    test_res[item].sort(key=lambda x: x[0])
+print(test_res)
+
+
 if args.export:
     if args.exportfile.endswith('xlsx'):
         wb = Workbook()
@@ -93,5 +234,18 @@ if args.export:
     elif args.exportfile.endswith('csv'):
         with open(args.exportfile, 'w') as f:
             writer = csv.writer(f)
-            writer.writerow(['testcase', 'status', 'timeuse(ms)'])
-            writer.writerows(res)
+            for test in test_res:
+                cnt = 0
+                for item in test_res[test]:
+                    if item[2]:
+                        cnt = cnt + 1
+
+                writer.writerow([
+                    'testname',
+                    test,
+                    '%d/%d' % (cnt, len(test_res[test]))
+                ])
+                writer.writerow(['testname', 'testcase', 'status', 'time(ms)'])
+                writer.writerows(test_res[test])
+                writer.writerow([])
+            pass  # with open as f:
