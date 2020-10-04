@@ -28,5 +28,5 @@ typedef struct player {
 void add_player(char uid);
 p_player_t get_player_by_uid(char uid);
 std::vector<player_t> *get_player_vec();
-
+p_player_t skip_player(p_player_t next_player);
 #endif // RICH_PLAYERS_H
