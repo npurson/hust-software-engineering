@@ -2,7 +2,7 @@
 #define RICH_PLAYERS_H
 #include <cstdint>
 #include <vector>
-
+#include "map.h"
 
 typedef enum color {
     RED,
@@ -10,6 +10,8 @@ typedef enum color {
     BLUE,
     YELLOW
 } color_t;
+
+
 
 typedef struct player {
     char uid;
@@ -26,5 +28,6 @@ typedef struct player {
     std::uint8_t n_robot;
 } player_t, *p_player_t;
 
+void add_player(char uid);
 
 #endif //RICH_PLAYERS_H

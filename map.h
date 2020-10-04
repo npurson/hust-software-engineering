@@ -10,7 +10,12 @@
 
 using std::vector;
 using std::uint8_t, std::uint16_t;
-
+#define START_POS           0
+#define HOSPITAL_POS        14
+#define PROP_HOUSE_POS      28
+#define GIFT_HOUSE_POS      35
+#define PRISON_POS          49
+#define MAGIC_HOUSE_POS     63
 
 // 地图结点类型
 enum NodeType { START, VACANCY, ITEM_HOUSE, GIFT_HOUSE, MAGIC_HOUSE, HOSPITAL, PRISON, MINE };
