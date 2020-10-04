@@ -133,6 +133,12 @@ int parse_cmd(const std::string& cmd) {
             }
             auto map_id = std::strtol(word_vec[1].c_str(), nullptr, 10);
             do_sell(*get_map(), *next_player, static_cast<int>(map_id));
+        } else if (word_vec[0] == "query") {
+            if (word_vec.size() != 1) {
+                std::cerr << "命令格式错误，query命令格式为：query" << std::endl;
+                return -1;
+            }
+            do_query(*next_player);
         } else if (word_vec[0] == "block") {
             if (word_vec.size() != 2) {
                 std::cerr << "命令格式错误，block命令格式为：block n，n指定与当前位置的相对距离，范围为[-10,10]" << std::endl;
@@ -430,9 +436,14 @@ int do_query(player_t& player)
     std::cout << "点数: " << player.n_points << std::endl;
     std::cout << "固定资产: ";
     for (auto & it : player.estate) {
-        std::cout << static_cast<int>(it->id) << ' ';
+        printf("%d号房屋 ", it->id);
     }
     std::cout << std::endl;
-    std::cout << "道具: 炸弹*" << static_cast<int>(player.n_bomb) << " 路障*" << static_cast<int>(player.n_block) << " 机器娃娃*" << static_cast<int>(player.n_robot) << std::endl;
+    std::cout << "道具: 炸弹*";
+    printf("%d", player.n_bomb);
+    std::cout << " 路障*";
+    printf("%d", player.n_block);
+    std::cout <<" 机器娃娃*";
+    printf("%d\n", player.n_robot);
     return 0;
 }
