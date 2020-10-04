@@ -85,7 +85,8 @@ void buy_estate(map_t& map, player_t& player)
 {
     uint8_t map_node_idx = player.n_pos;
     if (map[map_node_idx].type != VACANCY ||
-        map[map_node_idx].owner != nullptr)
+        map[map_node_idx].owner != nullptr ||
+        player.n_money < map[map_node_idx].value)
         return;
 
     string choice;
@@ -95,13 +96,9 @@ void buy_estate(map_t& map, player_t& player)
     while (true) {
         cin >> choice;
         if (choice == "y") {
-            if (player.n_money >= map[map_node_idx].value) {
-                player.n_money -= map[map_node_idx].value;
-                player.estate.push_back(&map[map_node_idx]);
-                map[map_node_idx].owner = &player;
-            }
-            else cout << "[升级] 资金不足，无法升级建筑" << endl;
-            break;
+            player.n_money -= map[map_node_idx].value;
+            player.estate.push_back(&map[map_node_idx]);
+            map[map_node_idx].owner = &player;
         }
         else if (choice == "n") break;
         else cout << "[好家伙] 生而手残，我很抱歉" << endl;
@@ -117,7 +114,8 @@ void update_estate(map_t& map, player_t& player)
     if (map[map_node_idx].type != VACANCY ||
         map[map_node_idx].owner == nullptr ||
         map[map_node_idx].owner->uid != player.uid ||
-        map[map_node_idx].estate_lvl == SKYSCRAPER)
+        map[map_node_idx].estate_lvl == SKYSCRAPER ||
+        player.n_money < map[map_node_idx].value)
         return;
 
     string choice;
@@ -128,31 +126,24 @@ void update_estate(map_t& map, player_t& player)
     while (true) {
         cin >> choice;
         if (choice == "y") {
-            if (map[map_node_idx].estate_lvl == SKYSCRAPER)
-                cout << "[升级] 建筑等级已满，无法升级建筑" << endl;
-            else if (player.n_money >= map[map_node_idx].value) {
-                player.n_money -= map[map_node_idx].value;
-                map[map_node_idx].estate_lvl += 1;
-                cout << "[升级] 建筑升级成功" << endl;
-            }
-            else cout << "[升级] 资金不足，无法升级建筑" << endl;
-            break;
+            player.n_money -= map[map_node_idx].value;
+            map[map_node_idx].estate_lvl += 1;
+            cout << "[升级] 建筑升级成功" << endl;
         }
         else if (choice == "n") break;
         else cout << "[好家伙] 生而手残，我很抱歉" << endl;
     }
-    return;
 }
 
 
-void sell_estate(map_t& map, player_t& player, uint8_t map_node_idx)
+void do_sell(map_t& map, player_t& player, uint8_t map_node_idx)
 {
     // basic rules
     if (player.b_sell_estate == 1 ||
         map[map_node_idx].type != VACANCY ||
         map[map_node_idx].owner == nullptr ||
         map[map_node_idx].owner->uid != player.uid) {
-        cout << "[卖房] 卖出房产失败" << endl;
+//        cout << "[卖房] 卖出房产失败" << endl;
         return;
     }
 
@@ -240,9 +231,10 @@ void apply_item(map_t& map, player_t& player)
 
 void buy_item(player_t& player)
 {
-    if (player.n_boom + player.n_robot + player.n_block >= 10)
+    if (player.n_boom + player.n_robot + player.n_block >= 10) {
         cout << "[道具] 道具栏已满，无法购买道具" << endl;
         return;
+    }
 
     string choice;
     cout << "[道具屋] 欢迎光临道具屋，请选择你需要的道具：" << endl;
