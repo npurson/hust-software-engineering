@@ -87,6 +87,12 @@ void apply_item(map_t& map, uint8_t item_type, uint8_t pos)
 }
 
 
+void buy_item(map_t& map, uint8_t item_type, uint8_t pos)
+{
+    
+}
+
+
 void roll_dice(map_t& map, player_t& player)
 {
     step_forward(map, player, rand() % 6 + 1);
