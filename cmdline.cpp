@@ -59,6 +59,9 @@ int parse_cmd(std::string cmd) {
             do_item(*get_map(), *next_player);
         } else if (word_vec[0] == "Query") {
             do_query(*next_player);
+        } else if (word_vec[0] == "Step") {
+            std::uint8_t step = atoi(word_vec[1].c_str());
+            do_step(step);
         }
     }
 
@@ -100,7 +103,7 @@ void do_dump() {
     std::cerr << dump_text << std::endl;
     for (const auto& player : *player_vec) {
         for (const auto& p_estate : player.estate) {
-            std::cerr << "map " << p_estate->id << " " << player.uid << " " << p_estate->estate_lvl << std::endl;
+            std::cerr << "map " << static_cast<int>(p_estate->id) << " " << player.uid << " " << static_cast<int>(p_estate->estate_lvl) << std::endl;
         }
         std::cerr << "fund " << player.uid << " " << player.n_money << std::endl;
         std::cerr << "credit " << player.uid << " " << player.n_points << std::endl;
@@ -122,10 +125,10 @@ void do_dump() {
     for (const auto& map_node : *map) {
         switch(map_node.item) {
             case BOMB:
-                std::cerr << "bomb " << map_node.id << std::endl;
+                std::cerr << "bomb " << static_cast<int>(map_node.id) << std::endl;
                 break;
             case BLOCK:
-                std::cerr << "barrier " << map_node.id << std::endl;
+                std::cerr << "barrier " << static_cast<int>(map_node.id) << std::endl;
                 break;
             case NONE:
             default:
@@ -153,55 +156,44 @@ int do_preset(std::string cmd) {
         cmd.pop_back();
     }
     auto word_vec = split_cmd(cmd);
-    if (std::regex_match(cmd, std::regex("^user.*"))) {
+    if (word_vec[0] == "user") {
         auto player_vec = get_player_vec();
         player_vec->clear();
-        for (char uid : cmd) {
+        for (char uid : word_vec[1]) {
             add_player(uid);
         }
         next_player = &player_vec->front();
-    } else if(std::regex_match(cmd, std::regex("^map.*"))) {
-        auto first_pos = cmd.find(' ');
-        auto second_pos = cmd.find(' ', first_pos + 1);
-        auto map_id = cmd.substr(first_pos + 1, second_pos - first_pos - 1);
-        int n_map = atoi(map_id.c_str());
+    } else if(word_vec[0] == "map") {
+        int n_map = atoi(word_vec[1].c_str());
         p_map_t map;
         if (n_map == START_POS || n_map == HOSPITAL_POS || n_map == ITEM_HOUSE_POS || n_map == GIFT_HOUSE_POS || n_map == PRISON_POS || n_map == MAGIC_HOUSE_POS) {
             return -1;
         } else {
             map = get_map();
-            char player_name = cmd[second_pos + 1];
+            char player_name = word_vec[2].front();
+            if (map->at(n_map).owner == get_player_by_uid(player_name)) {
+                return -1;
+            }
             map->at(n_map).owner = get_player_by_uid(player_name);
         }
-        auto third_pos = cmd.find(' ', second_pos + 1);
-        auto level_str = cmd.substr(third_pos + 1);
-        int level = atoi(level_str.c_str());
+        int level = atoi(word_vec[3].c_str());
         map->at(n_map).estate_lvl = level;
-    } else if (std::regex_match(cmd, std::regex("^fund.*"))) {
-        auto first_pos = cmd.find(' ');
-        char player_name = cmd[first_pos + 1];
+        map->at(n_map).owner->estate.push_back(&map->at(n_map));
+    } else if (word_vec[0] == "fund") {
+        char player_name = word_vec[1].front();
         auto player = get_player_by_uid(player_name);
-        auto second_pos = cmd.find(' ');
-        auto money_string = cmd.substr(second_pos + 1);
-        int money = atoi(money_string.c_str());
+        int money = atoi(word_vec[2].c_str());
         player->n_money = money;
-    } else if (std::regex_match(cmd, std::regex("^credit.*"))) {
-        auto first_pos = cmd.find(' ');
-        char player_name = cmd[first_pos + 1];
+    } else if (word_vec[0] == "credit") {
+        char player_name = word_vec[1].front();
         auto player = get_player_by_uid(player_name);
-        auto second_pos = cmd.find(' ');
-        auto point_string = cmd.substr(second_pos + 1);
-        int points = atoi(point_string.c_str());
+        int points = atoi(word_vec[2].c_str());
         player->n_points = points;
-    } else if (std::regex_match(cmd, std::regex("^gift.*"))) {
-        auto first_pos = cmd.find(' ');
-        char player_name = cmd[first_pos + 1];
+    } else if (word_vec[0] == "gift") {
+        char player_name = word_vec[1].front();
         auto player = get_player_by_uid(player_name);
-        auto second_pos = cmd.find(' ', first_pos + 1);
-        auto third_pos = cmd.find(' ', second_pos + 1);
-        auto prop_name = cmd.substr(second_pos + 1, third_pos - second_pos - 1);
-        auto number_str = cmd.substr(third_pos + 1);
-        int number = atoi(number_str.c_str());
+        auto prop_name = word_vec[2];
+        int number = atoi(word_vec[3].c_str());
         if (prop_name == "bomb") {
             player->n_boom = number;
         } else if (prop_name == "barrier") {
@@ -213,23 +205,26 @@ int do_preset(std::string cmd) {
         } else {
             return -1;
         }
-    } else if (std::regex_match(cmd, std::regex("^user_loc.*"))) {
-        char player_name = word_vec[1][0];
+    } else if (word_vec[0] == "userloc") {
+        char player_name = word_vec[1].front();
         int n_map_id = atoi(word_vec[2].c_str());
         int rest_days = atoi(word_vec[3].c_str());
         auto player = get_player_by_uid(player_name);
         player->n_empty_rounds = rest_days;
         player->n_pos = n_map_id;
-    } else if (std::regex_match(cmd, std::regex("^nextuser.*"))) {
-        char player_name = word_vec[1][0];
+    } else if (word_vec[0] == "nextuser") {
+        char player_name = word_vec[1].front();
         next_player = get_player_by_uid(player_name);
     } else {
-        int map_id = atoi(word_vec[1].c_str());
         auto map = get_map();
         if (word_vec[0] == "bomb") {
+            int map_id = atoi(word_vec[1].c_str());
             map->at(map_id).item = BOMB;
         } else if (word_vec[0] == "barrier") {
+            int map_id = atoi(word_vec[1].c_str());
             map->at(map_id).item = BLOCK;
+        } else {
+            std::cerr << "无效的命令" << std::endl;
         }
     }
     return 0;
