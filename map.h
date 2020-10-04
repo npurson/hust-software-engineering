@@ -25,6 +25,7 @@ enum PlayerIdx { NONE, PLAYER_1, PLAYER_2, PLAYER_3 };
 enum ItemType { BLOCK = 1, BOMB, ROBOT };
 
 typedef struct map_node {
+    uint8_t id;                 // 地块序号，用于查询角色拥有的地块
     uint8_t type;               // 地图结点类型，枚举类型为NodeType
     uint8_t estate_lvl;         // 房产等级，type==VACANCY时有效。枚举类型为EstateLevel
     uint8_t owner;              // 房产的拥有者，type==VACANCY时有效。枚举类型为PlayerIdx
@@ -50,7 +51,7 @@ void buy_estate(map_t& map, uint8_t player_idx, uint8_t map_node_idx);
 // 升级房产
 void update_estate(map_t& map, uint8_t player_idx, uint8_t map_node_idx);
 // 卖出房产
-void sell_estate(map_t& map, uint8_t player_idx, uint8_t map_node_idx);
+void sell_estate(map_t& map, player_t& player, uint8_t map_node_idx);
 // 使用道具
 void apply_item(map_t& map, uint8_t item_type, uint8_t pos);
 // 投骰子，行走过程中判定道具、地段、破产  TODO 破产处理应在主调函数中？

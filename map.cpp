@@ -1,4 +1,5 @@
 #include "map.h"
+#include "player.h"
 
 
 map_t init_map()
@@ -51,9 +52,32 @@ void update_estate(map_t& map, uint8_t player_idx, uint8_t map_node_idx)
 }
 
 
-void sell_estate(map_t& map, uint8_t player_idx, uint8_t map_node_idx)
+void sell_estate(map_t& map, player_t& player, uint8_t map_node_idx)
 {
+    if (player.b_sell_estate == 1 ||
+        map[map_node_idx].type != VACANCY ||
+        map[map_node_idx].owner != player.uid)
+    {
+        printf("卖出失败");
+        return;
+    }
 
+    player.b_sell_estate = 1;
+    player.n_money += map[map_node_idx].value;
+    for (int i = 0; i < player.estate.size(); ++i){
+        if (player.estate.id == map_node_idx){
+            player.estate.erase(i);
+            break;
+        }
+    }
+
+    map[map_node_idx].owner = NONE;
+    map[map_node_idx].estate_lvl = WASTELAND;
+    if (map_node_idx < 28)  map[map_node_idx].value = 200;
+    else if (map_node_idx < 35) map[map_node_idx].value = 500;
+    else    map[map_node_idx].value = 300;
+
+    printf("卖出成功");
 }
 
 
