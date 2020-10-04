@@ -2,9 +2,11 @@
 #include "map.h"
 #include "player.h"
 #include "cmdline.h"
+
+
+extern uint64_t init_money;
 p_player_t next_player;
 
-extern std::uint64_t init_money;
 
 int main() {
     srand(time(0));

@@ -1,12 +1,16 @@
-#include "player.h"
 #include <map>
-static std::vector<player_t> player_vec;
+#include "player.h"
+
+
+static vector<player_t> player_vec;
+
 std::uint64_t init_money;
 
 
 std::vector<player_t>* get_player_vec() {
     return &player_vec;
 }
+
 
 void add_player(char uid) {
     static std::map<char, std::string> player_names = {
@@ -44,6 +48,7 @@ void add_player(char uid) {
     next_player.n_god_buff = 0;
     player_vec.push_back(next_player);
 }
+
 
 p_player_t get_player_by_uid(char uid) {
     for (auto &player : player_vec) {

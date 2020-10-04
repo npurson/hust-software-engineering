@@ -1,7 +1,3 @@
-//
-// Created by asterwyx on 2020/10/4.
-//
-
 #ifndef RICH_CMDLINE_H
 #define RICH_CMDLINE_H
 
@@ -22,6 +18,5 @@ int do_help();
 int do_quit();
 int do_step(uint8_t step);
 void show_cmd();
-
 
 #endif //RICH_CMDLINE_H

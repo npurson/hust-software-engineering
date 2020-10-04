@@ -25,7 +25,7 @@ using std::uint16_t;
 using std::cin;
 using std::cout;
 using std::endl;
-typedef struct player player_t, *p_player_t;
+
 
 // 地图结点类型
 enum NodeType { START, VACANCY, ITEM_HOUSE, GIFT_HOUSE, MAGIC_HOUSE, HOSPITAL, PRISON, MINE };
@@ -34,8 +34,9 @@ enum EstateLevel { WASTELAND, HUT, HOUSE, SKYSCRAPER };
 // 道具类型
 enum ItemType { NONE, BLOCK, BOMB, ROBOT };
 
+typedef struct player player_t, *p_player_t;
+
 typedef struct map_node {
-    uint8_t id;                     // 地块序号，用于查询角色拥有的地块
     uint8_t type;                   // 地图结点类型，枚举类型为NodeType
     uint8_t estate_lvl;             // 房产等级，type==VACANCY时有效。枚举类型为EstateLevel
     p_player_t owner;               // 房产的拥有者，type==VACANCY时有效。枚举类型为PlayerIdx
@@ -74,5 +75,5 @@ bool roll_dice(map_t& map, player_t& player);
 bool step_forward(map_t& map, player_t& player, uint8_t steps);
 // 获取某地房产的价值，返回true则破产
 uint8_t get_estate_price(const map_node_t& map_node);
-void do_estate(map_t& map, player_t& player);
+
 #endif // RICH_MAP_H

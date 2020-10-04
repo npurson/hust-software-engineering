@@ -1,7 +1,10 @@
 #include "map.h"
 #include "player.h"
+#include "cmdline.h"
+
 
 static map_t map;
+
 
 p_map_t init_map()
 {
@@ -13,20 +16,18 @@ p_map_t init_map()
             case GIFT_HOUSE_POS: map.emplace_back(GIFT_HOUSE); break;
             case PRISON_POS: map.emplace_back(PRISON); break;
             case MAGIC_HOUSE_POS: map.emplace_back(MAGIC_HOUSE); break;
+
             case 64: map.emplace_back(MINE, 60); break;
-            case 68:
-            case 65: map.emplace_back(MINE, 80); break;
+            case 65:
+            case 68: map.emplace_back(MINE, 80); break;
             case 66: map.emplace_back(MINE, 40); break;
             case 67: map.emplace_back(MINE, 100); break;
             case 69: map.emplace_back(MINE, 20); break;
             default:
-                // 地段1
                 if (i > START_POS && i < ITEM_HOUSE_POS && i != HOSPITAL_POS)
                     map.emplace_back(VACANCY, 200);
-                // 地段2
                 else if (i > ITEM_HOUSE_POS && i < GIFT_HOUSE_POS)
                     map.emplace_back(VACANCY, 500);
-                // 地段3
                 else if (i > GIFT_HOUSE_POS && i <= MAGIC_HOUSE_POS && i != PRISON_POS)
                     map.emplace_back(VACANCY, 300);
         }
@@ -38,6 +39,7 @@ p_map_t init_map()
 p_map_t get_map() {
     return &map;
 }
+
 
 void plot_map()
 {
@@ -56,11 +58,11 @@ void plot_map()
     static const char player_color_table[4] = {'Q','A','S','J'};
     static const char item_table[4] = {'\0','#','@','R'};
 
-    char buf=0;
+    char buf = 0;
     system("echo \033[0;0H");
 
-    for(int i=0; i<29*8; i++){
-        //system("echo \033[0m");
+    for(int i = 0; i < 29 *8; i++){
+        // system("echo \033[0m");
         if(hash_table[i] == 0 && i!=0) { putchar(' '); continue; }
 
         // basic map
@@ -79,30 +81,23 @@ void plot_map()
 }
 
 
-void do_estate(map_t& map, player_t& player){
-    buy_estate(map, player);
-    update_estate(map, player);
-}
-
-
 void buy_estate(map_t& map, player_t& player)
 {
     uint8_t map_node_idx = player.n_pos;
     // basic rules
     if (map[map_node_idx].type != VACANCY ||
-        map[map_node_idx].owner != nullptr){
+        map[map_node_idx].owner != nullptr)
         return;
-    }
 
     char map_node_input[10];
     int update;
     while (true){
-        std::cout << "是否购买房产(1:购买 2:不购买)： ";
-        std::cin >> map_node_input;
+        cout << "[买房] 是否购买房产(1.购买 2.不购买)： ";
+        cin >> map_node_input;
         update = std::stoi(map_node_input);
         if (update == 1) break;
         if (update == 2) return;
-        std::cout << "输入有误";
+        cout << "输入有误";
     }
 
     // lack of money
@@ -126,38 +121,34 @@ void buy_estate(map_t& map, player_t& player)
 void update_estate(map_t& map, player_t& player)
 {
     uint8_t map_node_idx = player.n_pos;
-    // basic rules
+
     if (map[map_node_idx].type != VACANCY ||
         map[map_node_idx].owner == nullptr ||
         map[map_node_idx].owner->uid != player.uid ||
-        map[map_node_idx].estate_lvl == SKYSCRAPER){
+        map[map_node_idx].estate_lvl == SKYSCRAPER)
         return;
+
+    string choice;
+    cout << "[升级] 升级需支付 " << map[player.n_pos].value << " 元" << endl;
+    cout << "      是否需要升级？(y/n)" << endl;
+    show_cmd();
+    while (1) {
+        cin >> choice;
+        if (choice == "y") {
+            if (map[map_node_idx].estate_lvl == SKYSCRAPER)
+                cout << "[升级] 建筑等级已满，无法升级建筑" << endl;
+            else if (player.n_money >= map[map_node_idx].value) {
+                player.n_money -= map[map_node_idx].value;
+                map[map_node_idx].estate_lvl += 1;
+                cout << "[升级] 建筑升级成功" << endl;
+            }
+            else cout << "[升级] 资金不足，无法升级建筑" << endl;
+            break;
+        }
+        else if (choice == "n") break;
+        else cout << "[好家伙] 生而手残，我很抱歉" << endl;
     }
-
-    char map_node_input[10];
-    int update;
-    while (true){
-        std::cout << "是否升级房产(1:升级 2:不升级)： ";
-        std::cin >> map_node_input;
-        update = std::stoi(map_node_input);
-        if (update == 1) break;
-        if (update == 2) return;
-        std::cout << "输入有误";
-    }
-
-    // lack of money
-    if (map[map_node_idx].value > player.n_money){
-        printf("升级失败");
-        return;
-    }
-
-    // update player info
-    player.n_money -= map[map_node_idx].value;
-
-    // update estate info
-    map[map_node_idx].estate_lvl += 1;
-
-    printf("升级成功");
+    return;
 }
 
 
@@ -167,17 +158,16 @@ void sell_estate(map_t& map, player_t& player, uint8_t map_node_idx)
     if (player.b_sell_estate == 1 ||
         map[map_node_idx].type != VACANCY ||
         map[map_node_idx].owner == nullptr ||
-        map[map_node_idx].owner->uid != player.uid)
-    {
-        printf("卖出失败");
+        map[map_node_idx].owner->uid != player.uid) {
+        cout << "[卖房] 卖出房产失败" << endl;
         return;
     }
 
     // update player info
     player.b_sell_estate = 1;
     player.n_money += 2 * get_estate_price(map[map_node_idx]);
-    for (auto it = player.estate.begin(); it != player.estate.end(); ++it){
-        if ((*it)->id == map_node_idx){
+    for (auto it = player.estate.begin(); it != player.estate.end(); ++it) {
+        if (*it == &map[map_node_idx]) {
             player.estate.erase(it);
             break;
         }
@@ -186,8 +176,7 @@ void sell_estate(map_t& map, player_t& player, uint8_t map_node_idx)
     // update estate info
     map[map_node_idx].owner = nullptr;
     map[map_node_idx].estate_lvl = WASTELAND;
-
-    printf("卖出成功");
+    cout << "[卖房] 卖出房产成功" << endl;
 }
 
 
@@ -196,51 +185,57 @@ void apply_item(map_t& map, uint8_t item_type, uint8_t pos)
 
 }
 
+
 void buy_item(player_t& player)
 {
-
-    if(((player.n_boom+player.n_robot+player.n_block)>=10)||(player.n_points<30))
-    {
-        printf("您无法购买道具！");
+    if (player.n_boom + player.n_robot + player.n_block >= 10)
+        cout << "[道具] 道具栏已满，无法购买道具" << endl;
         return;
-    }
-    else
-        {
-            int a;
-            printf("欢迎光临道具屋，请选择您所需要的道具:");
-            scanf("%d",&a);
-            if (a==1)
-            {
-                if(player.n_points<50)
-                {
-                    printf("您的点数不足以购买路障\n");
-                    return;
-                }
-                player.n_block += 1;
-                player.n_points -= 50;
-            }
-            else if (a==2)
-            {
-                player.n_robot += 1;
-                player.n_points -= 30;
-            }
-            else if (a==3)
-            {
-                if(player.n_points<50)
-                {
-                    printf("您的点数不足以购买炸弹\n");
-                    return;
-                }
-                player.n_boom += 1;
-                player.n_points -= 50;
-            }
-            else
-            {
-                printf("输入有误");
-            }
-        }
-}
 
+    string choice;
+    cout << "[道具屋] 欢迎光临道具屋，请选择你需要的道具：" << endl;
+    cout << "        1. 路障    2. 机器娃娃    3. 炸弹" << endl;
+    show_cmd();
+
+    while (1) {
+        cin >> choice;
+        if (choice == "1") {
+            if (player.n_points < 50) {
+                cout << "[道具] 点数不足，无法购买道具" << endl;
+            }
+            else {
+                player.n_points -= 50;
+                player.n_block += 1;
+                cout << "[路障] 购买路障，失去点数 50 点" << endl;
+            }
+            break;
+        }
+        else if (choice == "2") {
+            if (player.n_points < 30) {
+                cout << "[道具] 点数不足，无法购买道具" << endl;
+            }
+            else {
+                player.n_points -= 30;
+                player.n_robot += 1;
+                cout << "[机器娃娃] 购买机器娃娃，失去点数 30 点" << endl;
+            }
+            break;
+        }
+        else if (choice == "3") {
+            if (player.n_points < 50) {
+                cout << "[道具] 点数不足，无法购买道具" << endl;
+            }
+            else {
+                player.n_points -= 50;
+                player.n_boom += 1;
+                cout << "[炸弹] 购买炸弹，失去点数 50 点" << endl;
+            }
+            break;
+        }
+        else cout << "[好家伙] 生而手残，我很抱歉" << endl;
+    }
+    return;
+}
 
 
 void get_gift(player_t& player)
@@ -248,7 +243,7 @@ void get_gift(player_t& player)
     uint8_t choice;
     cout << "[礼品屋] 欢迎光临礼品屋，请选择一件你喜欢的礼品：" << endl;
     cout << "        1. 奖金    2. 点数卡    3. 财神" << endl;
-    // TODO 调用提示符显示接口
+    show_cmd();
     cin >> choice;
 
     switch (choice) {
@@ -294,14 +289,21 @@ bool step_forward(map_t& map, player_t& player, uint8_t steps)
             cout << "[炸弹] 你炸了！移动至医院，轮空三回合" << endl;
         }
     }
+
     // payment judge
     map[player.n_pos].players.push_back(&player);
     switch (map[player.n_pos].type) {
         case VACANCY:
-            if (map[player.n_pos].owner && !map[player.n_pos].owner->n_empty_rounds) {
-                uint8_t payment = get_estate_price(map[player.n_pos]);
+            // 租金
+            if (map[player.n_pos].owner &&
+                map[player.n_pos].owner != &player &&
+                !map[player.n_pos].owner->n_empty_rounds
+                ) {
+                uint8_t payment = get_estate_price(map[player.n_pos]) / 2;
                 cout << "[租金] 需支付过路费 " << payment << " 元" << endl;
-                if (player.n_money < payment) {
+                if (player.n_god_buff)
+                    cout << "[财神] 财神附身，无需付钱" << endl;
+                else if (player.n_money < payment) {
                     map[player.n_pos].owner->n_money += player.n_money;
                     cout << "[破产] 嘤嘤嘤破产辽，游戏结束" << endl;
                     return true;
@@ -309,16 +311,24 @@ bool step_forward(map_t& map, player_t& player, uint8_t steps)
                 map[player.n_pos].owner->n_money += payment;
                 player.n_money -= payment;
             }
+            // 升级
+            else if (map[player.n_pos].owner &&
+                     map[player.n_pos].owner != &player)
+                update_estate(map, player);
+            // 买房
+            else if (!map[player.n_pos].owner)
+                buy_estate(map, player);
             return false;
+
         case ITEM_HOUSE: buy_item(player); return false;
         case GIFT_HOUSE: get_gift(player); return false;
         case MINE:
             player.n_points += map[player.n_pos].value;
-            cout << "[矿地] 家里有矿，获得 " << map[player.n_pos].value << " 点数" << endl;
+            cout << "[矿地] 获得点数 " << map[player.n_pos].value << " 点" << endl;
             return false;
         case PRISON:
             player.n_empty_rounds = 2;
-            cout << "[入狱] 打工是不可能打工的，这辈子都不可能打工的" << endl;
+            cout << "[监狱] 打工是不可能打工的，这辈子都不可能打工的" << endl;
             return false;
         default: return false;
     }
