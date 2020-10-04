@@ -4,12 +4,9 @@
 #include <vector>
 
 
-typedef enum color {
-    RED,
-    GREEN,
-    BLUE,
-    YELLOW
-} color_t;
+enum Color { RED, GREEN, BLUE, YELLOW };
+// 玩家索引
+enum PlayerIdx { NONE, PQ, PA, PS, PJ };
 
 typedef struct player {
     char uid;

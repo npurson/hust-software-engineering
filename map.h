@@ -19,10 +19,12 @@ using std::uint16_t;
 enum NodeType { START, VACANCY, ITEM_HOUSE, GIFT_HOUSE, MAGIC_HOUSE, HOSPITAL, PRISON, MINE };
 // 房产等级
 enum EstateLevel { WASTELAND, HUT, HOUSE, SKYSCRAPER };
-// 玩家索引
-enum PlayerIdx { NONE, PLAYER_1, PLAYER_2, PLAYER_3 };
 // 道具类型
 enum ItemType { BLOCK = 1, BOMB, ROBOT };
+
+const uint8_t kMapSize = 70;
+const uint8_t kStartPos = 0, kHospitalPos = 14,  kItemHousePos = 28, \
+              kGiftHousePos = 35, kPrisonPos = 49, kMagicHousePos = 63;
 
 typedef struct map_node {
     uint8_t type;               // 地图结点类型，枚举类型为NodeType
@@ -53,7 +55,9 @@ void update_estate(map_t& map, uint8_t player_idx, uint8_t map_node_idx);
 void sell_estate(map_t& map, uint8_t player_idx, uint8_t map_node_idx);
 // 使用道具
 void apply_item(map_t& map, uint8_t item_type, uint8_t pos);
-// 投骰子，行走过程中判定道具、地段、破产  TODO 破产处理应在主调函数中？
+// 投骰子，并且调用step_forward
 void roll_dice(map_t& map, player_t& player);
+// 向前行进指定步数
+void step_forward(player_t& player, uint8_t steps);
 
 #endif // RICH_MAP_H
