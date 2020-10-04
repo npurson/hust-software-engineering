@@ -25,7 +25,7 @@ int main() {
                 parse_cmd(command);
             }
         }
-        plot_map();
+//        plot_map();
     }
     return 0;
 }

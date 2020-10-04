@@ -63,8 +63,8 @@ p_player_t get_player_by_uid(char uid) {
 p_player_t skip_player(p_player_t next_player){
     if (next_player->n_money >= 0 && next_player->n_empty_rounds == 0) return next_player;
     else{
-        char last_uid = next_player->uid;
         auto players = get_player_vec();
+        char last_uid = players->end()->uid;
         for (auto & it : *players) {
             if (last_uid == it.uid) return &it;
             last_uid = it.uid;

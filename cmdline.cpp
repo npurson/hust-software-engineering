@@ -7,7 +7,56 @@ extern p_player_t next_player;
 
 
 void start_game() {
-    std::cout << "请选择参与的玩家数量(2-4人): ";
+    std::string inputs;
+    std::uint8_t num_players;
+
+    while (true){
+        std::cout << "请选择参与的玩家数量(2-4人): ";
+        std::cin >> inputs;
+        std::cin.clear();
+        std::cin.sync();
+        num_players = std::stoi(inputs);
+        if (num_players >= 2 and num_players <= 4)   break;
+        std::cout << "输入范围有误";
+    }
+
+    std::uint8_t reset_flag = 0;
+    while (true){
+        reset_flag = 0;
+        std::cout << "请按顺序输入" ;
+        printf("%d", num_players);
+        std::cout<< "位角色: Q-钱夫人 A-阿土伯 S-孙小美 J-金贝贝" << std::endl;
+        std::cin >> inputs;
+        if (inputs.length() != num_players){
+            std::cout << "输入角色个数有误"<< std::endl;
+            continue;
+        }
+        for (std::uint64_t i = 0; i < inputs.length(); i++) {
+            if (inputs[i] != 'Q' && inputs[i] != 'A' && inputs[i] != 'S' && inputs[i] != 'J') {
+                reset_flag = 1;
+                break;
+            }
+            for (std::uint64_t j = i + 1; j < inputs.length(); j++) {
+                if (inputs[i] == inputs[j]) {
+                    reset_flag = 1;
+                    break;
+                }
+            }
+        }
+        if (reset_flag){
+            std::cout << "输入角色名有误" << std::endl;
+            continue;
+        }
+
+        auto tmp = get_player_vec();
+        tmp->clear();
+        
+        for (char input : inputs) {
+            add_player(input);
+        }
+        next_player = &((*tmp)[0]);
+        break;
+    }
 }
 
 std::vector<std::string> split_cmd(std::string cmd) {
@@ -180,15 +229,14 @@ int do_roll() {
     if (next_player->n_empty_rounds > 0)    next_player->n_empty_rounds -= 1;
 
     // switch to next player
-    char last_uid = 0;
     auto players = get_player_vec();
+    char last_uid = players->end()->uid;
     std::uint8_t c = 0;
     for (auto & it : *players) {
         if (last_uid == it.uid) next_player = &(*(get_player_vec()))[c];
         last_uid = it.uid;
         c += 1;
     }
-    next_player = &(*(get_player_vec()))[get_player_vec()->size() - 1];
     return 0;
 }
 
