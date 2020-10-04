@@ -1,0 +1,29 @@
+preset user AQS
+preset map 2 A 0
+preset map 4 A 1
+preset map 6 S 0
+preset fund A 20480
+preset fund Q 50000
+preset fund S 800
+preset credit A 0
+preset credit Q 20
+preset credit S 190
+preset gift S god 4
+
+preset userloc A 15 0
+preset userloc Q 32 0
+
+
+preset nextuser Q     # next interactive player is Q
+
+
+step 1 # Q
+N      # Q
+step 2 # S 不用交租金
+step 1 # A
+N
+step 1 # Q
+N
+step 2 # S 不用交租金
+
+dump
