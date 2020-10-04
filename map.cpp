@@ -384,7 +384,7 @@ bool step_forward(map_t& map, player_t& player, uint8_t steps)
 }
 
 
-uint8_t get_estate_price(const map_node_t& map_node)
+int get_estate_price(const map_node_t& map_node)
 {
-    return map_node.value * (map_node.estate_lvl + 1);
+    return static_cast<int>(map_node.value) * (map_node.estate_lvl + 1);
 }
