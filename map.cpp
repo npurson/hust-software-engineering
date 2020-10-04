@@ -233,8 +233,7 @@ void buy_item(player_t& player)
 //            player.n_boom += 1;
 //            player.n_credit -= 50;
 //        }
-//	else
-//	{
+//	else {
 //	    printf("输入无效");
 //	}
 //    }
@@ -243,7 +242,8 @@ void buy_item(player_t& player)
 
 void get_gift(player_t& player)
 {
-
+    printf("选择礼物 1：sdfkjksldkfj 2. sdjfhl");
+    // TODO scanf switch
 }
 
 
@@ -274,7 +274,7 @@ bool step_forward(map_t& map, player_t& player, uint8_t steps)
     switch (map[player.n_pos].type) {
         case VACANCY:
             if (map[player.n_pos].owner) {
-                uint8_t payment = 0; //  TODO get_estate_price(map[player.n_pos]);
+                uint8_t payment = get_estate_price(map[player.n_pos]);
                 if (player.n_money < payment) {
                     map[player.n_pos].owner->n_money += player.n_money;
                     printf("嘤嘤嘤破产辽");
@@ -296,4 +296,10 @@ bool step_forward(map_t& map, player_t& player, uint8_t steps)
             return false;
         default: return false;
     }
+}
+
+
+uint8_t get_estate_price(const map_node_t& map_node)
+{
+    return map_node.value * (map_node.estate_lvl + 1);
 }
