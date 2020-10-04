@@ -121,7 +121,7 @@ void buy_estate(map_t& map, player_t& player)
         return;
 
     string choice;
-    cout << "[买房] 是否购买房产？(y/n)" << endl;
+    cout << "[买房] 是否购买房产？(请输入y/n)" << endl;
 
     while (true) {
         show_cmd();
@@ -135,9 +135,8 @@ void buy_estate(map_t& map, player_t& player)
             break;
         }
         else if (choice == "n") break;
-        else cout << "[好家伙] 生而手残，我很抱歉" << endl;
+        else cout << "选择无效，请输入y或者n" << endl;
     }
-    return;
 }
 
 

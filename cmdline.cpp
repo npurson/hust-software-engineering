@@ -2,8 +2,6 @@
 #include <cstdlib>
 #include <cctype>
 #include "cmdline.h"
-#include "player.h"
-#include "map.h"
 
 extern p_player_t next_player;
 
@@ -52,13 +50,13 @@ int parse_cmd(const std::string& cmd) {
             return 0;
         } else if (word_vec[0] == "start") {
             if (word_vec.size() != 1) {
-                std::cerr << "无效的命令" << std::endl;
+                std::cerr << "命令格式错误，start命令格式为：start" << std::endl;
                 return -1;
             }
             start_game();
             start = true;
         } else {
-            std::cerr << "无效的命令" << std::endl;
+            std::cerr << "请输入start开始游戏" << std::endl;
         }
     } else {
         if (word_vec[0] == "preset") {
@@ -67,54 +65,53 @@ int parse_cmd(const std::string& cmd) {
             return 0;
         } else if (word_vec[0] == "roll") {
             if (word_vec.size() != 1) {
-                std::cerr << "无效的命令" << std::endl;
+                std::cerr << "命令格式错误，roll命令格式为：roll" << std::endl;
                 return -1;
             }
             do_roll();
         } else if (word_vec[0] == "dump") {
             if (word_vec.size() != 1) {
-                std::cerr << "无效的命令" << std::endl;
+                std::cerr << "命令格式错误，dump命令格式为：dump" << std::endl;
                 return -1;
             }
             do_dump();
         } else if (word_vec[0] == "sell") {
             if (word_vec.size() != 2) {
-                std::cerr << "无效的命令" << std::endl;
+                std::cerr << "命令格式错误，sell命令格式为：sell n，n指定玩家房产的地块编号" << std::endl;
                 return -1;
             }
-            int map_id = atoi(word_vec[1].c_str());
-            do_sell(*get_map(), *next_player, map_id);
+            auto map_id = std::strtol(word_vec[1].c_str(), nullptr, 10);
+            do_sell(*get_map(), *next_player, static_cast<int>(map_id));
         } else if (word_vec[0] == "block") {
             if (word_vec.size() != 2) {
-                std::cerr << "无效的命令" << std::endl;
+                std::cerr << "命令格式错误，block命令格式为：block n，n指定与当前位置的相对距离，范围为[-10,10]" << std::endl;
                 return -1;
             }
-            int block_step = atoi(word_vec[1].c_str());
-            do_block(block_step, next_player);
+            auto block_step = std::strtol(word_vec[1].c_str(), nullptr, 10);
+            do_block(static_cast<uint8_t>(block_step), next_player);
         } else if (word_vec[0] == "bomb") {
             if (word_vec.size() != 2) {
-                std::cerr << "无效的命令" << std::endl;
+                std::cerr << "命令格式错误，bomb命令格式为：bomb n，n指定与当前位置的相对距离，范围为[-10,10]" << std::endl;
                 return -1;
             }
-            int bomb_step = atoi(word_vec[1].c_str());
-            do_bomb(bomb_step, next_player);
+            auto bomb_step = std::strtol(word_vec[1].c_str(), nullptr, 10);
+            do_bomb(static_cast<uint8_t>(bomb_step), next_player);
         } else if (word_vec[0] == "robot") {
             if (word_vec.size() != 1) {
-                std::cerr << "无效的命令" << std::endl;
+                std::cerr << "命令格式错误，robot命令格式为：robot" << std::endl;
                 return -1;
             }
-            int robot_step = atoi(word_vec[1].c_str());
-            do_robot(robot_step, next_player);
+            auto robot_step = std::strtol(word_vec[1].c_str(), nullptr, 10);
+            do_robot(static_cast<uint8_t>(robot_step), next_player);
         } else if (word_vec[0] == "step") {
             if (word_vec.size() != 2) {
-                std::cerr << "无效的命令" << std::endl;
+                std::cerr << "命令格式错误，step命令格式为：step n，n为指定的步数" << std::endl;
                 return -1;
             }
-            std::uint8_t step = atoi(word_vec[1].c_str());
-            do_step(step);
+            auto step = std::strtol(word_vec[1].c_str(), nullptr, 10);
+            do_step(static_cast<uint8_t>(step));
         }
     }
-
     return -1;
 }
 
