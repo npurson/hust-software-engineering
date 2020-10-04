@@ -8,7 +8,8 @@ p_player_t next_player;
 int main() {
     srand(time(0));
 
-    map_t map = init_map();
+    p_map_t map = init_map();
+    plot_map();
 
     return 0;
 }

@@ -51,7 +51,7 @@ typedef vector<map_node_t> map_t, * p_map_t;
 
 
 // 初始化地图
-map_t init_map();
+p_map_t init_map();
 // 读取地图
 p_map_t get_map();
 // 绘制地图

@@ -3,9 +3,8 @@
 
 static map_t map;
 
-map_t init_map()
+p_map_t init_map()
 {
-    map_t map;
     for (int i = 0; i < MAP_SIZE; ++i) {
         switch (i) {
             case START_POS: map.emplace_back(START); break;
@@ -31,7 +30,7 @@ map_t init_map()
                     map.emplace_back(VACANCY, 300);
         }
     }
-    return map;
+    return &map;
 }
 
 
@@ -39,7 +38,7 @@ p_map_t get_map() {
     return &map;
 }
 
-void plot_map(map_t& map)
+void plot_map()
 {
 	static const char hash_table[29*8]={
         0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28,
