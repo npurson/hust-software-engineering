@@ -198,7 +198,6 @@ void buy_item(player_t& player)
     if((player.n_num_props>=10)||(player.n_credit<30))
     {
         printf("您无法购买道具！");
-        //退出函数
         return;
     }
     else
