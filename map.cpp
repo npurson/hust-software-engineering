@@ -1,6 +1,7 @@
 #include "map.h"
 #include "player.h"
 
+static map_t map;
 
 map_t init_map()
 {
@@ -33,6 +34,10 @@ map_t init_map()
     return map;
 }
 
+
+p_map_t get_map() {
+    return &map;
+}
 
 void plot_map(map_t& map)
 {

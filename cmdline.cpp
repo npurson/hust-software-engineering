@@ -121,5 +121,6 @@ int do_preset(std::string cmd) {
             map->at(map_id).item = BLOCK;
         }
     }
+    return 0;
 }
 
