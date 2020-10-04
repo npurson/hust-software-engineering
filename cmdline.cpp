@@ -167,6 +167,12 @@ int parse_cmd(const std::string& cmd) {
                 return -1;
             }
             do_query(*next_player);
+        } else if (word_vec[0] == "help") {
+            if (word_vec.size() != 1) {
+                std::cerr << "命令格式错误，query命令格式为：query" << std::endl;
+                return -1;
+            }
+            do_help();
         }
     }
     return -1;
@@ -401,5 +407,20 @@ int do_query(player_t& player)
     }
     std::cout << std::endl;
     std::cout << "道具: 炸弹*" << static_cast<int>(player.n_bomb) << " 路障*" << static_cast<int>(player.n_block) << " 机器娃娃*" << static_cast<int>(player.n_robot) << std::endl;
+    return 0;
+}
+
+int do_help() {
+    std::string help_str = "帮助信息\n";
+    help_str.append("start    —— 开始游戏\n");
+    help_str.append("roll     —— 掷随机骰子\n");
+    help_str.append("sell n   —— 卖房子，n指示要卖的房子的地块索引\n");
+    help_str.append("block n  —— 放置路障，n指示路障与使用玩家当前位置的相对距离\n");
+    help_str.append("bomb n   —— 放置炸弹，n表示炸弹与使用玩家当前位置的相对距离\n");
+    help_str.append("robot    —— 使用机器娃娃道具\n");
+    help_str.append("query    —— 查询当前玩家所有资产信息\n");
+    help_str.append("quit     —— 退出游戏\n");
+    help_str.append("help     —— 显示此帮助");
+    std::cout << help_str << std::endl;
     return 0;
 }
