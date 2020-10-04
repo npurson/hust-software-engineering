@@ -55,7 +55,7 @@ int do_preset(std::string cmd) {
         auto map_id = cmd.substr(first_pos + 1, second_pos - first_pos - 1);
         int n_map = atoi(map_id.c_str());
         p_map_t map = nullptr;
-        if (n_map == START_POS || n_map == HOSPITAL_POS || n_map == PROP_HOUSE_POS || n_map == GIFT_HOUSE_POS || n_map == PRISON_POS || n_map == MAGIC_HOUSE_POS) {
+        if (n_map == START_POS || n_map == HOSPITAL_POS || n_map == ITEM_HOUSE_POS || n_map == GIFT_HOUSE_POS || n_map == PRISON_POS || n_map == MAGIC_HOUSE_POS) {
             return -1;
         } else {
             map = get_map();

@@ -1,17 +1,13 @@
 #ifndef RICH_PLAYERS_H
 #define RICH_PLAYERS_H
+
 #include <cstdint>
 #include <vector>
+
 #include "map.h"
 
-typedef enum color {
-    RED,
-    GREEN,
-    BLUE,
-    YELLOW
-} color_t;
 
-
+enum color_t { RED, GREEN, BLUE, YELLOW };
 
 typedef struct player {
     char uid;
@@ -26,11 +22,11 @@ typedef struct player {
     std::uint8_t n_block;
     std::uint8_t n_boom;
     std::uint8_t n_robot;
-    std::uint8_t b_sell_estate; //TODO: set 0 in the beginning of every round
+    std::uint8_t b_sell_estate; // TODO set 0 in the beginning of every round
 } player_t, *p_player_t;
 
 void add_player(char uid);
 p_player_t get_player_by_uid(char uid);
 std::vector<player_t> *get_player_vec();
 
-#endif //RICH_PLAYERS_H
+#endif // RICH_PLAYERS_H
