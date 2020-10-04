@@ -68,5 +68,7 @@ void apply_item(map_t& map, uint8_t item_type, uint8_t pos);
 void roll_dice(map_t& map, player_t& player);
 // 向前行进指定步数
 void step_forward(map_t& map, player_t& player, uint8_t steps);
+//购买道具
+void buy_item(map_t& map, uint8_t item_type, uint8_t pos);
 
 #endif // RICH_MAP_H
