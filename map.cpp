@@ -316,7 +316,7 @@ bool roll_dice(map_t& map, player_t& player)
 
 bool step_forward(map_t& map, player_t& player, uint8_t steps)
 {
-    cout << "向前行进 " << steps << " 步" << endl;
+    cout << "向前行进 " << (int)steps << " 步" << endl;
     for (auto it = map[player.n_pos].players.begin();
          it != map[player.n_pos].players.end(); ++it) {
         if (*it == &player) {
@@ -363,7 +363,7 @@ bool step_forward(map_t& map, player_t& player, uint8_t steps)
             }
             // 升级
             else if (map[player.n_pos].owner &&
-                     map[player.n_pos].owner != &player)
+                     map[player.n_pos].owner == &player)
                 update_estate(map, player);
             // 买房
             else if (!map[player.n_pos].owner)
