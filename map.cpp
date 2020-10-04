@@ -14,10 +14,11 @@ p_map_t init_map()
             case PRISON_POS: map.emplace_back(PRISON); break;
             case MAGIC_HOUSE_POS: map.emplace_back(MAGIC_HOUSE); break;
             case 64: map.emplace_back(MINE, 60); break;
+            case 68:
             case 65: map.emplace_back(MINE, 80); break;
             case 66: map.emplace_back(MINE, 40); break;
             case 67: map.emplace_back(MINE, 100); break;
-            case 68: map.emplace_back(MINE, 20); break;
+            case 69: map.emplace_back(MINE, 20); break;
             default:
                 // 地段1
                 if (i > START_POS && i < ITEM_HOUSE_POS && i != HOSPITAL_POS)
@@ -57,9 +58,10 @@ void plot_map()
 
     char buf=0;
     system("echo \033[0;0H");
+
     for(int i=0; i<29*8; i++){
-        system("echo \033[0m");
-        if(hash_table[i] == 0) { putchar(' '); continue; }
+        //system("echo \033[0m");
+        if(hash_table[i] == 0 && i!=0) { putchar(' '); continue; }
 
         // basic map
         buf = type_table[ map[hash_table[i]].type ];
@@ -72,7 +74,7 @@ void plot_map()
             buf = item_table[ map[hash_table[i]].item ];
 
         putchar(buf);
-        if(i % 28 == 28) putchar('\n');
+        if((i % 29) == 28) putchar('\n');
     }
 }
 
