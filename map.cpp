@@ -3,9 +3,9 @@
 
 static map_t map;
 
-map_t init_map()
+p_map_t init_map()
 {
-    map_t map;
+    static map_t map;
     for (int i = 0; i < MAP_SIZE; ++i) {
         switch (i) {
             case START_POS: map.emplace_back(START); break;
@@ -31,13 +31,14 @@ map_t init_map()
                     map.emplace_back(VACANCY, 300);
         }
     }
-    return map;
+    return &map;
 }
 
 
 p_map_t get_map() {
     return &map;
 }
+
 
 void plot_map(map_t& map)
 {
@@ -243,7 +244,7 @@ void buy_item(player_t& player)
 
 void get_gift(player_t& player)
 {
-    printf("选择礼物 1：sdfkjksldkfj 2. sdjfhl")
+    printf("选择礼物 1：sdfkjksldkfj 2. sdjfhl");
     // TODO scanf switch
 }
 
