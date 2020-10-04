@@ -40,6 +40,9 @@ void tolower(std::string &str) {
 int parse_cmd(const std::string& cmd) {
     static bool start = false;
     std::vector<std::string> word_vec = split_cmd(cmd);
+    if (cmd.empty()) {
+        return -1;
+    }
     tolower(word_vec[0]);
     if (!start) {
         if (word_vec[0] == "preset") {
@@ -157,6 +160,11 @@ void do_block(std::uint8_t step, p_player_t player) {
 
 int do_roll() {
     if (roll_dice(*get_map(), *next_player)){
+        for (auto & it : next_player->estate){
+            it->estate_lvl = 0;
+            it->owner = nullptr;
+        }
+        // empty broken player info
         next_player->n_money = -1;
         next_player->n_points = 0;
         next_player->n_pos = 0;
@@ -168,10 +176,13 @@ int do_roll() {
         next_player->n_robot = 0;
         next_player->b_sell_estate = 0;
     }
+
+    // do count
     next_player->b_sell_estate = 0;
     if (next_player->n_god_buff > 0)    next_player->n_god_buff -= 1;
     if (next_player->n_empty_rounds > 0)    next_player->n_empty_rounds -= 1;
 
+    // switch to next player
     char last_uid = 0;
     auto players = get_player_vec();
     std::uint8_t c = 0;
