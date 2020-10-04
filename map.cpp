@@ -167,7 +167,7 @@ void sell_estate(map_t& map, player_t& player, uint8_t map_node_idx)
 
     // update player info
     player.b_sell_estate = 1;
-    player.n_money += 2 * get_estate_price(map);
+    player.n_money += 2 * get_estate_price(map[map_node_idx]);
     for (auto it = player.estate.begin(); it != player.estate.end(); ++it){
         if ((*it)->id == map_node_idx){
             player.estate.erase(it);
