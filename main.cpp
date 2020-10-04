@@ -1,6 +1,5 @@
 #include <iostream>
 #include "map.h"
-#include "player.h"
 #include "cmdline.h"
 
 
@@ -10,7 +9,7 @@ p_player_t next_player;
 
 int main() {
     srand(time(0));
-    p_map_t map = init_map();
+    init_map();
     // plot_map();
     string command;
     init_money = 10000;
@@ -26,7 +25,7 @@ int main() {
                 parse_cmd(command);
             }
         }
-        plot_map();
+//        plot_map();
     }
     return 0;
 }

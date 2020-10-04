@@ -86,7 +86,7 @@ void plot_map()
         //player
         if(map[hash_table[i]].players.empty() == false){
             buf=map[hash_table[i]].players.back()->uid;
-            switch(map[hash_table[i]].players.back()->e_color){
+            switch (map[hash_table[i]].players.back()->e_color) {
                 case RED:
                     SetConsoleTextAttribute(h_out, FOREGROUND_RED|FOREGROUND_INTENSITY);
                     break;
@@ -121,12 +121,14 @@ void buy_estate(map_t& map, player_t& player)
         return;
 
     string choice;
-    cout << "[买房] 是否购买房产？(y/n)" << endl;
-    show_cmd();
+    cout << "[买房] 是否购买房产？(请输入y/n)" << endl;
 
     while (true) {
         show_cmd();
         cin >> choice;
+        cin.clear();
+        cin.sync();
+        tolower(choice);
         if (choice == "y") {
             player.n_money -= map[map_node_idx].value;
             player.estate.push_back(&map[map_node_idx]);
@@ -134,9 +136,8 @@ void buy_estate(map_t& map, player_t& player)
             break;
         }
         else if (choice == "n") break;
-        else cout << "[好家伙] 生而手残，我很抱歉" << endl;
+        else cout << "[买房] 选择无效，请重新输入" << endl;
     }
-    return;
 }
 
 
@@ -158,13 +159,16 @@ void update_estate(map_t& map, player_t& player)
     while (true) {
         show_cmd();
         cin >> choice;
+        cin.clear();
+        cin.sync();
+        tolower(choice);
         if (choice == "y") {
             player.n_money -= map[map_node_idx].value;
             map[map_node_idx].estate_lvl += 1;
             cout << "[升级] 建筑升级成功" << endl;
         }
         else if (choice == "n") break;
-        else cout << "[好家伙] 生而手残，我很抱歉" << endl;
+        else cout << "[升级] 选择无效，请重新输入" << endl;
     }
 }
 
@@ -216,7 +220,7 @@ void apply_item(map_t& map, player_t& player, uint8_t item, uint8_t pos=0)
 
 void buy_item(player_t& player)
 {
-    if (player.n_boom + player.n_robot + player.n_block >= 10) {
+    if (player.n_bomb + player.n_robot + player.n_block >= 10) {
         cout << "[道具] 道具栏已满，无法购买道具" << endl;
         return;
     }
@@ -228,6 +232,9 @@ void buy_item(player_t& player)
     while (true) {
         show_cmd();
         cin >> choice;
+        cin.clear();
+        cin.sync();
+        tolower(choice);
         if (choice == "1") {
             if (player.n_points < 50) {
                 cout << "[道具] 点数不足，无法购买道具" << endl;
@@ -256,12 +263,12 @@ void buy_item(player_t& player)
             }
             else {
                 player.n_points -= 50;
-                player.n_boom += 1;
+                player.n_bomb += 1;
                 cout << "[炸弹] 购买炸弹，失去点数 50 点" << endl;
             }
             break;
         }
-        else cout << "[好家伙] 生而手残，我很抱歉" << endl;
+        else cout << "[道具屋] 选择无效，请重新输入。输入q退出" << endl;
     }
     return;
 }
@@ -276,6 +283,9 @@ void get_gift(player_t& player)
     while (true) {
         show_cmd();
         cin >> choice;
+        cin.clear();
+        cin.sync();
+        tolower(choice);
         if (choice == "1") {
             player.n_money += 2000;
             cout << "[奖金] 获得奖金 2000 元" << endl;
@@ -291,7 +301,8 @@ void get_gift(player_t& player)
             cout << "[财神] 获得财神附身 5 回合" << endl;
             break;
         }
-        else cout << "[好家伙] 生而手残，我很抱歉" << endl;
+        else if (choice == "q") break;
+        else cout << "[礼品屋] 选择无效，请重新输入。输入q退出" << endl;
     }
     return;
 }
@@ -305,6 +316,14 @@ bool roll_dice(map_t& map, player_t& player)
 
 bool step_forward(map_t& map, player_t& player, uint8_t steps)
 {
+    cout << "向前行进 " << steps << " 步" << endl;
+    for (auto it = map[player.n_pos].players.begin();
+         it != map[player.n_pos].players.end(); ++it) {
+        if (*it == &player) {
+            map[player.n_pos].players.erase(it);
+            break;
+        }
+    }
     while (steps--) {
         player.n_pos = (player.n_pos + 1) % MAP_SIZE;
         // item judge
@@ -331,7 +350,7 @@ bool step_forward(map_t& map, player_t& player, uint8_t steps)
                 !map[player.n_pos].owner->n_empty_rounds
                 ) {
                 uint8_t payment = get_estate_price(map[player.n_pos]) / 2;
-                cout << "[租金] 需支付过路费 " << payment << " 元" << endl;
+                cout << "[租金] 需支付过路费 " << (int)payment << " 元" << endl;
                 if (player.n_god_buff)
                     cout << "[财神] 财神附身，无需付钱" << endl;
                 else if (player.n_money < payment) {

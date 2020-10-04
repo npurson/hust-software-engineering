@@ -41,7 +41,7 @@ void add_player(char uid) {
     next_player.n_money = init_money;
     next_player.e_color = player_color[uid];
     next_player.n_block = 0;
-    next_player.n_boom = 0;
+    next_player.n_bomb = 0;
     next_player.n_robot = 0;
     next_player.n_pos = 0;
     next_player.n_empty_rounds = 0;
@@ -63,11 +63,15 @@ p_player_t get_player_by_uid(char uid) {
 p_player_t skip_player(p_player_t next_player){
     if (next_player->n_money >= 0 && next_player->n_empty_rounds == 0) return next_player;
     else{
-        char last_uid = next_player->uid;
         auto players = get_player_vec();
+        std::uint8_t c = 0;
         for (auto & it : *players) {
-            if (last_uid == it.uid) return &it;
-            last_uid = it.uid;
+            if (it.uid == next_player->uid){
+                if (c + 1 > players->size() - 1)    next_player = &(*(get_player_vec()))[0];
+                else    next_player = &(*(get_player_vec()))[c + 1];
+                return next_player;
+            }
+            c += 1;
         }
     }
     return nullptr;
