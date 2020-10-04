@@ -3,9 +3,9 @@
 
 #include <cstdint>
 #include <vector>
+#include <string>
 
-#include "map.h"
-
+typedef struct map_node map_node_t, * p_map_node_t;
 
 enum color_t { RED, GREEN, BLUE, YELLOW };
 

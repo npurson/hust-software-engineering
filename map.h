@@ -25,14 +25,12 @@ using std::uint16_t;
 using std::cin;
 using std::cout;
 using std::endl;
-
+typedef struct player player_t, *p_player_t;
 
 // 地图结点类型
 enum NodeType { START, VACANCY, ITEM_HOUSE, GIFT_HOUSE, MAGIC_HOUSE, HOSPITAL, PRISON, MINE };
 // 房产等级
 enum EstateLevel { WASTELAND, HUT, HOUSE, SKYSCRAPER };
-// 玩家索引
-enum PlayerIdx { NONE, PLAYER_1, PLAYER_2, PLAYER_3 };
 // 道具类型
 enum ItemType { NONE, BLOCK, BOMB, ROBOT };
 
