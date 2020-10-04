@@ -87,13 +87,13 @@ void apply_item(map_t& map, uint8_t item_type, uint8_t pos)
 }
 
 
-void roll_dice(map_t& map, player_t& player)
+bool roll_dice(map_t& map, player_t& player)
 {
-    step_forward(map, player, rand() % 6 + 1);
+    return step_forward(map, player, rand() % 6 + 1);
 }
 
 
-void step_forward(map_t& map, player_t& player, uint8_t steps)
+bool step_forward(map_t& map, player_t& player, uint8_t steps)
 {
     while (steps--) {
         player.n_pos = (player.n_pos + 1) % MAP_SIZE;
@@ -106,12 +106,20 @@ void step_forward(map_t& map, player_t& player, uint8_t steps)
             map[player.n_pos].item = NONE;
             player.n_pos = HOSPITAL_POS;
             player.n_empty_rounds = 3;
-            cout << "Bomb! 移动至医院" << endl;
+            printf("Bomb! 移动至医院");
         }
     }
     // 租金判定
     map[player.n_pos].players.push_back(&player);
-    if (map[player.n_pos].owner) {
-
+    if (map[player.n_pos].owner) {      // TODO 检查type非VACANCY的情况下owner不应非空
+        uint8_t payment = get_estate_price(map[player.n_pos]);
+        if (player.n_money < payment) {
+            map[player.n_pos].owner->n_money += player.n_money;
+            printf("嘤嘤嘤破产辽");
+            return true;
+        }
+        map[player.n_pos].owner->n_money += payment;
+        player.n_money -= payment;
     }
+    return false;
 }
