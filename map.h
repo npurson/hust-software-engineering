@@ -32,8 +32,8 @@ typedef struct map_node {
     uint8_t id;                 // 地块序号，用于查询角色拥有的地块
     uint8_t type;               // 地图结点类型，枚举类型为NodeType
     uint8_t estate_lvl;         // 房产等级，type==VACANCY时有效。枚举类型为EstateLevel
-    uint8_t owner;              // 房产的拥有者，type==VACANCY时有效。枚举类型为PlayerIdx
-    vector<uint8_t> players;    // 当前处于该结点的玩家。枚举类型为PlayerIdx
+    p_player_t owner;              // 房产的拥有者，type==VACANCY时有效。枚举类型为PlayerIdx
+    vector<p_player_t> players;    // 当前处于该结点的玩家。枚举类型为PlayerIdx
     uint8_t item;               // 当前置于该结点的道具。枚举类型为ItemType或None
     uint16_t value;             // type==VACANCY时为空地价格，计算房产价值时乘以（房产等级+1）；type==MINE时为可获取的点数
 
