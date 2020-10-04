@@ -1,0 +1,17 @@
+testname,..,3/14
+testname,testcase,status,time(ms)
+..,house_4,False,5.0916564464569096e-06
+..,house_6,False,5.08871579170227e-06
+..,house_9,False,5.048053026199341e-06
+..,house_11,False,5.090519666671753e-06
+..,house_8,True,2.6535987854003905e-08
+..,house_7,False,5.080212354660034e-06
+..,house_5,False,5.1084814071655275e-06
+..,house_2,False,5.08176326751709e-06
+..,house_10,False,5.05232834815979e-06
+..,house_3,False,5.094873905181885e-06
+..,house_1,False,5.116533041000366e-06
+..,house_0,True,2.8447389602661134e-08
+..,house_12,True,4.8079252243041993e-08
+..,house_13,False,5.066704273223877e-06
+
