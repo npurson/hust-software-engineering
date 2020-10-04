@@ -17,12 +17,14 @@ int main() {
     add_player('Q');
     next_player = &get_player_vec()->front();
     while (true) {
+        next_player = skip_player(next_player);
         show_cmd();
         if (std::getline(std::cin, command)) {
             if (command == "quit") {
                 break;
+            } else {
+                parse_cmd(command);
             }
-            parse_cmd(command);
         }
     }
     return 0;

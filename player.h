@@ -31,10 +31,12 @@ typedef struct player {
     uint8_t b_sell_estate; // TODO set 0 in the beginning of every round
 } player_t, *p_player_t;
 
+
 void add_player(char uid);
+vector<player_t> *get_player_vec();
 
 p_player_t get_player_by_uid(char uid);
+p_player_t skip_player(p_player_t next_player);
 
-vector<player_t> *get_player_vec();
 
 #endif // RICH_PLAYERS_H

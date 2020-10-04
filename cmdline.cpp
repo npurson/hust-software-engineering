@@ -7,6 +7,11 @@
 
 extern p_player_t next_player;
 
+
+void choose_player() {
+    std::cout << "请选择参与的玩家数量(2-4人): ";
+}
+
 std::vector<std::string> split_cmd(std::string cmd) {
     std::vector<std::string> word_vec;
     while (!cmd.empty()) {
@@ -25,31 +30,104 @@ std::vector<std::string> split_cmd(std::string cmd) {
 }
 
 int parse_cmd(std::string cmd) {
+    static bool start = false;
     std::vector<std::string> word_vec = split_cmd(cmd);
-    if (std::regex_match(cmd, std::regex("^preset.*"))) {
-        std::string::size_type space_pos = cmd.find(' ');
-        do_preset(cmd.substr(space_pos + 1));
-        return 0;
-    } else if (std::regex_match(cmd, std::regex("Roll"))) {
-        do_roll();
-    } else if (word_vec[0] == "dump") {
-        do_dump();
+    if (!start) {
+        if (word_vec[0] == "preset") {
+            std::string::size_type space_pos = cmd.find(' ');
+            do_preset(cmd.substr(space_pos + 1));
+            start = true;
+            return 0;
+        } else if (word_vec[0] == "Start") {
+            choose_player();
+            start = true;
+        } else {
+            std::cout << "无效的命令" << std::endl;
+        }
+    } else {
+        if (word_vec[0] == "preset") {
+            std::string::size_type space_pos = cmd.find(' ');
+            do_preset(cmd.substr(space_pos + 1));
+            return 0;
+        } else if (word_vec[0] == "Roll") {
+            do_roll();
+        } else if (word_vec[0] == "dump") {
+            do_dump();
+        } else if (word_vec[0] == "Sell") {
+            sell_estate(*get_map(), *next_player, next_player->n_pos);
+        } else if (word_vec[0] == "Block") {
+            do_block(next_player->n_pos);
+        } else if (word_vec[0] == "Bomb") {
+            do_bomb(next_player->n_pos);
+        } else if (word_vec[0] == "Robot") {
+            do_robot(next_player->n_pos);
+        }
     }
-    return -1;
 
+    return -1;
 }
 
 int do_roll() {
     return 0;
 }
 
+int do_block(std::uint8_t pos){
+    return 0;
+}
+int do_sell(std::uint8_t pos){
+    return 0;
+}
+int do_bomb(std::uint8_t pos){
+    return 0;
+}
+int do_robot(std::uint8_t pos){
+    return 0;
+}
+
 void do_dump() {
-    std::string dump_text = "preset user";
+    std::string dump_text = "user ";
     auto player_vec = get_player_vec();
 
     for (const auto& player : *player_vec) {
         dump_text += player.uid;
     }
+    std::cerr << dump_text << std::endl;
+    for (const auto& player : *player_vec) {
+        for (const auto& p_estate : player.estate) {
+            std::cerr << "map " << p_estate->id << " " << player.uid << " " << p_estate->estate_lvl << std::endl;
+        }
+        std::cerr << "fund " << player.uid << " " << player.n_money << std::endl;
+        std::cerr << "credit " << player.uid << " " << player.n_points << std::endl;
+        std::cerr << "userloc " << player.uid << " " << player.n_pos  << " "  << player.n_empty_rounds << std::endl;
+        if (player.n_boom != 0) {
+            std::cerr << "gift " << player.uid << " bomb " << static_cast<int>(player.n_boom) << std::endl;
+        }
+        if (player.n_block != 0) {
+            std::cerr << "gift " << player.uid << " barrier " << static_cast<int>(player.n_block) << std::endl;
+        }
+        if (player.n_robot != 0) {
+            std::cerr << "gift " << player.uid << " robot " << static_cast<int>(player.n_robot) << std::endl;
+        }
+        if (player.n_god_buff != 0) {
+            std::cerr << "gift " << player.uid << " god " << static_cast<int>(player.n_god_buff) << std::endl;
+        }
+    }
+    auto map = get_map();
+    for (const auto& map_node : *map) {
+        switch(map_node.item) {
+            case BOMB:
+                std::cerr << "bomb " << map_node.id << std::endl;
+                break;
+            case BLOCK:
+                std::cerr << "barrier " << map_node.id << std::endl;
+                break;
+            case NONE:
+            default:
+                break;
+        }
+    }
+    std::cerr << "nextuser " << next_player->uid << std::endl;
+    exit(EXIT_SUCCESS);
 }
 
 void show_cmd() {

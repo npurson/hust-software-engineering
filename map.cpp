@@ -180,9 +180,43 @@ void sell_estate(map_t& map, player_t& player, uint8_t map_node_idx)
 }
 
 
-void apply_item(map_t& map, uint8_t item_type, uint8_t pos)
+void apply_item(map_t& map, uint8_t item_type, uint8_t pos,player_t& player)
 {
+    if ((player.n_boom+player.n_robot+player.n_block)==0)
+    {
+        printf("您没有道具!\n");
+        return;
+    }
+    else
+    {
+        int b;
+        printf("请输入你想使用的道具：\n");
+        scanf("%d",&b);
+        switch(b)
+        {
+            int c;
+            case 1: //选择使用路障道具
+                printf("请输入你想要放置的地块：\n");
+                scanf("%d",&c);
+                
+                break;
 
+            case 2: //选择使用机器娃娃道具
+                printf("请输入你想要放置的地块：\n");
+                scanf("%d",&c);
+                
+                break;
+
+            case 3: //选择使用炸弹道具
+                printf("请输入你想要放置的地块：\n");
+                scanf("%d",&c);
+                
+                break;
+
+            default: //输入了其他数字
+                printf("您的输入有误！\n");
+        }
+    }
 }
 
 
