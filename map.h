@@ -34,9 +34,10 @@ enum EstateLevel { WASTELAND, HUT, HOUSE, SKYSCRAPER };
 // 道具类型
 enum ItemType { NONE, BLOCK, BOMB, ROBOT };
 
-typedef struct player player_t, *p_player_t;
+typedef struct player player_t, * p_player_t;
 
 typedef struct map_node {
+    uint8_t id;
     uint8_t type;                   // 地图结点类型，枚举类型为NodeType
     uint8_t estate_lvl;             // 房产等级，type==VACANCY时有效。枚举类型为EstateLevel
     p_player_t owner;               // 房产的拥有者，type==VACANCY时有效。枚举类型为PlayerIdx

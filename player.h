@@ -28,7 +28,7 @@ typedef struct player {
     uint8_t n_block;
     uint8_t n_boom;
     uint8_t n_robot;
-    uint8_t b_sell_estate; // TODO set 0 in the beginning of every round
+    uint8_t b_sell_estate;  // TODO set 0 in the beginning of every round
 } player_t, *p_player_t;
 
 
@@ -37,6 +37,5 @@ vector<player_t> *get_player_vec();
 
 p_player_t get_player_by_uid(char uid);
 p_player_t skip_player(p_player_t next_player);
-
 
 #endif // RICH_PLAYERS_H

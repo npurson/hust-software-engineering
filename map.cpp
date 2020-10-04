@@ -198,19 +198,19 @@ void apply_item(map_t& map, uint8_t item_type, uint8_t pos,player_t& player)
             case 1: //选择使用路障道具
                 printf("请输入你想要放置的地块：\n");
                 scanf("%d",&c);
-                
+
                 break;
 
             case 2: //选择使用机器娃娃道具
                 printf("请输入你想要放置的地块：\n");
                 scanf("%d",&c);
-                
+
                 break;
 
             case 3: //选择使用炸弹道具
                 printf("请输入你想要放置的地块：\n");
                 scanf("%d",&c);
-                
+
                 break;
 
             default: //输入了其他数字
