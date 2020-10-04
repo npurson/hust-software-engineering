@@ -128,6 +128,7 @@ void buy_estate(map_t& map, player_t& player)
         cin >> choice;
         cin.clear();
         cin.sync();
+        tolower(choice);
         if (choice == "y") {
             player.n_money -= map[map_node_idx].value;
             player.estate.push_back(&map[map_node_idx]);
@@ -135,7 +136,7 @@ void buy_estate(map_t& map, player_t& player)
             break;
         }
         else if (choice == "n") break;
-        else cout << "[好家伙] 生而手残，我很抱歉" << endl;
+        else cout << "[买房] 选择无效，请重新输入" << endl;
     }
     return;
 }
@@ -161,13 +162,14 @@ void update_estate(map_t& map, player_t& player)
         cin >> choice;
         cin.clear();
         cin.sync();
+        tolower(choice);
         if (choice == "y") {
             player.n_money -= map[map_node_idx].value;
             map[map_node_idx].estate_lvl += 1;
             cout << "[升级] 建筑升级成功" << endl;
         }
         else if (choice == "n") break;
-        else cout << "[好家伙] 生而手残，我很抱歉" << endl;
+        else cout << "[升级] 选择无效，请重新输入" << endl;
     }
 }
 
@@ -233,6 +235,7 @@ void buy_item(player_t& player)
         cin >> choice;
         cin.clear();
         cin.sync();
+        tolower(choice);
         if (choice == "1") {
             if (player.n_points < 50) {
                 cout << "[道具] 点数不足，无法购买道具" << endl;
@@ -266,7 +269,7 @@ void buy_item(player_t& player)
             }
             break;
         }
-        else cout << "[好家伙] 生而手残，我很抱歉" << endl;
+        else cout << "[道具屋] 选择无效，请重新输入。输入q退出" << endl;
     }
     return;
 }
@@ -283,6 +286,7 @@ void get_gift(player_t& player)
         cin >> choice;
         cin.clear();
         cin.sync();
+        tolower(choice);
         if (choice == "1") {
             player.n_money += 2000;
             cout << "[奖金] 获得奖金 2000 元" << endl;
@@ -298,7 +302,8 @@ void get_gift(player_t& player)
             cout << "[财神] 获得财神附身 5 回合" << endl;
             break;
         }
-        else cout << "[好家伙] 生而手残，我很抱歉" << endl;
+        else if (choice == "q") break;
+        else cout << "[礼品屋] 选择无效，请重新输入。输入q退出" << endl;
     }
     return;
 }
