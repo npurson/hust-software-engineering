@@ -1,6 +1,6 @@
 #include <iostream>
 #include <cstdlib>
-
+#include <cctype>
 #include "cmdline.h"
 #include "player.h"
 #include "map.h"
@@ -8,7 +8,7 @@
 extern p_player_t next_player;
 
 
-void choose_player() {
+void start_game() {
     std::cout << "请选择参与的玩家数量(2-4人): ";
 }
 
@@ -29,39 +29,83 @@ std::vector<std::string> split_cmd(std::string cmd) {
     return word_vec;
 }
 
-int parse_cmd(std::string cmd) {
+void tolower(std::string &str) {
+    for (auto& c : str) {
+        if (std::isalpha(c)) {
+            c = tolower(c);
+        }
+    }
+}
+
+int parse_cmd(const std::string& cmd) {
     static bool start = false;
     std::vector<std::string> word_vec = split_cmd(cmd);
+    tolower(word_vec[0]);
     if (!start) {
         if (word_vec[0] == "preset") {
             std::string::size_type space_pos = cmd.find(' ');
             do_preset(cmd.substr(space_pos + 1));
             start = true;
             return 0;
-        } else if (word_vec[0] == "Start") {
-            choose_player();
+        } else if (word_vec[0] == "start") {
+            if (word_vec.size() != 1) {
+                std::cerr << "无效的命令" << std::endl;
+                return -1;
+            }
+            start_game();
             start = true;
         } else {
-            std::cout << "无效的命令" << std::endl;
+            std::cerr << "无效的命令" << std::endl;
         }
     } else {
         if (word_vec[0] == "preset") {
             std::string::size_type space_pos = cmd.find(' ');
             do_preset(cmd.substr(space_pos + 1));
             return 0;
-        } else if (word_vec[0] == "Roll") {
+        } else if (word_vec[0] == "roll") {
+            if (word_vec.size() != 1) {
+                std::cerr << "无效的命令" << std::endl;
+                return -1;
+            }
             do_roll();
         } else if (word_vec[0] == "dump") {
+            if (word_vec.size() != 1) {
+                std::cerr << "无效的命令" << std::endl;
+                return -1;
+            }
             do_dump();
-        } else if (word_vec[0] == "Sell") {
-            sell_estate(*get_map(), *next_player, next_player->n_pos);
-        } else if (word_vec[0] == "Block") {
-            do_block(next_player->n_pos);
-        } else if (word_vec[0] == "Bomb") {
-            do_bomb(next_player->n_pos);
-        } else if (word_vec[0] == "Robot") {
+        } else if (word_vec[0] == "sell") {
+            if (word_vec.size() != 2) {
+                std::cerr << "无效的命令" << std::endl;
+                return -1;
+            }
+            int map_id = atoi(word_vec[1].c_str());
+            sell_estate(*get_map(), *next_player, map_id);
+        } else if (word_vec[0] == "block") {
+            if (word_vec.size() != 2) {
+                std::cerr << "无效的命令" << std::endl;
+                return -1;
+            }
+            int block_step = atoi(word_vec[1].c_str());
+            do_block(block_step);
+        } else if (word_vec[0] == "bomb") {
+            if (word_vec.size() != 2) {
+                std::cerr << "无效的命令" << std::endl;
+                return -1;
+            }
+            int bomb_step = atoi(word_vec[1].c_str());
+            do_bomb(bomb_step);
+        } else if (word_vec[0] == "robot") {
+            if (word_vec.size() != 1) {
+                std::cerr << "无效的命令" << std::endl;
+                return -1;
+            }
             do_robot(next_player->n_pos);
-        } else if (word_vec[0] == "Step") {
+        } else if (word_vec[0] == "step") {
+            if (word_vec.size() != 2) {
+                std::cerr << "无效的命令" << std::endl;
+                return -1;
+            }
             std::uint8_t step = atoi(word_vec[1].c_str());
             do_step(step);
         }
@@ -71,6 +115,7 @@ int parse_cmd(std::string cmd) {
 }
 
 int do_roll() {
+    roll_dice(*get_map(), *next_player);
     return 0;
 }
 
@@ -206,6 +251,8 @@ int do_preset(std::string cmd) {
         auto player = get_player_by_uid(player_name);
         player->n_empty_rounds = rest_days;
         player->n_pos = n_map_id;
+        p_map_t map = get_map();
+        map->at(n_map_id).players.push_back(player);
     } else if (word_vec[0] == "nextuser") {
         char player_name = word_vec[1].front();
         next_player = get_player_by_uid(player_name);

@@ -9,7 +9,7 @@
 #include <regex>
 #include "player.h"
 
-int parse_cmd(std::string cmd);
+int parse_cmd(const std::string& cmd);
 int do_preset(std::string cmd);
 int do_roll();
 void do_dump();
