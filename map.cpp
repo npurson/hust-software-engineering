@@ -165,9 +165,5 @@ bool step_forward(map_t& map, player_t& player, uint8_t steps)
         map[player.n_pos].owner->n_money += payment;
         player.n_money -= payment;
     }
-<<<<<<< HEAD
     return false;
 }
-=======
-}
->>>>>>> ee962a6b69d5c6914d9b188661567af85efb51ee
