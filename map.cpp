@@ -61,11 +61,7 @@ void plot_map()
     h_out=GetStdHandle(STD_OUTPUT_HANDLE);
 
     char buf=0;
-
-    //save cursor
-    CONSOLE_SCREEN_BUFFER_INFOEX screen_infoex;
-    GetConsoleScreenBufferInfoEx(h_out,&screen_infoex);
-
+    system("cls");
     SetConsoleCursorPosition(h_out,(COORD){0,0});
 
     for(int i=0; i<29*8; i++){
@@ -77,27 +73,45 @@ void plot_map()
         buf = type_table[ map[hash_table[i]].type ];
         if(buf == '0') {
             buf += map[hash_table[i]].estate_lvl;
+            if(map[hash_table[i]].owner!=NULL){
+                switch(map[hash_table[i]].owner->e_color){
+                    case RED:
+                        SetConsoleTextAttribute(h_out, FOREGROUND_RED);
+                        break;
+                    case GREEN:
+                        SetConsoleTextAttribute(h_out, FOREGROUND_GREEN);
+                        break;
+                    case YELLOW:
+                        SetConsoleTextAttribute(h_out, FOREGROUND_GREEN|FOREGROUND_RED);
+                        break;
+                    case BLUE:
+                        SetConsoleTextAttribute(h_out, FOREGROUND_BLUE);
+                        break;
+                    default:break;
+                }
+            }
         }
 
         // item
-        if((map[hash_table[i]].item==BLOCK) || (map[hash_table[i]].item==BOMB))
+        if((map[hash_table[i]].item==BLOCK) || (map[hash_table[i]].item==BOMB)){
             buf = item_table[ map[hash_table[i]].item ];
+        }
 
         //player
         if(map[hash_table[i]].players.empty() == false){
             buf=map[hash_table[i]].players.back()->uid;
             switch (map[hash_table[i]].players.back()->e_color) {
                 case RED:
-                    SetConsoleTextAttribute(h_out, FOREGROUND_RED|FOREGROUND_INTENSITY);
+                    SetConsoleTextAttribute(h_out, FOREGROUND_RED);
                     break;
                 case GREEN:
-                    SetConsoleTextAttribute(h_out, FOREGROUND_GREEN|FOREGROUND_INTENSITY);
+                    SetConsoleTextAttribute(h_out, FOREGROUND_GREEN);
                     break;
                 case YELLOW:
-                    SetConsoleTextAttribute(h_out, FOREGROUND_GREEN|FOREGROUND_RED|FOREGROUND_INTENSITY);
+                    SetConsoleTextAttribute(h_out, FOREGROUND_GREEN|FOREGROUND_RED);
                     break;
                 case BLUE:
-                    SetConsoleTextAttribute(h_out, FOREGROUND_BLUE|FOREGROUND_INTENSITY);
+                    SetConsoleTextAttribute(h_out, FOREGROUND_BLUE);
                     break;
                 default:break;
             }
@@ -106,9 +120,7 @@ void plot_map()
         if((i % 29) == 28) printf("\n");
 
     }
-    //SetConsoleScreenBufferInfoEx(h)
-    //SetConsoleCursorPosition(h_out,(COORD){0,0});
-    printf("X:%d, Y%d\n",screen_infoex.dwCursorPosition.X,screen_infoex.dwCursorPosition.Y);
+    SetConsoleCursorPosition(h_out,(COORD){0,10});
 }
 
 
