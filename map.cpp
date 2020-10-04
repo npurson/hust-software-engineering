@@ -199,6 +199,12 @@ void buy_item(player_t& player)
 }
 
 
+void (player_t& player)
+{
+
+}
+
+
 bool roll_dice(map_t& map, player_t& player)
 {
     return step_forward(map, player, rand() % 6 + 1);
@@ -237,6 +243,7 @@ bool step_forward(map_t& map, player_t& player, uint8_t steps)
             }
             return false;
         case ITEM_HOUSE: buy_item(player); return false;
+        case GIFT_HOUSE: get_gift(player); return false;
         case MINE:
             player.n_points += map[player.n_pos].value;
             printf("获得点数");
