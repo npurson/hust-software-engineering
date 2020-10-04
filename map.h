@@ -6,6 +6,7 @@
 #include <cstdint>
 #include <ctime>
 #include <vector>
+#include <windows.h>
 
 using std::vector;
 using std::uint8_t, std::uint16_t;
@@ -29,11 +30,13 @@ typedef struct map_node {
     uint16_t value;             // type==VACANCY时为空地价格，计算房产价值时乘以（房产等级+1）；type==MINE时为可获取的点数
 } map_node_t, *p_map_node_t;
 
-typedef vector<map_node> map_t, *p_map_t;
+typedef vector<map_node_t> map_t, *p_map_t;
 
 
 // 初始化地图
 map_t init_map();
+// 读取地图
+p_map_t get_map();
 // 绘制地图
 void plot_map();
 // 购买房产
