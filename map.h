@@ -60,11 +60,13 @@ void plot_map();
 // 购买房产
 void buy_estate(map_t& map, player_t& player);
 // 升级房产
-void update_estate(map_t& map, player_t& player);
+void update_estate(map_t& map, player_t& player, uint8_t map_node_idx);
 // 卖出房产
-void sell_estate(map_t& map, player_t& player);
+void sell_estate(map_t& map, player_t& player, uint8_t map_node_idx);
 // 使用道具
 void apply_item(map_t& map, uint8_t item_type, uint8_t pos);
+//购买道具
+void buy_item(map_t& map, uint8_t item_type, uint8_t pos);
 // 投骰子，并且调用step_forward
 bool roll_dice(map_t& map, player_t& player);
 // 向前行进指定步数，返回true则破产

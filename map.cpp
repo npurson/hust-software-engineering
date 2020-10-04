@@ -40,30 +40,67 @@ void plot_map()
 }
 
 
-void buy_estate(map_t& map, player_t& player)
+void buy_estate(map_t& map, player_t& player, uint8_t map_node_idx)
 {
 
 }
 
 
-void update_estate(map_t& map, player_t& player)
+void update_estate(map_t& map, player_t& player, uint8_t map_node_idx)
 {
+    // basic rules
+    if (map[map_node_idx].type != VACANCY ||
+        map[map_node_idx].owner->uid != player.uid ||
+        map[map_node_idx].estate_lvl == SKYSCRAPER){
+        return;
+    }
 
+    char map_node_input[10];
+    int update;
+    while (true){
+        std::cout << "是否升级房产(1:升级 2:不升级)： ";
+        std::cin >> map_node_input;
+        update = std::stoi(map_node_input);
+        if (update == 1) break;
+        if (update == 2) return;
+        std::cout << "输入有误";
+    }
+
+    // lack of money
+    int update_price;
+    if      (map_node_idx < 28)  update_price = 200;
+    else if (map_node_idx < 35) update_price = 500;
+    else    update_price = 300;
+    if (update_price > player.n_money){
+        printf("升级失败");
+        return;
+    }
+
+    // update player info
+    player.n_money -= update_price;
+
+    // update estate info
+    map[map_node_idx].estate_lvl += 1;
+    map[map_node_idx].value += update_price;
+
+    printf("升级成功");
 }
 
 
-void sell_estate(map_t& map, player_t& player)
+void sell_estate(map_t& map, player_t& player, uint8_t map_node_idx)
 {
+    // basic rules
     if (player.b_sell_estate == 1 ||
         map[map_node_idx].type != VACANCY ||
-        map[map_node_idx].owner != player.uid)
+        map[map_node_idx].owner->uid != player.uid)
     {
         printf("卖出失败");
         return;
     }
 
+    // update player info
     player.b_sell_estate = 1;
-    player.n_money += map[map_node_idx].value;
+    player.n_money += 2 * map[map_node_idx].value;
     for (int i = 0; i < player.estate.size(); ++i){
         if (player.estate.id == map_node_idx){
             player.estate.erase(i);
@@ -71,9 +108,10 @@ void sell_estate(map_t& map, player_t& player)
         }
     }
 
-    map[map_node_idx].owner = NONE;
+    // update estate info
+    map[map_node_idx].owner = nullptr;
     map[map_node_idx].estate_lvl = WASTELAND;
-    if (map_node_idx < 28)  map[map_node_idx].value = 200;
+    if      (map_node_idx < 28)  map[map_node_idx].value = 200;
     else if (map_node_idx < 35) map[map_node_idx].value = 500;
     else    map[map_node_idx].value = 300;
 
@@ -84,6 +122,12 @@ void sell_estate(map_t& map, player_t& player)
 void apply_item(map_t& map, uint8_t item_type, uint8_t pos)
 {
 
+}
+
+
+void buy_item(map_t& map, uint8_t item_type, uint8_t pos)
+{
+    
 }
 
 
@@ -121,5 +165,9 @@ bool step_forward(map_t& map, player_t& player, uint8_t steps)
         map[player.n_pos].owner->n_money += payment;
         player.n_money -= payment;
     }
+<<<<<<< HEAD
     return false;
 }
+=======
+}
+>>>>>>> ee962a6b69d5c6914d9b188661567af85efb51ee
