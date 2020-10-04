@@ -4,6 +4,7 @@
 #include <iostream>
 #include <cstdlib>
 #include <cstdint>
+#include <cstdbool>
 #include <ctime>
 #include <vector>
 #include <windows.h>
@@ -64,11 +65,13 @@ void update_estate(map_t& map, player_t& player, uint8_t map_node_idx);
 void sell_estate(map_t& map, player_t& player, uint8_t map_node_idx);
 // 使用道具
 void apply_item(map_t& map, uint8_t item_type, uint8_t pos);
-// 投骰子，并且调用step_forward
-void roll_dice(map_t& map, player_t& player);
-// 向前行进指定步数
-void step_forward(map_t& map, player_t& player, uint8_t steps);
 //购买道具
 void buy_item(map_t& map, uint8_t item_type, uint8_t pos);
+// 投骰子，并且调用step_forward
+bool roll_dice(map_t& map, player_t& player);
+// 向前行进指定步数，返回true则破产
+bool step_forward(map_t& map, player_t& player, uint8_t steps);
+// 获取某地房产的价值，返回true则破产
+uint8_t get_estate_price(const map_node_t& map_node);
 
 #endif // RICH_MAP_H
