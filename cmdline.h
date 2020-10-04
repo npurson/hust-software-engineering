@@ -19,6 +19,6 @@ int do_query(player_t& player);
 int do_help();
 int do_quit();
 void show_cmd();
-
+int do_step(std::uint8_t step);
 
 #endif //RICH_CMDLINE_H
