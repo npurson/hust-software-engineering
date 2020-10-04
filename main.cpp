@@ -26,6 +26,7 @@ int main() {
                 parse_cmd(command);
             }
         }
+        plot_map();
     }
     return 0;
 }

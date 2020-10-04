@@ -43,26 +43,34 @@ p_map_t get_map() {
 
 void plot_map()
 {
-	static const char hash_table[29*8]={
-        0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28,
-        69, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 29,
-        68, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 30,
-        67, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 31,
-        66, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 32,
-        65, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 33,
-        64, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 34,
-        63, 62, 61, 60, 59, 58, 57, 56, 55, 54, 53, 52, 51, 50, 49, 48, 47, 46, 45, 44, 43, 42, 41, 40, 39, 38, 37, 36, 35
+    static const char hash_table[29*8]={
+            0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28,
+            69, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 29,
+            68, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 30,
+            67, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 31,
+            66, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 32,
+            65, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 33,
+            64, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 34,
+            63, 62, 61, 60, 59, 58, 57, 56, 55, 54, 53, 52, 51, 50, 49, 48, 47, 46, 45, 44, 43, 42, 41, 40, 39, 38, 37, 36, 35
     };
 
     static const char type_table[8] = {'S','0','T','G','M','H','P','$'};
     static const char player_color_table[4] = {'Q','A','S','J'};
     static const char item_table[4] = {'\0','#','@','R'};
+    HANDLE h_out;
+    h_out=GetStdHandle(STD_OUTPUT_HANDLE);
 
-    char buf = 0;
-    system("echo \033[0;0H");
+    char buf=0;
 
-    for(int i = 0; i < 29 *8; i++){
-        // system("echo \033[0m");
+    //save cursor
+    CONSOLE_SCREEN_BUFFER_INFOEX screen_infoex;
+    GetConsoleScreenBufferInfoEx(h_out,&screen_infoex);
+
+    SetConsoleCursorPosition(h_out,(COORD){0,0});
+
+    for(int i=0; i<29*8; i++){
+        SetConsoleTextAttribute(h_out, FOREGROUND_BLUE|FOREGROUND_GREEN|FOREGROUND_RED|FOREGROUND_INTENSITY);
+
         if(hash_table[i] == 0 && i!=0) { putchar(' '); continue; }
 
         // basic map
@@ -75,9 +83,32 @@ void plot_map()
         if((map[hash_table[i]].item==BLOCK) || (map[hash_table[i]].item==BOMB))
             buf = item_table[ map[hash_table[i]].item ];
 
+        //player
+        if(map[hash_table[i]].players.empty() == false){
+            buf=map[hash_table[i]].players.back()->uid;
+            switch(map[hash_table[i]].players.back()->e_color){
+                case RED:
+                    SetConsoleTextAttribute(h_out, FOREGROUND_RED|FOREGROUND_INTENSITY);
+                    break;
+                case GREEN:
+                    SetConsoleTextAttribute(h_out, FOREGROUND_GREEN|FOREGROUND_INTENSITY);
+                    break;
+                case YELLOW:
+                    SetConsoleTextAttribute(h_out, FOREGROUND_GREEN|FOREGROUND_RED|FOREGROUND_INTENSITY);
+                    break;
+                case BLUE:
+                    SetConsoleTextAttribute(h_out, FOREGROUND_BLUE|FOREGROUND_INTENSITY);
+                    break;
+                default:break;
+            }
+        }
         putchar(buf);
-        if((i % 29) == 28) putchar('\n');
+        if((i % 29) == 28) printf("\n");
+
     }
+    //SetConsoleScreenBufferInfoEx(h)
+    //SetConsoleCursorPosition(h_out,(COORD){0,0});
+    printf("X:%d, Y%d\n",screen_infoex.dwCursorPosition.X,screen_infoex.dwCursorPosition.Y);
 }
 
 
