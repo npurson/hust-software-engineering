@@ -193,7 +193,7 @@ void do_sell(map_t& map, player_t& player, uint8_t map_node_idx)
         map[map_node_idx].type != VACANCY ||
         map[map_node_idx].owner == nullptr ||
         map[map_node_idx].owner->uid != player.uid) {
-//        cout << "[卖房] 卖出房产失败" << endl;
+        cout << "[卖房] 卖出房产失败" << endl;
         return;
     }
 
