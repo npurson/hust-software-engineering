@@ -26,6 +26,7 @@ typedef struct player {
     std::uint8_t n_block;
     std::uint8_t n_boom;
     std::uint8_t n_robot;
+    std::uint8_t b_sell_estate; //TODO: set 0 in the beginning of every round
 } player_t, *p_player_t;
 
 void add_player(char uid);

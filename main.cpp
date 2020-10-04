@@ -3,8 +3,9 @@
 
 
 int main() {
-    seed = time(0);
-    srand(seed);
+    srand(time(0));
+
+    map_t map = init_map();
 
     return 0;
 }

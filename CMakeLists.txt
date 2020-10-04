@@ -3,4 +3,4 @@ project(rich)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(rich main.cpp map.cpp map.h players.cpp players.h cmdline.h cmdline.cpp)
+add_executable(rich main.cpp map.cpp map.h player.cpp player.h cmdline.h cmdline.cpp)
