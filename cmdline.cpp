@@ -305,7 +305,40 @@ void show_cmd() {
 }
 
 int do_step(std::uint8_t step) {
-    step_forward(*get_map(), *next_player, step);
+    if (step_forward(*get_map(), *next_player, step)){
+        for (auto & it : next_player->estate){
+            it->estate_lvl = 0;
+            it->owner = nullptr;
+        }
+        // empty broken player info
+        next_player->n_money = -1;
+        next_player->n_points = 0;
+        next_player->n_pos = 0;
+        next_player->n_empty_rounds = 0;
+        next_player->n_god_buff = 0;
+        next_player->estate.clear();
+        next_player->n_block = 0;
+        next_player->n_bomb = 0;
+        next_player->n_robot = 0;
+        next_player->b_sell_estate = 0;
+    }
+
+    // do count
+    next_player->b_sell_estate = 0;
+    if (next_player->n_god_buff > 0)    next_player->n_god_buff -= 1;
+    if (next_player->n_empty_rounds > 0)    next_player->n_empty_rounds -= 1;
+
+    // switch to next player
+    auto players = get_player_vec();
+    std::uint8_t c = 0;
+    for (auto & it : *players) {
+        if (it.uid == next_player->uid){
+            if (c + 1 > players->size() - 1)    next_player = &(*(get_player_vec()))[0];
+            else    next_player = &(*(get_player_vec()))[c + 1];
+            break;
+        }
+        c += 1;
+    }
     return 0;
 }
 
