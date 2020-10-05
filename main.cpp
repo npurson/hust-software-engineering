@@ -1,5 +1,5 @@
 #include <iostream>
-#include "map.h"
+
 #include "cmdline.h"
 
 extern int init_money;
