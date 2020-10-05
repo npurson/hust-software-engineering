@@ -7,11 +7,11 @@ preset credit A 20
 preset credit Q 5000   
 preset credit S 100   
 
-preset userloc A 14 0  # A is at Hospital(14) but dose not stay
-preset userloc Q 26 0  # Q is at 26,near the tool house
+preset userloc A 14 0
+preset userloc Q 26 0
 preset userloc S 65 0
 
-preset nextuser S    # next interactive player is S
+preset nextuser S
 
 step 1
 step 2
