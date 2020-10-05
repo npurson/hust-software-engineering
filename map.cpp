@@ -281,7 +281,7 @@ void get_gift(player_t& player)
             break;
         }
         else if (choice == "3") {
-            player.n_god_buff = 6;
+            player.n_god_buff = 5;
             cout << "[财神] 获得财神附身 5 回合" << endl;
             break;
         }
@@ -377,7 +377,7 @@ void magic_house()
     char ntoidx[4] = {'Q', 'A', 'S', 'J'};
     long n;
     while (true){
-        cout << "[魔法屋] 请输入您想陷害的玩家编号" << endl;
+        std::cout << "[魔法屋] 请输入您想陷害的玩家: 1-钱夫人 2-阿土伯 3-孙小美 4-金贝贝" << std::endl;
         getline(cin, inputs);
         n = std::stol(inputs);
         if (n < 1 || n > 4){
