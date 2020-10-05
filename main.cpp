@@ -5,6 +5,7 @@
 extern int init_money;
 p_player_t next_player = nullptr;
 
+
 int main() {
     srand(time(nullptr));
     init_map();

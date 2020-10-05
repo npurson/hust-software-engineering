@@ -53,7 +53,7 @@ void plot_map()
             63, 62, 61, 60, 59, 58, 57, 56, 55, 54, 53, 52, 51, 50, 49, 48, 47, 46, 45, 44, 43, 42, 41, 40, 39, 38, 37, 36, 35
     };
     static const char type_table[9] = { 'S', '0', 'T', 'G', 'M', 'H', 'P', '$', 'P' };
-    static const unsigned short color_table[4] = { FOREGROUND_RED, FOREGROUND_GREEN, FOREGROUND_BLUE, 
+    static const unsigned short color_table[4] = { FOREGROUND_RED, FOREGROUND_GREEN, FOREGROUND_BLUE,
                                                    FOREGROUND_RED | FOREGROUND_GREEN };
     static const char item_table[4] = { '\0', '#', '@', 'R' };
 
@@ -83,8 +83,8 @@ void plot_map()
 
         // player
         if (map[hash_table[i]].players.empty() == false) {
-            buf=map[hash_table[i]].players.back()->uid;
-            SetConsoleTextAttribute(h_out, color_table[ map[hash_table[i]].players.back()->e_color ]);
+            buf = map[hash_table[i]].players.back()->uid;
+            SetConsoleTextAttribute(h_out, color_table[map[hash_table[i]].players.back()->e_color]);
         }
         // render
         putchar(buf);
@@ -172,7 +172,7 @@ void apply_item(map_t& map, player_t& player, int item, int pos)
             cout << "[道具] 没有娃娃，无法使用道具" << endl;
         }
         else {
-            for (int i = 0; i < 10; ++i)
+            for (int i = 0; i <= 10; ++i)
                 map[player.n_pos + i].item = NONE;
             player.n_robot -= 1;
             cout << "[机器娃娃] 机器娃娃使用成功" << endl;
@@ -281,7 +281,7 @@ void get_gift(player_t& player)
             break;
         }
         else if (choice == "3") {
-            player.n_god_buff = 6;
+            player.n_god_buff = 5;
             cout << "[财神] 获得财神附身 5 回合" << endl;
             break;
         }
@@ -339,6 +339,7 @@ bool step_forward(map_t& map, player_t& player, int steps)
                 else if (player.n_money < payment) {
                     map[player.n_pos].owner->n_money += player.n_money;
                     cout << "[破产] 嘤嘤嘤破产辽，游戏结束" << endl;
+                    system("pause");
                     return true;
                 }
                 else {
@@ -353,44 +354,45 @@ bool step_forward(map_t& map, player_t& player, int steps)
             // 买房
             else if (!map[player.n_pos].owner)
                 buy_estate(map, player);
-            return false;
+            break;
 
-        case ITEM_HOUSE: buy_item(player); return false;
-        case GIFT_HOUSE: get_gift(player); return false;
+        case ITEM_HOUSE: buy_item(player); break;
+        case GIFT_HOUSE: get_gift(player); break;
         case MINE:
             player.n_points += map[player.n_pos].value;
             cout << "[矿地] 获得点数 " << map[player.n_pos].value << " 点" << endl;
-            return false;
-        // case PRISON:
-        //     player.n_empty_rounds = 2;
-        //     cout << "[监狱] 打工是不可能打工的，这辈子都不可能打工的" << endl;
-        //     return false;
-        case MAGIC_HOUSE: magic_house(); return false;
-        default: return false;
+            break;
+        case PRISON:
+            player.n_empty_rounds = 2;
+            cout << "[监狱] 打工是不可能打工的，这辈子都不可能打工的" << endl;
+            break;
+        case MAGIC_HOUSE: magic_house(); 
+        break;
+        default: break;
     }
+    system("pause");
+    return false;
 }
 
 
 void magic_house()
 {
-    char inputs[100];
+    string inputs;
     char ntoidx[4] = {'Q', 'A', 'S', 'J'};
     long n;
     while (true){
-        std::cout << "[魔法屋] 请输入您想陷害的玩家编号" << std::endl;
-        std::cin >> inputs;
-        std::cin.clear();
-        std::cin.sync();
-        n = std::strtol(inputs, nullptr, 10);
+        std::cout << "[魔法屋] 请输入您想陷害的玩家: 1-钱夫人 2-阿土伯 3-孙小美 4-金贝贝" << std::endl;
+        getline(cin, inputs);
+        n = std::stol(inputs);
         if (n < 1 || n > 4){
-            std::cout << "[魔法屋] 输入编号范围有误，请重新输入1-4的编号" << std::endl;
+            cout << "[魔法屋] 输入编号范围有误，请重新输入1-4的编号" << endl;
             continue;
         }
-        if ( !get_player_by_uid(ntoidx[n]) || get_player_by_uid(ntoidx[n])->n_money < 0){
-            std::cout << "[魔法屋] 输入角色无效，请重新选择还在场上的角色" << std::endl;
+        if (!get_player_by_uid(ntoidx[n - 1]) || get_player_by_uid(ntoidx[n - 1])->n_money < 0) {
+            cout << "[魔法屋] 输入角色无效，请重新选择还在场上的角色" << endl;
             continue;
         }
-        get_player_by_uid(ntoidx[n])->n_empty_rounds += 2;
+        get_player_by_uid(ntoidx[n - 1])->n_empty_rounds += 3;
         break;
     }
     return;

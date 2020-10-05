@@ -1,16 +1,16 @@
-preset user AQS       # 3 users AQS play in order
-preset map 33 A 0      # S has an empty property at Map Block 
-preset map 60 S 0     # S has an empty property at Map Block 60
-preset credit A 20480   # $20480 for A
-preset credit Q 5000   # $5000 for Q
-preset credit S 100   # $1 for S
+preset user AQS
+preset map 33 A 0
+preset map 60 S 0
+preset credit A 20480
+preset credit Q 5000
+preset credit S 100
 
-preset userloc A 63 0  # A is at Hospital(14) but dose not stay
-preset userloc S 63 0  # Q is at 26,near the tool house
+preset userloc A 63 0
+preset userloc S 63 0
 
-preset nextuser S    # next interactive player is S
+preset nextuser S
 
-step 2  #Q
+step 2
 step 2
 
 dump 

@@ -1,19 +1,15 @@
 user AQS
-
-map 33 A 1
+fund A 10400
+fund Q 9800
+fund S 10000
 map 60 Q 0
 map 33 S 0
-
-fund A 20
-fund Q 5000
-fund S 500 #100+2*200
-
-credit A 20
+credit A 160
 credit Q 5000
 credit S 220
 
-userloc A 14 0
-userloc Q 26 0
-userloc S 0 0
+userloc A 16 0
+userloc Q 27 0
+userloc S 67 0
 
-nextuser s
+nextuser A

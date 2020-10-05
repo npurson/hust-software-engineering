@@ -13,6 +13,7 @@ preset nextuser A    # next interactive player is S
 step 1
 step 2
 2
+f
 step 3
 n
 dump 
