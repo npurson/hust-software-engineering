@@ -265,6 +265,14 @@ void do_block(int step, p_player_t player) {
 
 int do_roll() {
     if (roll_dice(*get_map(), *next_player)) {
+        p_map_t map = get_map();
+        auto &node = map->at(next_player->n_pos);
+        for(auto it=node.players.begin(); it!=node.players.end();++it){
+            if(*it == next_player){
+                node.players.erase(it);
+                break;
+            }
+        }
         for (auto &it : next_player->estate) {
             it->estate_lvl = 0;
             it->owner = nullptr;
