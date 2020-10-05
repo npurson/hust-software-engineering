@@ -10,8 +10,9 @@ preset userloc Q 26 0  # Q is at 26,near the tool house
 
 preset nextuser A    # next interactive player is S
 
-step 1 
+step 1
 step 2
+2
 step 3
 
 dump 
