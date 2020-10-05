@@ -41,6 +41,7 @@ void add_player(char uid) {
     next_player.n_pos = 0;
     next_player.n_empty_rounds = 0;
     next_player.n_god_buff = 0;
+    next_player.b_god_buff = 0;
     player_vec.push_back(next_player);
 }
 
@@ -56,32 +57,35 @@ p_player_t get_player_by_uid(char uid) {
 
 
 p_player_t skip_player(p_player_t next_player) {
+
     if (!next_player)   return nullptr;
 
-    if (next_player->n_money >= 0 && next_player->n_empty_rounds == 0){
-        // do count
-        next_player->b_sell_estate = 0;
-        if (next_player->n_god_buff > 0) next_player->n_god_buff -= 1;
+    // next player
+    if (next_player->n_money < 0 || next_player->n_empty_rounds != 0) {
+
         if (next_player->n_empty_rounds > 0) next_player->n_empty_rounds -= 1;
 
-        return next_player;
-    }
-    else {
-        // do count
-        next_player->b_sell_estate = 0;
-        if (next_player->n_god_buff > 0) next_player->n_god_buff -= 1;
-        if (next_player->n_empty_rounds > 0) next_player->n_empty_rounds -= 1;
+        if (next_player->n_god_buff > 0)    next_player->n_god_buff -= 1;
 
         auto players = get_player_vec();
         int c = 0;
-        for (auto & it : *players) {
-            if (it.uid == next_player->uid){
+        for (auto &it : *players) {
+            if (it.uid == next_player->uid) {
                 if (c + 1 > players->size() - 1) next_player = &(*(get_player_vec()))[0];
-                else  next_player = &(*(get_player_vec()))[c + 1];
-                return next_player;
+                else next_player = &(*(get_player_vec()))[c + 1];
+                break;
             }
             c += 1;
         }
     }
+
+    // do count
+    next_player->b_sell_estate = 0;
+    if (next_player->n_god_buff > 0){
+        next_player->n_god_buff -= 1;
+        next_player->b_god_buff = 1;
+    }
+    else    next_player->b_god_buff = 0;
+
     return nullptr;
 }
