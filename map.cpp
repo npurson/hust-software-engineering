@@ -288,8 +288,8 @@ void get_gift(player_t& player)
             cout << "[财神] 获得财神附身 5 回合" << endl;
             break;
         }
-        else if (choice == "q") break;
-        else cout << "[礼品屋] 选择无效，请重新输入。输入q退出" << endl;
+        // else if (choice == "q") break;
+        else cout << "[礼品屋] 选择无效，退出" << endl; break;
     }
     Sleep(1000);
 }
