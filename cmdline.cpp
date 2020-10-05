@@ -1,8 +1,10 @@
 #include <cctype>
 #include "cmdline.h"
 
+
 extern p_player_t next_player;
 extern int init_money;
+
 
 bool check_num(const std::string& num_str) {
     if (num_str.empty()) {
@@ -19,6 +21,7 @@ bool check_num(const std::string& num_str) {
         return true;
     }
 }
+
 
 void start_game() {
     string inputs;
@@ -56,7 +59,7 @@ void start_game() {
         printf("%d", num_players);
         cout<< "位角色: 1-钱夫人 2-阿土伯 3-孙小美 4-金贝贝" << endl;
         getline(cin, inputs);
-        if (inputs.length() != num_players){
+        if (inputs.length() != num_players) {
             cout << "输入角色个数有误"<< endl;
             continue;
         }
@@ -80,7 +83,7 @@ void start_game() {
 
         auto tmp = get_player_vec();
         tmp->clear();
-        
+
         for (char input : inputs) {
             if (input == '1')   input = 'Q';
             if (input == '2')   input = 'A';
@@ -262,8 +265,8 @@ void do_block(int step, p_player_t player) {
 
 
 int do_roll() {
-    if (roll_dice(*get_map(), *next_player)){
-        for (auto & it : next_player->estate){
+    if (roll_dice(*get_map(), *next_player)) {
+        for (auto &it : next_player->estate) {
             it->estate_lvl = 0;
             it->owner = nullptr;
         }
@@ -278,15 +281,31 @@ int do_roll() {
         next_player->n_bomb = 0;
         next_player->n_robot = 0;
         next_player->b_sell_estate = 0;
-    }
 
+        // check winner
+        auto players = get_player_vec();
+        auto winner = (*get_player_vec())[0];
+        int count = 0;
+        for (auto &it : *players) {
+            if (it.n_money < 0) count += 1;
+            winner = it;
+        }
+        if (count == (players->size() - 1)) {
+            std::cout << "游戏结束，获胜的玩家是:";
+            if (winner.uid == 'Q') std::cout << "钱夫人";
+            if (winner.uid == 'A') std::cout << "阿土伯";
+            if (winner.uid == 'S') std::cout << "孙小美";
+            if (winner.uid == 'J') std::cout << "金贝贝";
+            exit(EXIT_SUCCESS);
+        }
+    }
     // switch to next player
     auto players = get_player_vec();
     int c = 0;
     for (auto & it : *players) {
-        if (it.uid == next_player->uid){
-            if (c + 1 > players->size() - 1)    next_player = &(*(get_player_vec()))[0];
-            else    next_player = &(*(get_player_vec()))[c + 1];
+        if (it.uid == next_player->uid) {
+            if (c + 1 > players->size() - 1) next_player = &(*(get_player_vec()))[0];
+            else next_player = &(*(get_player_vec()))[c + 1];
             break;
         }
         c += 1;
@@ -323,6 +342,7 @@ void do_dump() {
             std::cerr << "gift " << player.uid << " god " << static_cast<int>(player.n_god_buff) << endl;
         }
     }
+
     auto map = get_map();
     for (const auto& map_node : *map) {
         switch(map_node.item) {
@@ -367,11 +387,6 @@ int do_step(int step) {
         next_player->n_robot = 0;
         next_player->b_sell_estate = 0;
     }
-
-    // do count
-    next_player->b_sell_estate = 0;
-    if (next_player->n_god_buff > 0) next_player->n_god_buff -= 1;
-    if (next_player->n_empty_rounds > 0) next_player->n_empty_rounds -= 1;
 
     // switch to next player
     auto players = get_player_vec();
