@@ -60,6 +60,11 @@ p_player_t get_player_by_uid(char uid) {
 
 
 p_player_t skip_player(p_player_t next_player){
+    // do count
+    next_player->b_sell_estate = 0;
+    if (next_player->n_god_buff > 0)    next_player->n_god_buff -= 1;
+    if (next_player->n_empty_rounds > 0)    next_player->n_empty_rounds -= 1;
+
     if (next_player->n_money >= 0 && next_player->n_empty_rounds == 0) return next_player;
     else{
         auto players = get_player_vec();
