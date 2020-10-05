@@ -17,5 +17,8 @@ step 5 #S:33->38
 n
 step 20 #A:10->30
 n
+block -2 #barrier at 32
+step 4 #Q:34->38
+n
 
 dump

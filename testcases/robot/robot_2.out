@@ -8,8 +8,10 @@ credit A 10
 credit Q 10
 credit S 10
 
+barrier 55
+
 userloc A 37 0
-userloc Q 28 0
+userloc Q 27 0
 userloc S 42 0
 
 nextuser S

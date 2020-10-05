@@ -13,12 +13,12 @@ preset userloc S 65 0
 
 preset nextuser S
 
-step 1
-step 3
+step 1 #S:65->66
+step 3 #A:14->17
 n
-step 1
+step 1 #Q:26->27
 y
-step 1
-sell 16
+step 1 #S:66->67
+sell 16 #A
 
 dump 
