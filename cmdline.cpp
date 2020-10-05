@@ -28,14 +28,6 @@ void start_game() {
     int num_players;
 
     while (true) {
-        cout << "请选择参与的玩家数量(2-4人): ";
-        getline(cin, inputs);
-        num_players = std::stoi(inputs);
-        if (num_players >= 2 && num_players <= 4) break;
-        cout << "输入范围有误";
-    }
-
-    while (true) {
         cout << "请选择初始金钱数量(1000-50000): ";
         getline(cin, inputs);
         if (check_num(inputs)) {
@@ -45,8 +37,20 @@ void start_game() {
                 break;
             }
         }
-        cout << "输入范围有误";
+        std::cout << "输入范围有误" << std::endl;
     }
+
+    while (true) {
+        cout << "请选择参与的玩家数量(2-4人): ";
+        getline(cin, inputs);
+        if (check_num(inputs)) {
+            num_players = std::stoi(inputs);
+            if (num_players >= 2 && num_players <= 4) break;
+        }
+        std::cout << "输入范围有误" << std::endl;
+    }
+
+
 
     int reset_flag;
     while (true) {
@@ -95,6 +99,13 @@ void start_game() {
 
 vector<string> split_cmd(string cmd) {
     vector<string> word_vec;
+    auto comment_pos = cmd.find('#');
+    if (comment_pos != std::string::npos) {
+        cmd = cmd.substr(0, comment_pos); // 去除注释
+    }
+    while (!cmd.empty() && std::isspace(cmd.front())) {
+        cmd.erase(cmd.begin());
+    }
     while (!cmd.empty()) {
         auto space_pos = cmd.find(' ');
         string word;
@@ -103,7 +114,14 @@ vector<string> split_cmd(string cmd) {
             cmd = "";
         } else {
             word = cmd.substr(0, space_pos);
-            cmd = cmd.substr(space_pos + 1);
+            while (isspace(cmd[space_pos])) {
+                ++space_pos;
+            }
+            if (space_pos == cmd.size()) {
+                cmd = "";
+            } else {
+                cmd = cmd.substr(space_pos);
+            }
         }
         word_vec.push_back(word);
     }
@@ -248,7 +266,7 @@ void do_block(int step, p_player_t player) {
 
 int do_roll() {
     if (roll_dice(*get_map(), *next_player)) {
-        for (auto & it : next_player->estate) {
+        for (auto &it : next_player->estate) {
             it->estate_lvl = 0;
             it->owner = nullptr;
         }
@@ -263,8 +281,24 @@ int do_roll() {
         next_player->n_bomb = 0;
         next_player->n_robot = 0;
         next_player->b_sell_estate = 0;
-    }
 
+        // check winner
+        auto players = get_player_vec();
+        auto winner = (*get_player_vec())[0];
+        int count = 0;
+        for (auto &it : *players) {
+            if (it.n_money < 0) count += 1;
+            winner = it;
+        }
+        if (count == (players->size() - 1)) {
+            std::cout << "游戏结束，获胜的玩家是:";
+            if (winner.uid == 'Q') std::cout << "钱夫人";
+            if (winner.uid == 'A') std::cout << "阿土伯";
+            if (winner.uid == 'S') std::cout << "孙小美";
+            if (winner.uid == 'J') std::cout << "金贝贝";
+            exit(EXIT_SUCCESS);
+        }
+    }
     // switch to next player
     auto players = get_player_vec();
     int c = 0;
@@ -328,8 +362,16 @@ void do_dump() {
 
 
 void show_cmd() {
+    HANDLE h_out=GetStdHandle(STD_OUTPUT_HANDLE);
+    static const unsigned short color_table[4] = { FOREGROUND_RED, FOREGROUND_GREEN, FOREGROUND_BLUE,
+                                                   FOREGROUND_RED | FOREGROUND_GREEN };
+
     if (next_player != nullptr) {
-        cout << next_player->name;
+        SetConsoleTextAttribute(h_out, color_table[ next_player->e_color ]);
+        std::cout << next_player->name;
+        SetConsoleTextAttribute(h_out,FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED | FOREGROUND_INTENSITY);
+    } else {
+        std::cout << "请输入start开始游戏";
     }
     cout << ">";
 }
@@ -412,15 +454,14 @@ int do_preset(string cmd) {
         auto player = get_player_by_uid(player_name);
         auto prop_name = word_vec[2];
         int number = std::stoi(word_vec[3]);
-        if (prop_name == "bomb") {
-            player->n_bomb = number;
-        } else if (prop_name == "barrier") {
+        if (prop_name == "barrier") {
             player->n_block = number;
         } else if (prop_name == "robot") {
             player->n_robot = number;
         } else if (prop_name == "god") {
             player->n_god_buff = number;
         } else {
+            std::cerr << "请选择有效的道具种类" << std::endl;
             return -1;
         }
     } else if (word_vec[0] == "userloc") {
@@ -464,8 +505,7 @@ int do_query(player_t& player)
     printf("%d", player.n_block);
     cout <<" 机器娃娃*";
     printf("%d\n", player.n_robot);
-    // cout << " 炸弹*";
-    // printf("%d", player.n_bomb);
+    system("pause");
     return 0;
 }
 
