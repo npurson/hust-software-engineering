@@ -4,7 +4,7 @@
 
 static vector<player_t> player_vec;
 
-uint64_t init_money;
+int init_money;
 
 
 vector<player_t>* get_player_vec() {
@@ -64,7 +64,7 @@ p_player_t skip_player(p_player_t next_player){
     if (next_player->n_money >= 0 && next_player->n_empty_rounds == 0) return next_player;
     else{
         auto players = get_player_vec();
-        std::uint8_t c = 0;
+        int c = 0;
         for (auto & it : *players) {
             if (it.uid == next_player->uid){
                 if (c + 1 > players->size() - 1)    next_player = &(*(get_player_vec()))[0];

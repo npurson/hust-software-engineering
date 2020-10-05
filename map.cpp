@@ -114,7 +114,7 @@ void plot_map()
 
 void buy_estate(map_t& map, player_t& player)
 {
-    uint8_t map_node_idx = player.n_pos;
+    int map_node_idx = player.n_pos;
     if (map[map_node_idx].type != VACANCY ||
         map[map_node_idx].owner != nullptr ||
         player.n_money < map[map_node_idx].value)
@@ -143,7 +143,7 @@ void buy_estate(map_t& map, player_t& player)
 
 void update_estate(map_t& map, player_t& player)
 {
-    uint8_t map_node_idx = player.n_pos;
+    int map_node_idx = player.n_pos;
 
     if (map[map_node_idx].type != VACANCY ||
         map[map_node_idx].owner == nullptr ||
@@ -173,7 +173,7 @@ void update_estate(map_t& map, player_t& player)
 }
 
 
-void apply_item(map_t& map, player_t& player, uint8_t item, uint8_t pos=0)
+void apply_item(map_t& map, player_t& player, int item, int pos=0)
 {
     if (item == BLOCK) {
         if (!player.n_block) {
@@ -314,7 +314,7 @@ bool roll_dice(map_t& map, player_t& player)
 }
 
 
-bool step_forward(map_t& map, player_t& player, uint8_t steps)
+bool step_forward(map_t& map, player_t& player, int steps)
 {
     cout << "向前行进 " << (int)steps << " 步" << endl;
     for (auto it = map[player.n_pos].players.begin();
@@ -349,7 +349,7 @@ bool step_forward(map_t& map, player_t& player, uint8_t steps)
                 map[player.n_pos].owner != &player &&
                 !map[player.n_pos].owner->n_empty_rounds
                 ) {
-                uint8_t payment = get_estate_price(map[player.n_pos]) / 2;
+                int payment = get_estate_price(map[player.n_pos]) / 2;
                 cout << "[租金] 需支付过路费 " << (int)payment << " 元" << endl;
                 if (player.n_god_buff)
                     cout << "[财神] 财神附身，无需付钱" << endl;
@@ -385,7 +385,7 @@ bool step_forward(map_t& map, player_t& player, uint8_t steps)
 }
 
 
-uint8_t get_estate_price(const map_node_t& map_node)
+int get_estate_price(const map_node_t& map_node)
 {
     return map_node.value * (map_node.estate_lvl + 1);
 }

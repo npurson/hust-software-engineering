@@ -3,7 +3,7 @@
 #include "cmdline.h"
 
 
-extern uint64_t init_money;
+extern int init_money;
 p_player_t next_player;
 
 
@@ -18,7 +18,7 @@ int main() {
     while (true) {
         next_player = skip_player(next_player);
         show_cmd();
-        if (std::getline(cin, command)) {
+        if (getline(cin, command)) {
             if (command == "quit") {
                 break;
             } else {
