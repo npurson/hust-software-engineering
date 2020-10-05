@@ -281,7 +281,7 @@ void get_gift(player_t& player)
             break;
         }
         else if (choice == "3") {
-            player.n_god_buff = 6;
+            player.n_god_buff = 5;
             cout << "[财神] 获得财神附身 5 回合" << endl;
             break;
         }
