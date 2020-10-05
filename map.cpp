@@ -367,8 +367,35 @@ bool step_forward(map_t& map, player_t& player, int steps)
         //     player.n_empty_rounds = 2;
         //     cout << "[监狱] 打工是不可能打工的，这辈子都不可能打工的" << endl;
         //     return false;
+        case MAGIC_HOUSE: magic_house(); return false;
         default: return false;
     }
+}
+
+
+void magic_house()
+{
+    char inputs[100];
+    char ntoidx[4] = {'Q', 'A', 'S', 'J'};
+    long n;
+    while (true){
+        std::cout << "[魔法屋] 请输入您想陷害的玩家编号" << std::endl;
+        std::cin >> inputs;
+        std::cin.clear();
+        std::cin.sync();
+        n = std::strtol(inputs, nullptr, 10);
+        if (n < 1 || n > 4){
+            std::cout << "[魔法屋] 输入编号范围有误，请重新输入1-4的编号" << std::endl;
+            continue;
+        }
+        if ( !get_player_by_uid(ntoidx[n]) || get_player_by_uid(ntoidx[n])->n_money < 0){
+            std::cout << "[魔法屋] 输入角色无效，请重新选择还在场上的角色" << std::endl;
+            continue;
+        }
+        get_player_by_uid(ntoidx[n])->n_empty_rounds += 2;
+        break;
+    }
+    return;
 }
 
 
