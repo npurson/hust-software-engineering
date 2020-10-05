@@ -11,8 +11,8 @@ int main() {
     init_map();
     string command;
     while (true) {
-        skip_player(next_player);
-        show_cmd();
+//        skip_player(next_player);
+//        show_cmd();
         if (getline(cin, command)) {
             if (command == "quit") {
                 break;
