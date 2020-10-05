@@ -402,7 +402,6 @@ void magic_house()
         get_player_by_uid(ntoidx[n - 1])->n_empty_rounds += 2;
         break;
     }
-    return;
 }
 
 
