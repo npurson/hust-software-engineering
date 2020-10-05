@@ -503,7 +503,7 @@ int do_query(player_t& player)
     printf("%d", player.n_block);
     cout <<" 机器娃娃*";
     printf("%d\n", player.n_robot);
-    system("pause");
+    Sleep(1000);
     return 0;
 }
 
