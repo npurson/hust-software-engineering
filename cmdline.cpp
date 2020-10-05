@@ -1,6 +1,3 @@
-#include <iostream>
-#include <cstdlib>
-#include <cctype>
 #include "cmdline.h"
 
 extern p_player_t next_player;

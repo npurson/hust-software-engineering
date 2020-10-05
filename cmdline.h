@@ -1,10 +1,15 @@
 #ifndef RICH_CMDLINE_H
 #define RICH_CMDLINE_H
 
+#include <iostream>
+#include <cstdlib>
+#include <cctype>
 #include <string>
 #include <regex>
+
 #include "player.h"
 #include "map.h"
+
 
 int parse_cmd(const std::string& cmd);
 void tolower(std::string &str);
