@@ -1,0 +1,4 @@
+testname,..,1/1
+testname,testcase,status,time(ms)
+..,barrier_0,True,2.180953025817871e-07
+

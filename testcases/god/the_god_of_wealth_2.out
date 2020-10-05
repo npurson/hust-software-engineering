@@ -2,8 +2,8 @@ user AQ
 
 map 37 Q 0
 
-fund A 5850  #6000-300/2
-fund Q 650   #500+300/2
+fund A 6000  #6000-300/2
+fund Q 500   #500+300/2
 
 credit A 100 #A through the mine at 67
 credit Q 0
