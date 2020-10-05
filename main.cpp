@@ -2,19 +2,13 @@
 #include "map.h"
 #include "cmdline.h"
 
-
 extern int init_money;
 p_player_t next_player;
 
-
 int main() {
-    srand(time(0));
+    srand(time(nullptr));
     init_map();
-    // plot_map();
     string command;
-    init_money = 10000;
-    add_player('Q');
-    next_player = &get_player_vec()->front();
     while (true) {
         next_player = skip_player(next_player);
         show_cmd();

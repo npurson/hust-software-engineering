@@ -6,9 +6,10 @@
 #include <string>
 #include <map>
 
+#define DEFAULT_MONEY   10000
+
 using std::vector;
 using std::string;
-
 
 enum color_t { RED, GREEN, BLUE, YELLOW };
 

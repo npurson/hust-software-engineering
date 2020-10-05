@@ -1,7 +1,7 @@
 #include "cmdline.h"
 
 extern p_player_t next_player;
-
+extern int init_money;
 
 void start_game() {
     string inputs;
@@ -12,6 +12,17 @@ void start_game() {
         getline(cin, inputs);
         num_players = std::stoi(inputs);
         if (num_players >= 2 && num_players <= 4) break;
+        cout << "输入范围有误";
+    }
+
+    while (true) {
+        cout << "请选择初始金钱数量(1000-50000): ";
+        getline(cin, inputs);
+        int money = std::stoi(inputs);
+        if (money >= 1000 && money <= 50000) {
+            init_money = money;
+            break;
+        }
         cout << "输入范围有误";
     }
 
