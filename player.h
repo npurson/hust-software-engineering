@@ -11,6 +11,7 @@
 using std::vector;
 using std::string;
 
+
 enum color_t { RED, GREEN, BLUE, YELLOW };
 
 typedef struct map_node map_node_t, * p_map_node_t;
@@ -28,7 +29,7 @@ typedef struct player {
     int n_block;                    // 玩家的路障道具数量
     int n_bomb;                     // 玩家的炸弹道具数量
     int n_robot;                    // 玩家的机器娃娃道具数量
-    int b_sell_estate;              // TODO set 0 in the beginning of every round
+    int b_sell_estate;
 } player_t, * p_player_t;
 
 void add_player(char uid);
