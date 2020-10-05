@@ -408,7 +408,7 @@ int do_step(int step) {
         }
         c += 1;
     }
-    skip_player(next_player);
+    next_player = skip_player(next_player);
     return 0;
 }
 

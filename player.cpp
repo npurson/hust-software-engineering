@@ -87,5 +87,5 @@ p_player_t skip_player(p_player_t next_player) {
     }
     else    next_player->b_god_buff = 0;
 
-    return nullptr;
+    return next_player;
 }
