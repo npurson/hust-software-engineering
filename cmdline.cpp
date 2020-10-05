@@ -277,6 +277,7 @@ int do_roll() {
             it->estate_lvl = 0;
             it->owner = nullptr;
         }
+
         // empty broken player info
         next_player->n_money = -1;
         next_player->n_points = 0;

@@ -210,6 +210,8 @@ void buy_item(player_t& player)
         // cout << "        1. 路障    2. 机器娃娃    3. 炸弹" << endl;
 
         while (true) {
+            if (player.n_points < 30)
+                cout << "[道具] 点数不足，无法购买道具" << endl;
             show_cmd();
             getline(cin, choice);
             tolower(choice);
