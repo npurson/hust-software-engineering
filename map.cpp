@@ -257,7 +257,6 @@ void buy_item(player_t& player)
         else if (choice == "f") break;
         else cout << "[道具屋] 选择无效，请重新输入。输入f退出" << endl;
     }
-    return;
 }
 
 
@@ -289,7 +288,6 @@ void get_gift(player_t& player)
         else if (choice == "q") break;
         else cout << "[礼品屋] 选择无效，请重新输入。输入q退出" << endl;
     }
-    return;
 }
 
 

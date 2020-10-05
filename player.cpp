@@ -3,8 +3,7 @@
 
 static vector<player_t> player_vec;
 
-int init_money;
-
+int init_money = DEFAULT_MONEY;
 
 vector<player_t>* get_player_vec() {
     return &player_vec;
