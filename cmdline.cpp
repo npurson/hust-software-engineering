@@ -180,7 +180,7 @@ int parse_cmd(const string& cmd) {
                 return -1;
             }
             do_query(*next_player);
-        } else if (word_vec[0] == "block" || word_vec[0] == "barrier") {
+        } else if (word_vec[0] == "block") {
             if (word_vec.size() != 2) {
                 std::cerr << "命令格式错误，block命令格式为：block n，n指定与当前位置的相对距离，范围为[-10,10]" << endl;
                 return -1;
