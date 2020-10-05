@@ -6,8 +6,7 @@ extern p_player_t next_player;
 
 extern int init_money;
 
-
-bool check_num(const string& num_str) {
+bool check_num(const std::string& num_str) {
     if (num_str.empty()) {
         return false;
     }
@@ -131,16 +130,16 @@ vector<string> split_cmd(string cmd) {
 int parse_cmd(const string& cmd) {
     static bool start = false;
     vector<string> word_vec = split_cmd(cmd);
-    if (cmd.empty()) {
+    if (word_vec.empty()) {
         return -1;
     }
     tolower(word_vec[0]);
     if (!start) {
         if (word_vec[0] == "preset") {
-            string::size_type space_pos = cmd.find(' ');
-            do_preset(cmd.substr(space_pos + 1));
+            word_vec.erase(word_vec.begin());
+            auto result = do_preset(word_vec);
             start = true;
-            return 0;
+            return result;
         } else if (word_vec[0] == "start") {
             if (word_vec.size() != 1) {
                 std::cerr << "命令格式错误，start命令格式为：start" << endl;
@@ -153,9 +152,9 @@ int parse_cmd(const string& cmd) {
         }
     } else {
         if (word_vec[0] == "preset") {
-            string::size_type space_pos = cmd.find(' ');
-            do_preset(cmd.substr(space_pos + 1));
-            return 0;
+            word_vec.erase(word_vec.begin());
+            auto result = do_preset(word_vec);
+            return result;
         } else if (word_vec[0] == "roll") {
             if (word_vec.size() != 1) {
                 std::cerr << "命令格式错误，roll命令格式为：roll" << endl;
@@ -188,13 +187,6 @@ int parse_cmd(const string& cmd) {
             }
             auto block_step = std::strtol(word_vec[1].c_str(), nullptr, 10);
             do_block(static_cast<int>(block_step), next_player);
-        // } else if (word_vec[0] == "bomb") {
-        //     if (word_vec.size() != 2) {
-        //         std::cerr << "命令格式错误，bomb命令格式为：bomb n，n指定与当前位置的相对距离，范围为[-10,10]" << endl;
-        //         return -1;
-        //     }
-        //     auto bomb_step = std::strtol(word_vec[1].c_str(), nullptr, 10);
-        //     do_bomb(static_cast<int>(bomb_step), next_player);
         } else if (word_vec[0] == "robot") {
             if (word_vec.size() != 1) {
                 std::cerr << "命令格式错误，robot命令格式为：robot" << endl;
@@ -245,11 +237,6 @@ void do_sell(map_t& map, player_t& player, int map_node_idx)
     map[map_node_idx].owner = nullptr;
     map[map_node_idx].estate_lvl = WASTELAND;
     cout << "[卖房] 卖出房产成功" << endl;
-}
-
-
-void do_bomb(int step, p_player_t player) {
-   apply_item(*get_map(), *player, BOMB, static_cast<int>(step));
 }
 
 
@@ -423,12 +410,14 @@ int do_step(int step) {
 }
 
 
-int do_preset(string cmd) {
-    if (cmd.back() == '\n') {
-        cmd.pop_back();
+int do_preset(const std::vector<std::string>& word_vec) {
+    if (word_vec.empty()) {
+        return -1;
     }
-    auto word_vec = split_cmd(cmd);
     if (word_vec[0] == "user") {
+        if (word_vec.size() != 2) {
+            return -1;
+        }
         auto player_vec = get_player_vec();
         player_vec->clear();
         for (char uid : word_vec[1]) {
@@ -436,6 +425,8 @@ int do_preset(string cmd) {
         }
         next_player = &player_vec->front();
     } else if (word_vec[0] == "map") {
+        if (word_vec.size() != 4) return -1;
+        if (!check_num(word_vec[1]) || !check_num(word_vec[3])) return -1;
         int n_map = std::stoi(word_vec[1]);
         p_map_t map;
         if (n_map == START_POS || n_map == HOSPITAL_POS || n_map == ITEM_HOUSE_POS || n_map == GIFT_HOUSE_POS || n_map == PRISON_POS || n_map == MAGIC_HOUSE_POS) {
@@ -452,16 +443,22 @@ int do_preset(string cmd) {
         map->at(n_map).estate_lvl = level;
         map->at(n_map).owner->estate.push_back(&map->at(n_map));
     } else if (word_vec[0] == "fund") {
+        if (word_vec.size() != 3) return -1;
+        if (!check_num(word_vec[2])) return -1;
         char player_name = word_vec[1].front();
         auto player = get_player_by_uid(player_name);
         int money = std::stoi(word_vec[2]);
         player->n_money = money;
     } else if (word_vec[0] == "credit") {
+        if (word_vec.size() != 3) return -1;
+        if (!check_num(word_vec[2])) return -1;
         char player_name = word_vec[1].front();
         auto player = get_player_by_uid(player_name);
         int points = std::stoi(word_vec[2]);
         player->n_points = points;
     } else if (word_vec[0] == "gift") {
+        if (word_vec.size() != 4) return -1;
+        if (!check_num(word_vec[3])) return -1;
         char player_name = word_vec[1].front();
         auto player = get_player_by_uid(player_name);
         auto prop_name = word_vec[2];
@@ -474,10 +471,11 @@ int do_preset(string cmd) {
             player->n_god_buff = number;
             player->b_god_buff = 1;
         } else {
-            std::cerr << "请选择有效的道具种类" << endl;
             return -1;
         }
     } else if (word_vec[0] == "userloc") {
+        if (word_vec.size() != 4) return -1;
+        if (!check_num(word_vec[2]) || !check_num(word_vec[3])) return -1;
         char player_name = word_vec[1].front();
         int n_map_id = std::stoi(word_vec[2]);
         int rest_days = std::stoi(word_vec[3]);
@@ -487,18 +485,19 @@ int do_preset(string cmd) {
         p_map_t map = get_map();
         map->at(n_map_id).players.push_back(player);
     } else if (word_vec[0] == "nextuser") {
+        if (word_vec.size() != 2) return -1;
         char player_name = word_vec[1].front();
         next_player = get_player_by_uid(player_name);
     } else {
-        auto map = get_map();
+        auto p_map = get_map();
         if (word_vec[0] == "bomb") {
             int map_id = std::stoi(word_vec[1]);
-            map->at(map_id).item = BOMB;
+            p_map->at(map_id).item = BOMB;
         } else if (word_vec[0] == "barrier") {
             int map_id = std::stoi(word_vec[1]);
-            map->at(map_id).item = BLOCK;
+            p_map->at(map_id).item = BLOCK;
         } else {
-            std::cerr << "无效的命令" << endl;
+            return -1;
         }
     }
     return 0;

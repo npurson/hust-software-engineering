@@ -1,5 +1,6 @@
 #include <iostream>
 #include "cmdline.h"
+#include <cstdlib>
 
 extern int init_money;
 
@@ -10,6 +11,8 @@ int main() {
     srand(time(nullptr));
     init_map();
     string command;
+    system("chcp 65001");
+    system("cls");
     while (true) {
     // skip_player(next_player);
         show_cmd();
