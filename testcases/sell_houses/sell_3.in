@@ -12,6 +12,6 @@ preset nextuser Q    # next interactive player is S
 
 step 2  #Q
 n
-sell 100  #S 
+sell 60  #S 
 
 dump 
