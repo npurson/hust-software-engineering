@@ -361,10 +361,10 @@ bool step_forward(map_t& map, player_t& player, int steps)
             player.n_points += map[player.n_pos].value;
             cout << "[矿地] 获得点数 " << map[player.n_pos].value << " 点" << endl;
             return false;
-        // case PRISON:
-        //     player.n_empty_rounds = 2;
-        //     cout << "[监狱] 打工是不可能打工的，这辈子都不可能打工的" << endl;
-        //     return false;
+        case PRISON:
+            player.n_empty_rounds = 2;
+            cout << "[监狱] 打工是不可能打工的，这辈子都不可能打工的" << endl;
+            return false;
         case MAGIC_HOUSE: magic_house(); return false;
         default: return false;
     }
@@ -388,7 +388,7 @@ void magic_house()
             cout << "[魔法屋] 输入角色无效，请重新选择还在场上的角色" << endl;
             continue;
         }
-        get_player_by_uid(ntoidx[n])->n_empty_rounds += 2;
+        get_player_by_uid(ntoidx[n - 1])->n_empty_rounds += 2;
         break;
     }
     return;
