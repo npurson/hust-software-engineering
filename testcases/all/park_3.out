@@ -2,7 +2,8 @@ user AQ
 fund A 10400
 credit A 0
 userloc A 15 0
-fund Q 10000
+map 3 Q 0
+fund Q 10400
 credit Q 0
-userloc Q 47 0
+userloc Q 50 0
 nextuser Q

@@ -1,0 +1,5 @@
+testname,..,2/2
+testname,testcase,status,time(ms)
+..,gift_house_0,True,3.219157695770264e-06
+..,gift_house_1,True,1.1729509830474853e-06
+

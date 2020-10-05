@@ -1,0 +1,6 @@
+testname,..,3/3
+testname,testcase,status,time(ms)
+..,mine_0,True,2.228696584701538e-06
+..,mine_2,True,2.2845594882965087e-06
+..,mine_1,True,2.230616569519043e-06
+
