@@ -23,5 +23,5 @@ void do_block(int step, p_player_t player);
 void do_sell(map_t& map, player_t& player, int map_node_idx);
 void show_cmd();
 void tolower(std::string& str);
-
+void erase_player_from_curr_pos(p_player_t p_player);
 #endif // RICH_CMDLINE_H

@@ -249,17 +249,20 @@ void do_block(int step, p_player_t player) {
     apply_item(*get_map(), *player, BLOCK, static_cast<int>(step));
 }
 
+void erase_player_from_curr_pos(p_player_t p_player) {
+    p_map_t p_map = get_map();
+    auto &node = p_map->at(next_player->n_pos);
+    for(auto it=node.players.begin(); it!=node.players.end();++it){
+        if(*it == next_player){
+            node.players.erase(it);
+            break;
+        }
+    }
+}
 
 int do_roll() {
     if (roll_dice(*get_map(), *next_player)) {
-        p_map_t map = get_map();
-        auto &node = map->at(next_player->n_pos);
-        for(auto it=node.players.begin(); it!=node.players.end();++it){
-            if(*it == next_player){
-                node.players.erase(it);
-                break;
-            }
-        }
+        erase_player_from_curr_pos(next_player);
         for (auto &it : next_player->estate) {
             it->estate_lvl = 0;
             it->owner = nullptr;
@@ -371,7 +374,8 @@ void show_cmd() {
 
 
 int do_step(int step) {
-    if (step_forward(*get_map(), *next_player, step)){
+    if (step_forward(*get_map(), *next_player, step)) {
+        erase_player_from_curr_pos(next_player);
         for (auto & it : next_player->estate){
             it->estate_lvl = 0;
             it->owner = nullptr;
@@ -490,12 +494,7 @@ int do_preset(const std::vector<std::string>& word_vec) {
         int rest_days = std::stoi(word_vec[3]);
         auto player = get_player_by_uid(player_name);
         p_map_t map = get_map();
-        auto &node = map->at(player->n_pos);
-        for (auto p = node.players.begin(); p != node.players.end(); ++p) {
-            if (*p == player) {
-                node.players.erase(p);
-            }
-        }
+        erase_player_from_curr_pos(player);
         player->n_empty_rounds = rest_days;
         player->n_pos = n_map_id;
         map->at(n_map_id).players.push_back(player);
