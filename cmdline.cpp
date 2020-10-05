@@ -224,7 +224,7 @@ void do_sell(map_t& map, player_t& player, int map_node_idx)
     // basic rules
     if (player.b_sell_estate == 1 ||
         map[map_node_idx].type != VACANCY ||
-        map[map_node_idx].owner ||
+        !(map[map_node_idx].owner) ||
         map[map_node_idx].owner->uid != player.uid) {
         cout << "[卖房] 卖出房产失败" << endl;
         return;
@@ -503,7 +503,7 @@ int do_query(player_t& player)
     printf("%d", player.n_block);
     cout <<" 机器娃娃*";
     printf("%d\n", player.n_robot);
-    system("pause");
+    Sleep(1000);
     return 0;
 }
 
@@ -520,6 +520,7 @@ int do_help() {
     help_str.append("quit     —— 退出游戏\n");
     help_str.append("help     —— 显示此帮助");
     cout << help_str << endl;
+    system("pause");
     return 0;
 }
 
