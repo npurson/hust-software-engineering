@@ -57,7 +57,7 @@ p_player_t skip_player(p_player_t next_player) {
     if (!next_player) return nullptr;
 
     // next player
-    if (next_player->n_money < 0 || next_player->n_empty_rounds != 0) {
+    while (next_player->n_money < 0 || next_player->n_empty_rounds != 0) {
         if (next_player->n_empty_rounds > 0) next_player->n_empty_rounds -= 1;
         if (next_player->n_god_buff > 0) next_player->n_god_buff -= 1;
 

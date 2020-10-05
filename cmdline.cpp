@@ -508,9 +508,9 @@ int do_query(player_t& player)
     cout << endl;
     cout << "道具:" << " 路障*";
     printf("%d", player.n_block);
-    cout <<" 机器娃娃*";
+    cout << " 机器娃娃*";
     printf("%d\n", player.n_robot);
-    Sleep(1000);
+    system("pause");
     return 0;
 }
 
