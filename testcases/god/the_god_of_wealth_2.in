@@ -33,6 +33,7 @@ step 20 #Q:52->2
 n
 step 60 #A:47->37
 step 10 #Q:2->12
+n
 
 dump
 

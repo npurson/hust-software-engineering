@@ -6,7 +6,7 @@ preset credit S 10
 
 preset gift A barrier 1
 preset gift Q robot 1
-preset gift S barriar 1
+preset gift S barrier 1
 
 preset barrier 43
 
@@ -18,5 +18,6 @@ preset nextuser Q
 
 robot #Q remove barrier at 43
 step 10 #Q:41->51
+n
 
 dump 

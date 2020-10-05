@@ -1,7 +1,26 @@
+#include <cctype>
 #include "cmdline.h"
+
 
 extern p_player_t next_player;
 extern int init_money;
+
+
+bool check_num(const std::string& num_str) {
+    if (num_str.empty()) {
+        return false;
+    }
+    if (num_str[0] == 0) {
+        return false;
+    } else {
+        for (const auto& c : num_str) {
+            if (!std::isdigit(c)) {
+                return false;
+            }
+        }
+        return true;
+    }
+}
 
 
 void start_game() {
@@ -19,15 +38,17 @@ void start_game() {
     while (true) {
         cout << "请选择初始金钱数量(1000-50000): ";
         getline(cin, inputs);
-        int money = std::stoi(inputs);
-        if (money >= 1000 && money <= 50000) {
-            init_money = money;
-            break;
+        if (check_num(inputs)) {
+            int money = std::stoi(inputs);
+            if (money >= 1000 && money <= 50000) {
+                init_money = money;
+                break;
+            }
         }
         cout << "输入范围有误";
     }
 
-    int reset_flag = 0;
+    int reset_flag;
     while (true) {
         reset_flag = 0;
         cout << "请按顺序输入" ;
@@ -170,15 +191,9 @@ int parse_cmd(const string& cmd) {
             }
             auto step = std::strtol(word_vec[1].c_str(), nullptr, 10);
             do_step(static_cast<int>(step));
-        } else if (word_vec[0] == "query") {
-            if (word_vec.size() != 1) {
-                std::cerr << "命令格式错误，query命令格式为：query" << endl;
-                return -1;
-            }
-            do_query(*next_player);
         } else if (word_vec[0] == "help") {
             if (word_vec.size() != 1) {
-                std::cerr << "命令格式错误，query命令格式为：query" << std::endl;
+                std::cerr << "命令格式错误，help命令格式为：help" << std::endl;
                 return -1;
             }
             do_help();
@@ -216,9 +231,9 @@ void do_sell(map_t& map, player_t& player, int map_node_idx)
 }
 
 
-void do_bomb(int step, p_player_t player) {
-    apply_item(*get_map(), *player, BOMB, static_cast<int>(step));
-}
+//void do_bomb(int step, p_player_t player) {
+//    apply_item(*get_map(), *player, BOMB, static_cast<int>(step));
+//}
 
 
 void do_robot(p_player_t player) {
@@ -372,7 +387,7 @@ int do_preset(string cmd) {
         }
         next_player = &player_vec->front();
     } else if (word_vec[0] == "map") {
-        int n_map = atoi(word_vec[1].c_str());
+        int n_map = std::stoi(word_vec[1]);
         p_map_t map;
         if (n_map == START_POS || n_map == HOSPITAL_POS || n_map == ITEM_HOUSE_POS || n_map == GIFT_HOUSE_POS || n_map == PRISON_POS || n_map == MAGIC_HOUSE_POS) {
             return -1;
@@ -384,24 +399,24 @@ int do_preset(string cmd) {
             }
             map->at(n_map).owner = get_player_by_uid(player_name);
         }
-        int level = atoi(word_vec[3].c_str());
+        int level = std::stoi(word_vec[3]);
         map->at(n_map).estate_lvl = level;
         map->at(n_map).owner->estate.push_back(&map->at(n_map));
     } else if (word_vec[0] == "fund") {
         char player_name = word_vec[1].front();
         auto player = get_player_by_uid(player_name);
-        int money = atoi(word_vec[2].c_str());
+        int money = std::stoi(word_vec[2]);
         player->n_money = money;
     } else if (word_vec[0] == "credit") {
         char player_name = word_vec[1].front();
         auto player = get_player_by_uid(player_name);
-        int points = atoi(word_vec[2].c_str());
+        int points = std::stoi(word_vec[2]);
         player->n_points = points;
     } else if (word_vec[0] == "gift") {
         char player_name = word_vec[1].front();
         auto player = get_player_by_uid(player_name);
         auto prop_name = word_vec[2];
-        int number = atoi(word_vec[3].c_str());
+        int number = std::stoi(word_vec[3]);
         if (prop_name == "bomb") {
             player->n_bomb = number;
         } else if (prop_name == "barrier") {
@@ -415,8 +430,8 @@ int do_preset(string cmd) {
         }
     } else if (word_vec[0] == "userloc") {
         char player_name = word_vec[1].front();
-        int n_map_id = atoi(word_vec[2].c_str());
-        int rest_days = atoi(word_vec[3].c_str());
+        int n_map_id = std::stoi(word_vec[2]);
+        int rest_days = std::stoi(word_vec[3]);
         auto player = get_player_by_uid(player_name);
         player->n_empty_rounds = rest_days;
         player->n_pos = n_map_id;
@@ -428,10 +443,10 @@ int do_preset(string cmd) {
     } else {
         auto map = get_map();
         if (word_vec[0] == "bomb") {
-            int map_id = atoi(word_vec[1].c_str());
+            int map_id = std::stoi(word_vec[1]);
             map->at(map_id).item = BOMB;
         } else if (word_vec[0] == "barrier") {
-            int map_id = atoi(word_vec[1].c_str());
+            int map_id = std::stoi(word_vec[1]);
             map->at(map_id).item = BLOCK;
         } else {
             std::cerr << "无效的命令" << endl;
