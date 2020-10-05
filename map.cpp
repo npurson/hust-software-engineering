@@ -164,6 +164,7 @@ void apply_item(map_t& map, player_t& player, int item, int pos)
                 cout << "[路障] 无法在所选位置放置路障" << endl;
             else {
                 map[(player.n_pos + pos) % MAP_SIZE].item = BLOCK;
+                player.n_block -= 1;
                 cout << "[路障] 路障放置成功" << endl;
             }
         }
@@ -340,7 +341,7 @@ bool step_forward(map_t& map, player_t& player, int steps)
                 ) {
                 int payment = get_estate_price(map[player.n_pos]) / 2;
                 cout << "[租金] 需支付过路费 " << payment << " 元" << endl;
-                if (player.n_god_buff) {
+                if (player.b_god_buff) {
                     cout << "[财神] 财神附身，无需付钱" << endl;
                     Sleep(1000);
                 }

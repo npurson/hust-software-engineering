@@ -3,7 +3,7 @@ map 33 A 0
 
 fund A 20480
 fund Q 5000
-fund S 100  
+fund S 700  
 
 credit A 0
 credit Q 0
@@ -13,4 +13,4 @@ userloc A 14 0
 userloc Q 2 0
 userloc S 26 0
 
-nextuser s
+nextuser S

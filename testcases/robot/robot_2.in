@@ -19,11 +19,11 @@ preset nextuser S
 robot #S
 step 10 #S:32->42
 n
-barrier -2 #barrier at 28
+block -3 #barrier at 27
 step 7 #A:30->37
 n
-robot # do not remove barrier at 28
-step 22 #Q:15->37 through barrier at 28
+robot # do not remove barrier at 27
+step 22 #Q:15->37 through barrier at 27
 n
 
 dump 
