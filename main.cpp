@@ -1,8 +1,8 @@
 #include <iostream>
-
 #include "cmdline.h"
 
 extern int init_money;
+
 p_player_t next_player = nullptr;
 
 

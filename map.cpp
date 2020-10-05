@@ -390,7 +390,7 @@ void magic_house()
     char ntoidx[4] = {'Q', 'A', 'S', 'J'};
     long n;
     while (true){
-        std::cout << "[魔法屋] 请输入您想陷害的玩家: 1-钱夫人 2-阿土伯 3-孙小美 4-金贝贝" << std::endl;
+        cout << "[魔法屋] 请输入您想陷害的玩家: 1-钱夫人 2-阿土伯 3-孙小美 4-金贝贝" << endl;
         getline(cin, inputs);
         n = std::stol(inputs);
         if (n < 1 || n > 4){

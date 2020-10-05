@@ -3,10 +3,11 @@
 
 
 extern p_player_t next_player;
+
 extern int init_money;
 
 
-bool check_num(const std::string& num_str) {
+bool check_num(const string& num_str) {
     if (num_str.empty()) {
         return false;
     }
@@ -37,7 +38,7 @@ void start_game() {
                 break;
             }
         }
-        std::cout << "输入范围有误" << std::endl;
+        cout << "输入范围有误" << endl;
     }
 
     while (true) {
@@ -47,7 +48,7 @@ void start_game() {
             num_players = std::stoi(inputs);
             if (num_players >= 2 && num_players <= 4) break;
         }
-        std::cout << "输入范围有误" << std::endl;
+        cout << "输入范围有误" << endl;
     }
 
     int reset_flag;
@@ -98,7 +99,7 @@ void start_game() {
 vector<string> split_cmd(string cmd) {
     vector<string> word_vec;
     auto comment_pos = cmd.find('#');
-    if (comment_pos != std::string::npos) {
+    if (comment_pos != string::npos) {
         cmd = cmd.substr(0, comment_pos); // 去除注释
     }
     while (!cmd.empty() && std::isspace(cmd.front())) {
@@ -290,11 +291,11 @@ int do_roll() {
             winner = it;
         }
         if (count == (players->size() - 1)) {
-            std::cout << "游戏结束，获胜的玩家是:";
-            if (winner.uid == 'Q') std::cout << "钱夫人";
-            if (winner.uid == 'A') std::cout << "阿土伯";
-            if (winner.uid == 'S') std::cout << "孙小美";
-            if (winner.uid == 'J') std::cout << "金贝贝";
+            cout << "游戏结束，获胜的玩家是:";
+            if (winner.uid == 'Q') cout << "钱夫人";
+            if (winner.uid == 'A') cout << "阿土伯";
+            if (winner.uid == 'S') cout << "孙小美";
+            if (winner.uid == 'J') cout << "金贝贝";
             exit(EXIT_SUCCESS);
         }
     }
@@ -367,10 +368,10 @@ void show_cmd() {
 
     if (next_player != nullptr) {
         SetConsoleTextAttribute(h_out, color_table[ next_player->e_color ]);
-        std::cout << next_player->name;
+        cout << next_player->name;
         SetConsoleTextAttribute(h_out,FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED | FOREGROUND_INTENSITY);
     } else {
-        std::cout << "请输入start开始游戏";
+        cout << "请输入start开始游戏";
     }
     cout << ">";
 }
@@ -462,7 +463,7 @@ int do_preset(string cmd) {
             player->n_god_buff = number;
             player->b_god_buff = 1;
         } else {
-            std::cerr << "请选择有效的道具种类" << std::endl;
+            std::cerr << "请选择有效的道具种类" << endl;
             return -1;
         }
     } else if (word_vec[0] == "userloc") {
