@@ -248,7 +248,7 @@ void do_block(int step, p_player_t player) {
 
 int do_roll() {
     if (roll_dice(*get_map(), *next_player)) {
-        for (auto & it : next_player->estate) {
+        for (auto &it : next_player->estate) {
             it->estate_lvl = 0;
             it->owner = nullptr;
         }
@@ -263,8 +263,24 @@ int do_roll() {
         next_player->n_bomb = 0;
         next_player->n_robot = 0;
         next_player->b_sell_estate = 0;
-    }
 
+        // check winner
+        auto players = get_player_vec();
+        auto winner = (*get_player_vec())[0];
+        int count = 0;
+        for (auto &it : *players) {
+            if (it.n_money < 0) count += 1;
+            winner = it;
+        }
+        if (count == (players->size() - 1)) {
+            std::cout << "游戏结束，获胜的玩家是:";
+            if (winner.uid == 'Q') std::cout << "钱夫人";
+            if (winner.uid == 'A') std::cout << "阿土伯";
+            if (winner.uid == 'S') std::cout << "孙小美";
+            if (winner.uid == 'J') std::cout << "金贝贝";
+            exit(EXIT_SUCCESS);
+        }
+    }
     // switch to next player
     auto players = get_player_vec();
     int c = 0;

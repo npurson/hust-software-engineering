@@ -16,8 +16,8 @@ preset userloc S 29 0
 
 preset nextuser Q
 
-robot #Q remove barrier at 43
-step 10 #Q:41->51
+robot
+step 10
 n
 
 dump 
