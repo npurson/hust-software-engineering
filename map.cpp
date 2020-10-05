@@ -172,7 +172,7 @@ void apply_item(map_t& map, player_t& player, int item, int pos)
             cout << "[道具] 没有娃娃，无法使用道具" << endl;
         }
         else {
-            for (int i = -10; i <= 10; ++i)
+            for (int i = 0; i <= 10; ++i)
                 map[player.n_pos + i].item = NONE;
             player.n_robot -= 1;
             cout << "[机器娃娃] 机器娃娃使用成功" << endl;
