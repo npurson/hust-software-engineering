@@ -31,14 +31,15 @@ void start_game() {
         reset_flag = 0;
         cout << "请按顺序输入" ;
         printf("%d", num_players);
-        cout<< "位角色: Q-钱夫人 A-阿土伯 S-孙小美 J-金贝贝" << endl;
+        cout<< "位角色: 1-钱夫人 2-阿土伯 3-孙小美 4-金贝贝" << endl;
         getline(cin, inputs);
         if (inputs.length() != num_players){
             cout << "输入角色个数有误"<< endl;
             continue;
         }
         for (int i = 0; i < inputs.length(); i++) {
-            if (inputs[i] != 'Q' && inputs[i] != 'A' && inputs[i] != 'S' && inputs[i] != 'J') {
+            if (!(inputs[i] == 'Q' || inputs[i] == 'A' || inputs[i] == 'S' || inputs[i] == 'J' ||
+                  inputs[i] == '1' || inputs[i] == '2' || inputs[i] == '3' || inputs[i] == '4')) {
                 reset_flag = 1;
                 break;
             }
@@ -58,6 +59,10 @@ void start_game() {
         tmp->clear();
         
         for (char input : inputs) {
+            if (input == '1')   input = 'Q';
+            if (input == '2')   input = 'A';
+            if (input == '3')   input = 'S';
+            if (input == '4')   input = 'J';
             add_player(input);
         }
         next_player = &((*tmp)[0]);
