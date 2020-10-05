@@ -1,6 +1,5 @@
-#include "map.h"
-#include "player.h"
 #include "cmdline.h"
+#include "map.h"
 
 
 static map_t map;
@@ -11,15 +10,14 @@ p_map_t init_map()
     for (int i = 0; i < MAP_SIZE; ++i) {
         switch (i) {
             case START_POS: map.emplace_back(i, START); break;
-            case HOSPITAL_POS: map.emplace_back(i, HOSPITAL); break;
+            case HOSPITAL_POS: map.emplace_back(i, PARK); break;                // requirements changed
             case ITEM_HOUSE_POS: map.emplace_back(i, ITEM_HOUSE); break;
             case GIFT_HOUSE_POS: map.emplace_back(i, GIFT_HOUSE); break;
-            case PRISON_POS: map.emplace_back(i, PRISON); break;
+            case PRISON_POS: map.emplace_back(i, PARK); break;                  // requirements changed
             case MAGIC_HOUSE_POS: map.emplace_back(i, MAGIC_HOUSE); break;
 
             case 64: map.emplace_back(i, MINE, 60); break;
-            case 65:
-            case 68: map.emplace_back(i, MINE, 80); break;
+            case 65: case 68: map.emplace_back(i, MINE, 80); break;
             case 66: map.emplace_back(i, MINE, 40); break;
             case 67: map.emplace_back(i, MINE, 100); break;
             case 69: map.emplace_back(i, MINE, 20); break;
@@ -36,14 +34,15 @@ p_map_t init_map()
 }
 
 
-p_map_t get_map() {
+p_map_t get_map()
+{
     return &map;
 }
 
 
 void plot_map()
 {
-    static const char hash_table[29*8]={
+    static const char hash_table[29 * 8] = {
             0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28,
             69, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 29,
             68, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 30,
@@ -53,44 +52,45 @@ void plot_map()
             64, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 34,
             63, 62, 61, 60, 59, 58, 57, 56, 55, 54, 53, 52, 51, 50, 49, 48, 47, 46, 45, 44, 43, 42, 41, 40, 39, 38, 37, 36, 35
     };
-    static const char type_table[8] = {'S','0','T','G','M','H','P','$'};
-    static const unsigned short color_table[4] = {FOREGROUND_RED,FOREGROUND_GREEN,FOREGROUND_BLUE,FOREGROUND_RED|FOREGROUND_GREEN};
-    static const char item_table[4] = {'\0','#','@','R'};
+    static const char type_table[9] = { 'S', '0', 'T', 'G', 'M', 'H', 'P', '$', 'P' };
+    static const unsigned short color_table[4] = { FOREGROUND_RED, FOREGROUND_GREEN, FOREGROUND_BLUE, 
+                                                   FOREGROUND_RED | FOREGROUND_GREEN };
+    static const char item_table[4] = { '\0', '#', '@', 'R' };
 
     HANDLE h_out;
-    h_out=GetStdHandle(STD_OUTPUT_HANDLE);
+    h_out = GetStdHandle(STD_OUTPUT_HANDLE);
     system("cls");
-    SetConsoleCursorPosition(h_out,(COORD){0,0});
+    SetConsoleCursorPosition(h_out, (COORD){ 0, 0 });
 
-    for(int i=0; i<29*8; i++){
-        SetConsoleTextAttribute(h_out, FOREGROUND_BLUE|FOREGROUND_GREEN|FOREGROUND_RED|FOREGROUND_INTENSITY);
-        //empty space
-        if(hash_table[i] == 0 && i!=0) { putchar(' '); continue; }
+    for(int i = 0; i < 29 * 8; ++i){
+        SetConsoleTextAttribute(h_out, FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED | FOREGROUND_INTENSITY);
+        // empty space
+        if (hash_table[i] == 0 && i != 0) { putchar(' '); continue; }
 
         // basic map
-        char buf = type_table[ map[hash_table[i]].type ];
-        if(buf == '0') {
+        char buf = type_table[map[hash_table[i]].type];
+        if (buf == '0') {
             buf += map[hash_table[i]].estate_lvl;
-            if(map[hash_table[i]].owner!=NULL){
-                SetConsoleTextAttribute(h_out, color_table[ map[hash_table[i]].owner->e_color ]);
+            if (map[hash_table[i]].owner) {
+                SetConsoleTextAttribute(h_out, color_table[map[hash_table[i]].owner->e_color]);
             }
         }
 
         // item
-        if((map[hash_table[i]].item==BLOCK) || (map[hash_table[i]].item==BOMB)){
-            buf = item_table[ map[hash_table[i]].item ];
+        if ((map[hash_table[i]].item == BLOCK) || (map[hash_table[i]].item == BOMB)) {
+            buf = item_table[map[hash_table[i]].item];
         }
 
-        //player
-        if(map[hash_table[i]].players.empty() == false){
+        // player
+        if (map[hash_table[i]].players.empty() == false) {
             buf=map[hash_table[i]].players.back()->uid;
             SetConsoleTextAttribute(h_out, color_table[ map[hash_table[i]].players.back()->e_color ]);
         }
-        //render
+        // render
         putchar(buf);
-        if((i % 29) == 28) printf("\n");
+        if ((i % 29) == 28) printf("\n");
     }
-    SetConsoleCursorPosition(h_out,(COORD){0,10});
+    SetConsoleCursorPosition(h_out, (COORD){ 0, 10 });
 }
 
 
@@ -98,7 +98,7 @@ void buy_estate(map_t& map, player_t& player)
 {
     int map_node_idx = player.n_pos;
     if (map[map_node_idx].type != VACANCY ||
-        map[map_node_idx].owner != nullptr ||
+        map[map_node_idx].owner ||
         player.n_money < map[map_node_idx].value)
         return;
 
@@ -124,7 +124,6 @@ void buy_estate(map_t& map, player_t& player)
 void update_estate(map_t& map, player_t& player)
 {
     int map_node_idx = player.n_pos;
-
     if (map[map_node_idx].type != VACANCY ||
         map[map_node_idx].owner == nullptr ||
         map[map_node_idx].owner->uid != player.uid ||
@@ -144,6 +143,7 @@ void update_estate(map_t& map, player_t& player)
             player.n_money -= map[map_node_idx].value;
             map[map_node_idx].estate_lvl += 1;
             cout << "[升级] 建筑升级成功" << endl;
+            break;
         }
         else if (choice == "n") break;
         else cout << "[升级] 选择无效，请重新输入" << endl;
@@ -174,7 +174,7 @@ void apply_item(map_t& map, player_t& player, int item, int pos)
         else {
             for (int i = 0; i < 10; ++i)
                 map[player.n_pos + i].item = NONE;
-            player.n_robot -= 1; // TODO 机器娃娃效果
+            player.n_robot -= 1;
             cout << "[机器娃娃] 机器娃娃使用成功" << endl;
         }
     }
@@ -331,8 +331,10 @@ bool step_forward(map_t& map, player_t& player, int steps)
                     cout << "[破产] 嘤嘤嘤破产辽，游戏结束" << endl;
                     return true;
                 }
-                map[player.n_pos].owner->n_money += payment;
-                player.n_money -= payment;
+                else {
+                    map[player.n_pos].owner->n_money += payment;
+                    player.n_money -= payment;
+                }
             }
             // 升级
             else if (map[player.n_pos].owner &&

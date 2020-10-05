@@ -10,6 +10,7 @@
 
 #include "player.h"
 
+
 #define START_POS           0
 #define HOSPITAL_POS        14
 #define ITEM_HOUSE_POS      28
@@ -26,7 +27,7 @@ using std::getline;
 
 
 // 地图结点类型
-enum NodeType { START, VACANCY, ITEM_HOUSE, GIFT_HOUSE, MAGIC_HOUSE, HOSPITAL, PRISON, MINE };
+enum NodeType { START, VACANCY, ITEM_HOUSE, GIFT_HOUSE, MAGIC_HOUSE, HOSPITAL, PRISON, MINE, PARK };
 // 房产等级
 enum EstateLevel { WASTELAND, HUT, HOUSE, SKYSCRAPER };
 // 道具类型
@@ -36,12 +37,12 @@ typedef struct player player_t, * p_player_t;
 
 typedef struct map_node {
     int id;
-    int type;                   // 地图结点类型，枚举类型为NodeType
-    int estate_lvl;             // 房产等级，type==VACANCY时有效。枚举类型为EstateLevel
+    int type;                       // 地图结点类型，枚举类型为NodeType
+    int estate_lvl;                 // 房产等级，type==VACANCY时有效。枚举类型为EstateLevel
     p_player_t owner;               // 房产的拥有者，type==VACANCY时有效。枚举类型为PlayerIdx
     vector<p_player_t> players;     // 当前处于该结点的玩家。枚举类型为PlayerIdx
-    int item;                   // 当前置于该结点的道具。枚举类型为ItemType或None
-    int value;                 // type==VACANCY时为空地价格，计算房产价值时乘以（房产等级+1）；type==MINE时为可获取的点数
+    int item;                       // 当前置于该结点的道具。枚举类型为ItemType或None
+    int value;                      // type==VACANCY时为空地价格，计算房产价值时乘以（房产等级+1）；type==MINE时为可获取的点数
 
     map_node(int i, int t) :id(i), type(t), estate_lvl(), owner(), players(), item(), value() {}
     map_node(int i, int t, int v) :id(i), type(t), value(v), estate_lvl(), owner(), players(), item() {}

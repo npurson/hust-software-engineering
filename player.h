@@ -4,6 +4,7 @@
 #include <cstdint>
 #include <vector>
 #include <string>
+#include <map>
 
 using std::vector;
 using std::string;
