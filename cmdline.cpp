@@ -362,8 +362,16 @@ void do_dump() {
 
 
 void show_cmd() {
+    HANDLE h_out=GetStdHandle(STD_OUTPUT_HANDLE);
+    static const unsigned short color_table[4] = { FOREGROUND_RED, FOREGROUND_GREEN, FOREGROUND_BLUE,
+                                                   FOREGROUND_RED | FOREGROUND_GREEN };
+
     if (next_player != nullptr) {
-        cout << next_player->name;
+        SetConsoleTextAttribute(h_out, color_table[ next_player->e_color ]);
+        std::cout << next_player->name;
+        SetConsoleTextAttribute(h_out,FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED | FOREGROUND_INTENSITY);
+    } else {
+        std::cout << "请输入start开始游戏";
     }
     cout << ">";
 }
