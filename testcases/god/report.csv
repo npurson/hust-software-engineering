@@ -1,7 +1,6 @@
-testname,..,2/4
+testname,..,3/3
 testname,testcase,status,time(ms)
-..,the_god_of_wealth_2,False,4.413637638092041e-06
-..,the_god_of_wealth_3,False,2.257129192352295e-06
-..,the_god_of_wealth_1,True,3.3567938804626465e-06
-..,the_god_of_wealth_0,True,2.302636384963989e-06
+..,the_god_of_wealth_1,True,3.3254003524780272e-06
+..,the_god_of_wealth_2,True,4.386504411697388e-06
+..,the_god_of_wealth_0,True,2.28485894203186e-06
 
