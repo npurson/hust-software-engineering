@@ -210,6 +210,8 @@ void buy_item(player_t& player)
         // cout << "        1. 路障    2. 机器娃娃    3. 炸弹" << endl;
 
         while (true) {
+            if (player.n_points < 30)
+                cout << "[道具] 点数不足，无法购买道具" << endl;
             show_cmd();
             getline(cin, choice);
             tolower(choice);
@@ -390,7 +392,7 @@ void magic_house()
     char ntoidx[4] = {'Q', 'A', 'S', 'J'};
     long n;
     while (true){
-        std::cout << "[魔法屋] 请输入您想陷害的玩家: 1-钱夫人 2-阿土伯 3-孙小美 4-金贝贝" << std::endl;
+        cout << "[魔法屋] 请输入您想陷害的玩家: 1-钱夫人 2-阿土伯 3-孙小美 4-金贝贝" << endl;
         getline(cin, inputs);
         n = std::stol(inputs);
         if (n < 1 || n > 4){

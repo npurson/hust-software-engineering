@@ -1,0 +1,7 @@
+testname,..,4/4
+testname,testcase,status,time(ms)
+..,magic_2,True,1.1758613586425782e-07
+..,magic_3,True,4.877567291259766e-08
+..,magic_1,True,6.880807876586915e-08
+..,magic_0,True,4.416275024414063e-08
+

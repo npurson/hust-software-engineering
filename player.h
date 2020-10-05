@@ -5,9 +5,15 @@
 #include <vector>
 #include <string>
 #include <map>
+#include <iostream>
+#include <cstdlib>
+#include <ctime>
+#include <windows.h>
 
 #define DEFAULT_MONEY   10000
 
+using std::cin;
+using std::cout;
 using std::vector;
 using std::string;
 
