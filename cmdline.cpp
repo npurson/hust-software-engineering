@@ -354,11 +354,6 @@ int do_step(int step) {
         next_player->b_sell_estate = 0;
     }
 
-    // do count
-    next_player->b_sell_estate = 0;
-    if (next_player->n_god_buff > 0) next_player->n_god_buff -= 1;
-    if (next_player->n_empty_rounds > 0) next_player->n_empty_rounds -= 1;
-
     // switch to next player
     auto players = get_player_vec();
     int c = 0;
