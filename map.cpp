@@ -198,65 +198,66 @@ void apply_item(map_t& map, player_t& player, int item, int pos)
 
 void buy_item(player_t& player)
 {
-    if (player.n_bomb + player.n_robot + player.n_block >= 10) {
+    if (player.n_bomb + player.n_robot + player.n_block >= 10)
         cout << "[道具] 道具栏已满，无法购买道具" << endl;
-        return;
-    }
+    else if (player.n_points < 30)
+        cout << "[道具] 点数不足，无法购买道具" << endl;
+    else {
+        string choice;
+        cout << "[道具屋] 欢迎光临道具屋，请选择你需要的道具：" << endl;
+        cout << "        1. 路障    2. 机器娃娃" << endl;
+        // cout << "        1. 路障    2. 机器娃娃    3. 炸弹" << endl;
 
-    string choice;
-    cout << "[道具屋] 欢迎光临道具屋，请选择你需要的道具：" << endl;
-    cout << "        1. 路障    2. 机器娃娃" << endl;
-    // cout << "        1. 路障    2. 机器娃娃    3. 炸弹" << endl;
-
-    while (true) {
-        show_cmd();
-        getline(cin, choice);
-        tolower(choice);
-        if (choice == "1") {
-            if (player.n_bomb + player.n_robot + player.n_block >= 10) {
-                cout << "[道具] 道具栏已满，无法购买道具" << endl;
-                break;
+        while (true) {
+            show_cmd();
+            getline(cin, choice);
+            tolower(choice);
+            if (choice == "1") {
+                if (player.n_bomb + player.n_robot + player.n_block >= 10) {
+                    cout << "[道具] 道具栏已满，无法购买道具" << endl;
+                    break;
+                }
+                if (player.n_points < 50) {
+                    cout << "[道具] 点数不足，无法购买道具" << endl;
+                }
+                else {
+                    player.n_points -= 50;
+                    player.n_block += 1;
+                    cout << "[路障] 购买路障，失去点数 50 点" << endl;
+                }
             }
-            if (player.n_points < 50) {
-                cout << "[道具] 点数不足，无法购买道具" << endl;
+            else if (choice == "2") {
+                if (player.n_bomb + player.n_robot + player.n_block >= 10) {
+                    cout << "[道具] 道具栏已满，无法购买道具" << endl;
+                    break;
+                }
+                if (player.n_points < 30) {
+                    cout << "[道具] 点数不足，无法购买道具" << endl;
+                    break;
+                }
+                else {
+                    player.n_points -= 30;
+                    player.n_robot += 1;
+                    cout << "[机器娃娃] 购买机器娃娃，失去点数 30 点" << endl;
+                }
             }
-            else {
-                player.n_points -= 50;
-                player.n_block += 1;
-                cout << "[路障] 购买路障，失去点数 50 点" << endl;
-            }
+            // else if (choice == "3") {
+            //     if (player.n_bomb + player.n_robot + player.n_block >= 10) {
+            //         cout << "[道具] 道具栏已满，无法购买道具" << endl;
+            //         break;
+            //     }
+            //     if (player.n_points < 50) {
+            //         cout << "[道具] 点数不足，无法购买道具" << endl;
+            //     }
+            //     else {
+            //         player.n_points -= 50;
+            //         player.n_bomb += 1;
+            //         cout << "[炸弹] 购买炸弹，失去点数 50 点" << endl;
+            //     }
+            // }
+            else if (choice == "f") break;
+            else cout << "[道具屋] 选择无效，请重新输入。输入f退出" << endl;
         }
-        else if (choice == "2") {
-            if (player.n_bomb + player.n_robot + player.n_block >= 10) {
-                cout << "[道具] 道具栏已满，无法购买道具" << endl;
-                break;
-            }
-            if (player.n_points < 30) {
-                cout << "[道具] 点数不足，无法购买道具" << endl;
-                break;
-            }
-            else {
-                player.n_points -= 30;
-                player.n_robot += 1;
-                cout << "[机器娃娃] 购买机器娃娃，失去点数 30 点" << endl;
-            }
-        }
-        // else if (choice == "3") {
-        //     if (player.n_bomb + player.n_robot + player.n_block >= 10) {
-        //         cout << "[道具] 道具栏已满，无法购买道具" << endl;
-        //         break;
-        //     }
-        //     if (player.n_points < 50) {
-        //         cout << "[道具] 点数不足，无法购买道具" << endl;
-        //     }
-        //     else {
-        //         player.n_points -= 50;
-        //         player.n_bomb += 1;
-        //         cout << "[炸弹] 购买炸弹，失去点数 50 点" << endl;
-        //     }
-        // }
-        else if (choice == "f") break;
-        else cout << "[道具屋] 选择无效，请重新输入。输入f退出" << endl;
     }
     Sleep(1000);
 }

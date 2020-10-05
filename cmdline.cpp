@@ -520,6 +520,7 @@ int do_help() {
     help_str.append("quit     —— 退出游戏\n");
     help_str.append("help     —— 显示此帮助");
     cout << help_str << endl;
+    system("pause");
     return 0;
 }
 
