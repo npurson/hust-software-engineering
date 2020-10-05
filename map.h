@@ -71,4 +71,5 @@ bool step_forward(map_t& map, player_t& player, int steps);
 int get_estate_price(const map_node_t& map_node);
 // 使用魔法
 void magic_house();
+
 #endif // RICH_MAP_H
