@@ -348,7 +348,6 @@ bool step_forward(map_t& map, player_t& player, int steps)
                     Sleep(1000);
                 }
                 else if (player.n_money < payment) {
-                    map[player.n_pos].owner->n_money += player.n_money;
                     cout << "[破产] 嘤嘤嘤破产辽" << endl;
                     Sleep(1000);
                     return true;

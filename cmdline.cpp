@@ -295,20 +295,53 @@ int do_roll() {
         }
     }
     // switch to next player
-    auto players = get_player_vec();
-    int c = 0;
-    for (auto & it : *players) {
-        if (it.uid == next_player->uid) {
-            if (c + 1 > players->size() - 1) next_player = &(*(get_player_vec()))[0];
-            else next_player = &(*(get_player_vec()))[c + 1];
-            break;
-        }
-        c += 1;
-    }
-    skip_player(next_player);
+    switch_player(&next_player);
+//    auto players = get_player_vec();
+//    int c = 0;
+//    for (auto & it : *players) {
+//        if (it.uid == next_player->uid) {
+//            if (c + 1 > players->size() - 1) next_player = &(*(get_player_vec()))[0];
+//            else next_player = &(*(get_player_vec()))[c + 1];
+//            break;
+//        }
+//        c += 1;
+//    }
+//    skip_player(next_player);
     return 0;
 }
 
+void switch_player(p_player_t *p_next_player) {
+    auto players = get_player_vec();
+    std::vector<player_t>::size_type c = 0;
+    for (auto & it : *players) {
+        if (it.uid == (*p_next_player)->uid) {
+            break;
+        }
+        ++c;
+    }
+    while (true) {
+        c = (c + 1) % players->size();
+        if (players->at(c).n_money < 0) {
+            continue;
+        } else {
+            if (players->at(c).n_god_buff > 0) {
+                players->at(c).b_god_buff = 1;
+                --(players->at(c).n_god_buff);
+            } else {
+                players->at(c).b_god_buff = 0;
+            }
+            if (players->at(c).n_empty_rounds  > 0) {
+                --(players->at(c).n_empty_rounds);
+                std::cout << "玩家" << players->at(c).name << "轮空" << std::endl;
+                Sleep(1000);
+                continue;
+            } else {
+                break;
+            }
+        }
+    }
+    *p_next_player = &players->at(c);
+}
 
 void do_dump() {
     string dump_text = "user ";
@@ -408,17 +441,18 @@ int do_step(int step) {
     }
 
     // switch to next player
-    auto players = get_player_vec();
-    int c = 0;
-    for (auto & it : *players) {
-        if (it.uid == next_player->uid){
-            if (c + 1 > players->size() - 1) next_player = &(*(get_player_vec()))[0];
-            else next_player = &(*(get_player_vec()))[c + 1];
-            break;
-        }
-        c += 1;
-    }
-    next_player = skip_player(next_player);
+    switch_player(&next_player);
+//    auto players = get_player_vec();
+//    int c = 0;
+//    for (auto & it : *players) {
+//        if (it.uid == next_player->uid){
+//            if (c + 1 > players->size() - 1) next_player = &(*(get_player_vec()))[0];
+//            else next_player = &(*(get_player_vec()))[c + 1];
+//            break;
+//        }
+//        c += 1;
+//    }
+//    next_player = skip_player(next_player);
     return 0;
 }
 
