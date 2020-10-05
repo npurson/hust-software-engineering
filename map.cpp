@@ -172,7 +172,7 @@ void apply_item(map_t& map, player_t& player, int item, int pos)
             cout << "[道具] 没有娃娃，无法使用道具" << endl;
         }
         else {
-            for (int i = 0; i < 10; ++i)
+            for (int i = 0; i <= 10; ++i)
                 map[player.n_pos + i].item = NONE;
             player.n_robot -= 1;
             cout << "[机器娃娃] 机器娃娃使用成功" << endl;
@@ -281,7 +281,7 @@ void get_gift(player_t& player)
             break;
         }
         else if (choice == "3") {
-            player.n_god_buff = 6;
+            player.n_god_buff = 5;
             cout << "[财神] 获得财神附身 5 回合" << endl;
             break;
         }
@@ -361,10 +361,10 @@ bool step_forward(map_t& map, player_t& player, int steps)
             player.n_points += map[player.n_pos].value;
             cout << "[矿地] 获得点数 " << map[player.n_pos].value << " 点" << endl;
             return false;
-        // case PRISON:
-        //     player.n_empty_rounds = 2;
-        //     cout << "[监狱] 打工是不可能打工的，这辈子都不可能打工的" << endl;
-        //     return false;
+        case PRISON:
+            player.n_empty_rounds = 2;
+            cout << "[监狱] 打工是不可能打工的，这辈子都不可能打工的" << endl;
+            return false;
         case MAGIC_HOUSE: magic_house(); return false;
         default: return false;
     }
@@ -377,7 +377,7 @@ void magic_house()
     char ntoidx[4] = {'Q', 'A', 'S', 'J'};
     long n;
     while (true){
-        cout << "[魔法屋] 请输入您想陷害的玩家编号" << endl;
+        std::cout << "[魔法屋] 请输入您想陷害的玩家: 1-钱夫人 2-阿土伯 3-孙小美 4-金贝贝" << std::endl;
         getline(cin, inputs);
         n = std::stol(inputs);
         if (n < 1 || n > 4){
@@ -388,7 +388,7 @@ void magic_house()
             cout << "[魔法屋] 输入角色无效，请重新选择还在场上的角色" << endl;
             continue;
         }
-        get_player_by_uid(ntoidx[n])->n_empty_rounds += 2;
+        get_player_by_uid(ntoidx[n - 1])->n_empty_rounds += 2;
         break;
     }
     return;
