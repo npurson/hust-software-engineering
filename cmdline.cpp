@@ -3,6 +3,7 @@
 extern p_player_t next_player;
 extern int init_money;
 
+
 void start_game() {
     string inputs;
     int num_players;
@@ -33,7 +34,7 @@ void start_game() {
         printf("%d", num_players);
         cout<< "位角色: 1-钱夫人 2-阿土伯 3-孙小美 4-金贝贝" << endl;
         getline(cin, inputs);
-        if (inputs.length() != num_players){
+        if (inputs.length() != num_players) {
             cout << "输入角色个数有误"<< endl;
             continue;
         }
@@ -57,7 +58,7 @@ void start_game() {
 
         auto tmp = get_player_vec();
         tmp->clear();
-        
+
         for (char input : inputs) {
             if (input == '1')   input = 'Q';
             if (input == '2')   input = 'A';
@@ -231,8 +232,8 @@ void do_block(int step, p_player_t player) {
 
 
 int do_roll() {
-    if (roll_dice(*get_map(), *next_player)){
-        for (auto & it : next_player->estate){
+    if (roll_dice(*get_map(), *next_player)) {
+        for (auto & it : next_player->estate) {
             it->estate_lvl = 0;
             it->owner = nullptr;
         }
@@ -253,9 +254,9 @@ int do_roll() {
     auto players = get_player_vec();
     int c = 0;
     for (auto & it : *players) {
-        if (it.uid == next_player->uid){
-            if (c + 1 > players->size() - 1)    next_player = &(*(get_player_vec()))[0];
-            else    next_player = &(*(get_player_vec()))[c + 1];
+        if (it.uid == next_player->uid) {
+            if (c + 1 > players->size() - 1) next_player = &(*(get_player_vec()))[0];
+            else next_player = &(*(get_player_vec()))[c + 1];
             break;
         }
         c += 1;
@@ -292,6 +293,7 @@ void do_dump() {
             std::cerr << "gift " << player.uid << " god " << static_cast<int>(player.n_god_buff) << endl;
         }
     }
+
     auto map = get_map();
     for (const auto& map_node : *map) {
         switch(map_node.item) {
