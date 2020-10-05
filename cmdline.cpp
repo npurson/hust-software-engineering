@@ -16,7 +16,7 @@ void start_game() {
         std::cin.clear();
         std::cin.sync();
         num_players = std::stoi(inputs);
-        if (num_players >= 2 and num_players <= 4)   break;
+        if (num_players >= 2 && num_players <= 4) break;
         std::cout << "输入范围有误";
     }
 
