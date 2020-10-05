@@ -1,12 +1,8 @@
 preset user AQS
 
-fund A 100
-fund Q 20100
-fund S 20
-
-credit A 0
-credit Q 0
-credit S 0
+preset fund A 100
+preset fund Q 20100
+preset fund S 20
 
 preset userloc A 34 0
 preset userloc Q 33 0
