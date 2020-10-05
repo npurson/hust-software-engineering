@@ -164,6 +164,7 @@ void apply_item(map_t& map, player_t& player, int item, int pos)
                 cout << "[路障] 无法在所选位置放置路障" << endl;
             else {
                 map[(player.n_pos + pos) % MAP_SIZE].item = BLOCK;
+                player.n_block -= 1;
                 cout << "[路障] 路障放置成功" << endl;
             }
         }
