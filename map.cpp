@@ -62,7 +62,7 @@ void plot_map()
     system("cls");
     SetConsoleCursorPosition(h_out, (COORD){ 0, 0 });
 
-    for(int i = 0; i < 29 * 8; ++i){
+    for(int i = 0; i < 29 * 8; ++i) {
         SetConsoleTextAttribute(h_out, FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED | FOREGROUND_INTENSITY);
         // empty space
         if (hash_table[i] == 0 && i != 0) { putchar(' '); continue; }
@@ -125,7 +125,7 @@ void update_estate(map_t& map, player_t& player)
 {
     int map_node_idx = player.n_pos;
     if (map[map_node_idx].type != VACANCY ||
-        map[map_node_idx].owner == nullptr ||
+        map[map_node_idx].owner ||
         map[map_node_idx].owner->uid != player.uid ||
         map[map_node_idx].estate_lvl == SKYSCRAPER ||
         player.n_money < map[map_node_idx].value)
@@ -184,7 +184,7 @@ void apply_item(map_t& map, player_t& player, int item, int pos)
         } else {
             if (pos > 10 || pos < -10 ||
                 map[(player.n_pos + pos) % MAP_SIZE].item)
-                cout << "[炸弹] 无法在所选位置放置路障" << endl;
+                cout << "[炸弹] 无法在所选位置放置炸弹" << endl;
             else {
                 map[(player.n_pos + pos) % MAP_SIZE].item = BLOCK;
                 cout << "[炸弹] 炸弹放置成功" << endl;
@@ -204,13 +204,18 @@ void buy_item(player_t& player)
 
     string choice;
     cout << "[道具屋] 欢迎光临道具屋，请选择你需要的道具：" << endl;
-    cout << "        1. 路障    2. 机器娃娃    3. 炸弹" << endl;
+    cout << "        1. 路障    2. 机器娃娃" << endl;
+    // cout << "        1. 路障    2. 机器娃娃    3. 炸弹" << endl;
 
     while (true) {
         show_cmd();
         getline(cin, choice);
         tolower(choice);
         if (choice == "1") {
+            if (player.n_bomb + player.n_robot + player.n_block >= 10) {
+                cout << "[道具] 道具栏已满，无法购买道具" << endl;
+                break;
+            }
             if (player.n_points < 50) {
                 cout << "[道具] 点数不足，无法购买道具" << endl;
             }
@@ -219,33 +224,39 @@ void buy_item(player_t& player)
                 player.n_block += 1;
                 cout << "[路障] 购买路障，失去点数 50 点" << endl;
             }
-            break;
         }
         else if (choice == "2") {
+            if (player.n_bomb + player.n_robot + player.n_block >= 10) {
+                cout << "[道具] 道具栏已满，无法购买道具" << endl;
+                break;
+            }
             if (player.n_points < 30) {
                 cout << "[道具] 点数不足，无法购买道具" << endl;
+                break;
             }
             else {
                 player.n_points -= 30;
                 player.n_robot += 1;
                 cout << "[机器娃娃] 购买机器娃娃，失去点数 30 点" << endl;
             }
-            break;
         }
-        else if (choice == "3") {
-            if (player.n_points < 50) {
-                cout << "[道具] 点数不足，无法购买道具" << endl;
-            }
-            else {
-                player.n_points -= 50;
-                player.n_bomb += 1;
-                cout << "[炸弹] 购买炸弹，失去点数 50 点" << endl;
-            }
-            break;
-        }
-        else cout << "[道具屋] 选择无效，请重新输入。输入q退出" << endl;
+        // else if (choice == "3") {
+        //     if (player.n_bomb + player.n_robot + player.n_block >= 10) {
+        //         cout << "[道具] 道具栏已满，无法购买道具" << endl;
+        //         break;
+        //     }
+        //     if (player.n_points < 50) {
+        //         cout << "[道具] 点数不足，无法购买道具" << endl;
+        //     }
+        //     else {
+        //         player.n_points -= 50;
+        //         player.n_bomb += 1;
+        //         cout << "[炸弹] 购买炸弹，失去点数 50 点" << endl;
+        //     }
+        // }
+        else if (choice == "f") break;
+        else cout << "[道具屋] 选择无效，请重新输入。输入f退出" << endl;
     }
-    return;
 }
 
 
@@ -270,14 +281,13 @@ void get_gift(player_t& player)
             break;
         }
         else if (choice == "3") {
-            player.n_god_buff = 5;
+            player.n_god_buff = 6;
             cout << "[财神] 获得财神附身 5 回合" << endl;
             break;
         }
         else if (choice == "q") break;
         else cout << "[礼品屋] 选择无效，请重新输入。输入q退出" << endl;
     }
-    return;
 }
 
 
@@ -351,17 +361,17 @@ bool step_forward(map_t& map, player_t& player, int steps)
             player.n_points += map[player.n_pos].value;
             cout << "[矿地] 获得点数 " << map[player.n_pos].value << " 点" << endl;
             return false;
-        case PRISON:
-            player.n_empty_rounds = 2;
-            cout << "[监狱] 打工是不可能打工的，这辈子都不可能打工的" << endl;
-            return false;
-        case MAGIC_HOUSE:
-            magic_house();
+        // case PRISON:
+        //     player.n_empty_rounds = 2;
+        //     cout << "[监狱] 打工是不可能打工的，这辈子都不可能打工的" << endl;
+        //     return false;
+        case MAGIC_HOUSE: magic_house(); return false;
         default: return false;
     }
 }
 
-int magic_house()
+
+void magic_house()
 {
     char inputs[100];
     char ntoidx[4] = {'Q', 'A', 'S', 'J'};
@@ -383,7 +393,7 @@ int magic_house()
         get_player_by_uid(ntoidx[n])->n_empty_rounds += 2;
         break;
     }
-    return 0;
+    return;
 }
 
 
