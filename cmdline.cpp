@@ -224,7 +224,7 @@ void do_sell(map_t& map, player_t& player, int map_node_idx)
     // basic rules
     if (player.b_sell_estate == 1 ||
         map[map_node_idx].type != VACANCY ||
-        map[map_node_idx].owner ||
+        !(map[map_node_idx].owner) ||
         map[map_node_idx].owner->uid != player.uid) {
         cout << "[卖房] 卖出房产失败" << endl;
         return;
