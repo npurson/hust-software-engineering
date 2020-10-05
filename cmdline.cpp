@@ -489,9 +489,15 @@ int do_preset(const std::vector<std::string>& word_vec) {
         int n_map_id = std::stoi(word_vec[2]);
         int rest_days = std::stoi(word_vec[3]);
         auto player = get_player_by_uid(player_name);
+        p_map_t map = get_map();
+        auto &node = map->at(player->n_pos);
+        for (auto p = node.players.begin(); p != node.players.end(); ++p) {
+            if (*p == player) {
+                node.players.erase(p);
+            }
+        }
         player->n_empty_rounds = rest_days;
         player->n_pos = n_map_id;
-        p_map_t map = get_map();
         map->at(n_map_id).players.push_back(player);
     } else if (word_vec[0] == "nextuser") {
         if (word_vec.size() != 2) return -1;
@@ -521,18 +527,14 @@ int do_query(player_t& player)
     for (auto & it : player.estate) {
         printf("%d号房屋 ", it->id);
     }
-    cout << endl;
-    cout << "道具:" << " 路障*";
-    printf("%d", player.n_block);
-    cout << " 机器娃娃*";
-    printf("%d\n", player.n_robot);
+    std::cout << endl;
+    std::cout << "道具:" << " 路障*" << player.n_block << " 机器娃娃*" << player.n_robot << std::endl;
     system("pause");
     return 0;
 }
 
-
 int do_help() {
-    string help_str = "帮助信息\n";
+    string help_str = "帮助信息:\n";
     help_str.append("start    —— 开始游戏\n");
     help_str.append("roll     —— 掷随机骰子\n");
     help_str.append("sell n   —— 卖房子，n指示要卖的房子的地块索引\n");
