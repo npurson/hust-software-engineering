@@ -12,7 +12,7 @@ int main() {
     string command;
     while (true) {
 //        skip_player(next_player);
-//        show_cmd();
+        show_cmd();
         if (getline(cin, command)) {
             if (command == "quit") {
                 break;
