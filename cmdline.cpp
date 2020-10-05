@@ -12,9 +12,7 @@ void start_game() {
 
     while (true){
         cout << "请选择参与的玩家数量(2-4人): ";
-        cin >> inputs;
-        cin.clear();
-        cin.sync();
+        getline(cin, inputs);
         num_players = std::stoi(inputs);
         if (num_players >= 2 && num_players <= 4) break;
         cout << "输入范围有误";
@@ -26,9 +24,7 @@ void start_game() {
         cout << "请按顺序输入" ;
         printf("%d", num_players);
         cout<< "位角色: Q-钱夫人 A-阿土伯 S-孙小美 J-金贝贝" << endl;
-        cin >> inputs;
-        cin.clear();
-        cin.sync();
+        getline(cin, inputs);
         if (inputs.length() != num_players){
             cout << "输入角色个数有误"<< endl;
             continue;

@@ -107,9 +107,7 @@ void buy_estate(map_t& map, player_t& player)
 
     while (true) {
         show_cmd();
-        cin >> choice;
-        cin.clear();
-        cin.sync();
+        getline(cin, choice);
         tolower(choice);
         if (choice == "y") {
             player.n_money -= map[map_node_idx].value;
@@ -140,9 +138,7 @@ void update_estate(map_t& map, player_t& player)
 
     while (true) {
         show_cmd();
-        cin >> choice;
-        cin.clear();
-        cin.sync();
+        getline(cin, choice);
         tolower(choice);
         if (choice == "y") {
             player.n_money -= map[map_node_idx].value;
@@ -155,7 +151,7 @@ void update_estate(map_t& map, player_t& player)
 }
 
 
-void apply_item(map_t& map, player_t& player, int item, int pos=0)
+void apply_item(map_t& map, player_t& player, int item, int pos)
 {
     if (item == BLOCK) {
         if (!player.n_block) {
@@ -212,9 +208,7 @@ void buy_item(player_t& player)
 
     while (true) {
         show_cmd();
-        cin >> choice;
-        cin.clear();
-        cin.sync();
+        getline(cin, choice);
         tolower(choice);
         if (choice == "1") {
             if (player.n_points < 50) {
@@ -263,9 +257,7 @@ void get_gift(player_t& player)
 
     while (true) {
         show_cmd();
-        cin >> choice;
-        cin.clear();
-        cin.sync();
+        getline(cin, choice);
         tolower(choice);
         if (choice == "1") {
             player.n_money += 2000;
