@@ -83,8 +83,8 @@ void plot_map()
 
         // player
         if (map[hash_table[i]].players.empty() == false) {
-            buf=map[hash_table[i]].players.back()->uid;
-            SetConsoleTextAttribute(h_out, color_table[ map[hash_table[i]].players.back()->e_color ]);
+            buf = map[hash_table[i]].players.back()->uid;
+            SetConsoleTextAttribute(h_out, color_table[map[hash_table[i]].players.back()->e_color]);
         }
         // render
         putchar(buf);

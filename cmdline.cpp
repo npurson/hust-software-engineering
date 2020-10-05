@@ -50,8 +50,6 @@ void start_game() {
         std::cout << "输入范围有误" << std::endl;
     }
 
-
-
     int reset_flag;
     while (true) {
         reset_flag = 0;
@@ -249,9 +247,9 @@ void do_sell(map_t& map, player_t& player, int map_node_idx)
 }
 
 
-//void do_bomb(int step, p_player_t player) {
-//    apply_item(*get_map(), *player, BOMB, static_cast<int>(step));
-//}
+void do_bomb(int step, p_player_t player) {
+   apply_item(*get_map(), *player, BOMB, static_cast<int>(step));
+}
 
 
 void do_robot(p_player_t player) {
