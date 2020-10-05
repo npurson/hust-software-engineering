@@ -69,5 +69,6 @@ bool roll_dice(map_t& map, player_t& player);
 bool step_forward(map_t& map, player_t& player, int steps);
 // 获取某地房产的价值，返回true则破产
 int get_estate_price(const map_node_t& map_node);
-int magic_house();
+// 使用魔法
+void magic_house();
 #endif // RICH_MAP_H
