@@ -30,6 +30,7 @@ typedef struct player {
     int n_bomb;                     // 玩家的炸弹道具数量
     int n_robot;                    // 玩家的机器娃娃道具数量
     int b_sell_estate;
+    int b_god_buff;
 } player_t, * p_player_t;
 
 void add_player(char uid);

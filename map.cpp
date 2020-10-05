@@ -164,6 +164,7 @@ void apply_item(map_t& map, player_t& player, int item, int pos)
                 cout << "[路障] 无法在所选位置放置路障" << endl;
             else {
                 map[(player.n_pos + pos) % MAP_SIZE].item = BLOCK;
+                player.n_block -= 1;
                 cout << "[路障] 路障放置成功" << endl;
             }
         }
@@ -288,8 +289,8 @@ void get_gift(player_t& player)
             cout << "[财神] 获得财神附身 5 回合" << endl;
             break;
         }
-        else if (choice == "q") break;
-        else cout << "[礼品屋] 选择无效，请重新输入。输入q退出" << endl;
+        // else if (choice == "q") break;
+        else cout << "[礼品屋] 选择无效，退出" << endl; break;
     }
     Sleep(1000);
 }
@@ -340,7 +341,7 @@ bool step_forward(map_t& map, player_t& player, int steps)
                 ) {
                 int payment = get_estate_price(map[player.n_pos]) / 2;
                 cout << "[租金] 需支付过路费 " << payment << " 元" << endl;
-                if (player.n_god_buff) {
+                if (player.b_god_buff) {
                     cout << "[财神] 财神附身，无需付钱" << endl;
                     Sleep(1000);
                 }

@@ -1,0 +1,16 @@
+preset user AQ
+preset userloc A 35 0
+preset userloc Q 36 0
+preset gift A god 3
+preset nextuser Q
+step 3 #Q:36->39
+n
+step 2 #A:35->37
+step 1 #Q:39->40
+n
+step 10 #A:37->47
+n
+step 0 #Q:40->40
+n
+step 60 #A:47->37
+dump

@@ -274,6 +274,7 @@ int do_roll() {
         next_player->n_pos = 0;
         next_player->n_empty_rounds = 0;
         next_player->n_god_buff = 0;
+        next_player->b_god_buff = 0;
         next_player->estate.clear();
         next_player->n_block = 0;
         next_player->n_bomb = 0;
@@ -392,6 +393,7 @@ int do_step(int step) {
         next_player->n_bomb = 0;
         next_player->n_robot = 0;
         next_player->b_sell_estate = 0;
+        next_player->b_god_buff = 0;
     }
 
     // switch to next player
@@ -458,6 +460,7 @@ int do_preset(string cmd) {
             player->n_robot = number;
         } else if (prop_name == "god") {
             player->n_god_buff = number;
+            player->b_god_buff = 1;
         } else {
             std::cerr << "请选择有效的道具种类" << std::endl;
             return -1;
