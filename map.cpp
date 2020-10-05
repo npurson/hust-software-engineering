@@ -349,7 +349,7 @@ bool step_forward(map_t& map, player_t& player, int steps)
                 }
                 else if (player.n_money < payment) {
                     map[player.n_pos].owner->n_money += player.n_money;
-                    cout << "[破产] 嘤嘤嘤破产辽，游戏结束" << endl;
+                    cout << "[破产] 嘤嘤嘤破产辽" << endl;
                     Sleep(1000);
                     return true;
                 }
@@ -380,7 +380,13 @@ bool step_forward(map_t& map, player_t& player, int steps)
             cout << "[监狱] 打工是不可能打工的，这辈子都不可能打工的" << endl;
             Sleep(1000);
             return false;
-        case MAGIC_HOUSE: magic_house(); return false;
+        case MAGIC_HOUSE:
+            magic_house();
+            return false;
+        case PARK:
+            cout << "[公园] 进入了公园，本轮摸鱼" << endl;
+            Sleep(1000);
+            return false;
         default: return false;
     }
 }

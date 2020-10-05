@@ -287,11 +287,7 @@ int do_roll() {
             winner = it;
         }
         if (count == (players->size() - 1)) {
-            cout << "游戏结束，获胜的玩家是:";
-            if (winner.uid == 'Q') cout << "钱夫人";
-            if (winner.uid == 'A') cout << "阿土伯";
-            if (winner.uid == 'S') cout << "孙小美";
-            if (winner.uid == 'J') cout << "金贝贝";
+            std::cout << "游戏结束，获胜的玩家是:" << winner.name << std::endl;
             exit(EXIT_SUCCESS);
         }
     }
@@ -392,6 +388,19 @@ int do_step(int step) {
         next_player->n_robot = 0;
         next_player->b_sell_estate = 0;
         next_player->b_god_buff = 0;
+
+        // check winner
+        auto players = get_player_vec();
+        auto winner = (*get_player_vec())[0];
+        int count = 0;
+        for (auto &it : *players) {
+            if (it.n_money < 0) count += 1;
+            winner = it;
+        }
+        if (count == (players->size() - 1)) {
+            std::cout << "游戏结束，获胜的玩家是:" << winner.name << std::endl;
+            exit(EXIT_SUCCESS);
+        }
     }
 
     // switch to next player
