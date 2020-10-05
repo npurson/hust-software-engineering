@@ -1,0 +1,25 @@
+preset user AQ
+
+preset map 37 Q 0
+preset gift A god 4
+
+preset fund A 500
+preset fund Q 300
+
+preset credit A 0
+preset credit Q 0
+
+preset userloc A 34 0
+preset userloc Q 36 0
+
+preset nextuser Q
+
+step 3 #Q:36->39
+step 2 #A:35->37
+step 1 #Q:39->40
+step 10 #A:37->47
+step 0 #Q:40->40
+step 60 #A:47->37
+
+dump
+

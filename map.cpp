@@ -60,7 +60,7 @@ void plot_map()
     HANDLE h_out;
     h_out = GetStdHandle(STD_OUTPUT_HANDLE);
     system("cls");
-    SetConsoleCursorPosition(h_out, (COORD){ -1, 0 });
+    SetConsoleCursorPosition(h_out, (COORD){ 0, 0 });
 
     for(int i = 0; i < 29 * 8; ++i){
         SetConsoleTextAttribute(h_out, FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED | FOREGROUND_INTENSITY);
