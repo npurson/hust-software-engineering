@@ -7,7 +7,7 @@ void start_game() {
     string inputs;
     int num_players;
 
-    while (true){
+    while (true) {
         cout << "请选择参与的玩家数量(2-4人): ";
         getline(cin, inputs);
         num_players = std::stoi(inputs);
@@ -16,7 +16,7 @@ void start_game() {
     }
 
     int reset_flag = 0;
-    while (true){
+    while (true) {
         reset_flag = 0;
         cout << "请按顺序输入" ;
         printf("%d", num_players);
@@ -38,7 +38,7 @@ void start_game() {
                 }
             }
         }
-        if (reset_flag){
+        if (reset_flag) {
             cout << "输入角色名有误" << endl;
             continue;
         }
@@ -53,6 +53,7 @@ void start_game() {
         break;
     }
 }
+
 
 vector<string> split_cmd(string cmd) {
     vector<string> word_vec;
@@ -71,13 +72,6 @@ vector<string> split_cmd(string cmd) {
     return word_vec;
 }
 
-void tolower(string &str) {
-    for (auto& c : str) {
-        if (std::isalpha(c)) {
-            c = tolower(c);
-        }
-    }
-}
 
 int parse_cmd(const string& cmd) {
     static bool start = false;
@@ -139,13 +133,13 @@ int parse_cmd(const string& cmd) {
             }
             auto block_step = std::strtol(word_vec[1].c_str(), nullptr, 10);
             do_block(static_cast<int>(block_step), next_player);
-        } else if (word_vec[0] == "bomb") {
-            if (word_vec.size() != 2) {
-                std::cerr << "命令格式错误，bomb命令格式为：bomb n，n指定与当前位置的相对距离，范围为[-10,10]" << endl;
-                return -1;
-            }
-            auto bomb_step = std::strtol(word_vec[1].c_str(), nullptr, 10);
-            do_bomb(static_cast<int>(bomb_step), next_player);
+        // } else if (word_vec[0] == "bomb") {
+        //     if (word_vec.size() != 2) {
+        //         std::cerr << "命令格式错误，bomb命令格式为：bomb n，n指定与当前位置的相对距离，范围为[-10,10]" << endl;
+        //         return -1;
+        //     }
+        //     auto bomb_step = std::strtol(word_vec[1].c_str(), nullptr, 10);
+        //     do_bomb(static_cast<int>(bomb_step), next_player);
         } else if (word_vec[0] == "robot") {
             if (word_vec.size() != 1) {
                 std::cerr << "命令格式错误，robot命令格式为：robot" << endl;
@@ -176,16 +170,13 @@ int parse_cmd(const string& cmd) {
     return -1;
 }
 
-void do_robot(p_player_t player) {
-    apply_item(*get_map(), *player, ROBOT);
 
-}
 void do_sell(map_t& map, player_t& player, int map_node_idx)
 {
     // basic rules
     if (player.b_sell_estate == 1 ||
         map[map_node_idx].type != VACANCY ||
-        map[map_node_idx].owner == nullptr ||
+        map[map_node_idx].owner ||
         map[map_node_idx].owner->uid != player.uid) {
         cout << "[卖房] 卖出房产失败" << endl;
         return;
@@ -211,6 +202,12 @@ void do_sell(map_t& map, player_t& player, int map_node_idx)
 void do_bomb(int step, p_player_t player) {
     apply_item(*get_map(), *player, BOMB, static_cast<int>(step));
 }
+
+
+void do_robot(p_player_t player) {
+    apply_item(*get_map(), *player, ROBOT);
+}
+
 
 void do_block(int step, p_player_t player) {
     apply_item(*get_map(), *player, BLOCK, static_cast<int>(step));
@@ -281,7 +278,7 @@ void do_dump() {
             std::cerr << "gift " << player.uid << " robot " << static_cast<int>(player.n_robot) << endl;
         }
         if (player.n_god_buff != 0) {
-            std::cerr << "gift " << player.uid << " god " << static_cast<int>(player.n_god_buff) << std::endl;
+            std::cerr << "gift " << player.uid << " god " << static_cast<int>(player.n_god_buff) << endl;
         }
     }
     auto map = get_map();
@@ -294,13 +291,13 @@ void do_dump() {
                 std::cerr << "barrier " << static_cast<int>(map_node.id) << endl;
                 break;
             case NONE:
-            default:
-                break;
+            default: break;
         }
     }
     std::cerr << "nextuser " << next_player->uid << endl;
     exit(EXIT_SUCCESS);
 }
+
 
 void show_cmd() {
     if (next_player != nullptr) {
@@ -308,6 +305,7 @@ void show_cmd() {
     }
     cout << ">";
 }
+
 
 int do_step(int step) {
     if (step_forward(*get_map(), *next_player, step)){
@@ -330,22 +328,23 @@ int do_step(int step) {
 
     // do count
     next_player->b_sell_estate = 0;
-    if (next_player->n_god_buff > 0)    next_player->n_god_buff -= 1;
-    if (next_player->n_empty_rounds > 0)    next_player->n_empty_rounds -= 1;
+    if (next_player->n_god_buff > 0) next_player->n_god_buff -= 1;
+    if (next_player->n_empty_rounds > 0) next_player->n_empty_rounds -= 1;
 
     // switch to next player
     auto players = get_player_vec();
     int c = 0;
     for (auto & it : *players) {
         if (it.uid == next_player->uid){
-            if (c + 1 > players->size() - 1)    next_player = &(*(get_player_vec()))[0];
-            else    next_player = &(*(get_player_vec()))[c + 1];
+            if (c + 1 > players->size() - 1) next_player = &(*(get_player_vec()))[0];
+            else next_player = &(*(get_player_vec()))[c + 1];
             break;
         }
         c += 1;
     }
     return 0;
 }
+
 
 int do_preset(string cmd) {
     if (cmd.back() == '\n') {
@@ -359,7 +358,7 @@ int do_preset(string cmd) {
             add_player(uid);
         }
         next_player = &player_vec->front();
-    } else if(word_vec[0] == "map") {
+    } else if (word_vec[0] == "map") {
         int n_map = atoi(word_vec[1].c_str());
         p_map_t map;
         if (n_map == START_POS || n_map == HOSPITAL_POS || n_map == ITEM_HOUSE_POS || n_map == GIFT_HOUSE_POS || n_map == PRISON_POS || n_map == MAGIC_HOUSE_POS) {
@@ -438,17 +437,18 @@ int do_query(player_t& player)
         printf("%d号房屋 ", it->id);
     }
     cout << endl;
-    cout << "道具: 炸弹*";
-    printf("%d", player.n_bomb);
-    cout << " 路障*";
+    cout << "道具:" << " 路障*";
     printf("%d", player.n_block);
     cout <<" 机器娃娃*";
     printf("%d\n", player.n_robot);
+    // cout << " 炸弹*";
+    // printf("%d", player.n_bomb);
     return 0;
 }
 
+
 int do_help() {
-    std::string help_str = "帮助信息\n";
+    string help_str = "帮助信息\n";
     help_str.append("start    —— 开始游戏\n");
     help_str.append("roll     —— 掷随机骰子\n");
     help_str.append("sell n   —— 卖房子，n指示要卖的房子的地块索引\n");
@@ -458,6 +458,15 @@ int do_help() {
     help_str.append("query    —— 查询当前玩家所有资产信息\n");
     help_str.append("quit     —— 退出游戏\n");
     help_str.append("help     —— 显示此帮助");
-    std::cout << help_str << std::endl;
+    cout << help_str << endl;
     return 0;
+}
+
+
+void tolower(string &str) {
+    for (auto& c : str) {
+        if (std::isalpha(c)) {
+            c = tolower(c);
+        }
+    }
 }
