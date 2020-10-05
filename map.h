@@ -10,7 +10,6 @@
 
 #include "player.h"
 
-
 #define START_POS           0
 #define HOSPITAL_POS        14
 #define ITEM_HOUSE_POS      28
@@ -19,7 +18,6 @@
 #define MAGIC_HOUSE_POS     63
 #define MAP_SIZE            70
 
-using std::vector;
 using std::cin;
 using std::cout;
 using std::endl;
@@ -32,8 +30,6 @@ enum NodeType { START, VACANCY, ITEM_HOUSE, GIFT_HOUSE, MAGIC_HOUSE, HOSPITAL, P
 enum EstateLevel { WASTELAND, HUT, HOUSE, SKYSCRAPER };
 // 道具类型
 enum ItemType { NONE, BLOCK, BOMB, ROBOT };
-
-typedef struct player player_t, * p_player_t;
 
 typedef struct map_node {
     int id;
@@ -62,7 +58,7 @@ void buy_estate(map_t& map, player_t& player);
 // 升级房产
 void update_estate(map_t& map, player_t& player);
 // 使用道具
-void apply_item(map_t& map, player_t& player, int item, int pos=0);
+void apply_item(map_t& map, player_t& player, int item, int pos);
 // 购买道具
 void buy_item(player_t& player);
 // 获得礼物
@@ -73,5 +69,6 @@ bool roll_dice(map_t& map, player_t& player);
 bool step_forward(map_t& map, player_t& player, int steps);
 // 获取某地房产的价值，返回true则破产
 int get_estate_price(const map_node_t& map_node);
-
+// 使用魔法
+void magic_house();
 #endif // RICH_MAP_H
