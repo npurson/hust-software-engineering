@@ -392,10 +392,9 @@ void magic_house()
             cout << "[魔法屋] 输入角色无效，请重新选择还在场上的角色" << endl;
             continue;
         }
-        get_player_by_uid(ntoidx[n - 1])->n_empty_rounds += 3;
+        get_player_by_uid(ntoidx[n - 1])->n_empty_rounds += 2;
         break;
     }
-    return;
 }
 
 
