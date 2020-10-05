@@ -58,7 +58,7 @@ void buy_estate(map_t& map, player_t& player);
 // 升级房产
 void update_estate(map_t& map, player_t& player);
 // 使用道具
-void apply_item(map_t& map, player_t& player, int item, int pos);
+void apply_item(map_t& map, player_t& player, int item, int pos = 0);
 // 购买道具
 void buy_item(player_t& player);
 // 获得礼物
@@ -71,4 +71,5 @@ bool step_forward(map_t& map, player_t& player, int steps);
 int get_estate_price(const map_node_t& map_node);
 // 使用魔法
 void magic_house();
+
 #endif // RICH_MAP_H
