@@ -1,0 +1,6 @@
+testname,..,0/3
+testname,testcase,status,time(ms)
+..,rent_1,False,2.3864269256591797e-08
+..,rent_2,False,2.693462371826172e-08
+..,rent_0,False,2.8861522674560546e-08
+

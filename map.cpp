@@ -53,62 +53,44 @@ void plot_map()
             64, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 34,
             63, 62, 61, 60, 59, 58, 57, 56, 55, 54, 53, 52, 51, 50, 49, 48, 47, 46, 45, 44, 43, 42, 41, 40, 39, 38, 37, 36, 35
     };
-
     static const char type_table[8] = {'S','0','T','G','M','H','P','$'};
-    static const char player_color_table[4] = {'Q','A','S','J'};
+    static const unsigned short color_table[4] = {FOREGROUND_RED,FOREGROUND_GREEN,FOREGROUND_BLUE,FOREGROUND_RED|FOREGROUND_GREEN};
     static const char item_table[4] = {'\0','#','@','R'};
+
     HANDLE h_out;
     h_out=GetStdHandle(STD_OUTPUT_HANDLE);
-
-    char buf=0;
-
-    //save cursor
-    CONSOLE_SCREEN_BUFFER_INFOEX screen_infoex;
-    GetConsoleScreenBufferInfoEx(h_out,&screen_infoex);
-
-    SetConsoleCursorPosition(h_out,(COORD){0,0});
+    system("cls");
+    SetConsoleCursorPosition(h_out,(COORD){-1,0});
 
     for(int i=0; i<29*8; i++){
         SetConsoleTextAttribute(h_out, FOREGROUND_BLUE|FOREGROUND_GREEN|FOREGROUND_RED|FOREGROUND_INTENSITY);
-
+        //empty space
         if(hash_table[i] == 0 && i!=0) { putchar(' '); continue; }
 
         // basic map
-        buf = type_table[ map[hash_table[i]].type ];
+        char buf = type_table[ map[hash_table[i]].type ];
         if(buf == '0') {
             buf += map[hash_table[i]].estate_lvl;
+            if(map[hash_table[i]].owner!=NULL){
+                SetConsoleTextAttribute(h_out, color_table[ map[hash_table[i]].owner->e_color ]);
+            }
         }
 
         // item
-        if((map[hash_table[i]].item==BLOCK) || (map[hash_table[i]].item==BOMB))
+        if((map[hash_table[i]].item==BLOCK) || (map[hash_table[i]].item==BOMB)){
             buf = item_table[ map[hash_table[i]].item ];
+        }
 
         //player
         if(map[hash_table[i]].players.empty() == false){
             buf=map[hash_table[i]].players.back()->uid;
-            switch (map[hash_table[i]].players.back()->e_color) {
-                case RED:
-                    SetConsoleTextAttribute(h_out, FOREGROUND_RED|FOREGROUND_INTENSITY);
-                    break;
-                case GREEN:
-                    SetConsoleTextAttribute(h_out, FOREGROUND_GREEN|FOREGROUND_INTENSITY);
-                    break;
-                case YELLOW:
-                    SetConsoleTextAttribute(h_out, FOREGROUND_GREEN|FOREGROUND_RED|FOREGROUND_INTENSITY);
-                    break;
-                case BLUE:
-                    SetConsoleTextAttribute(h_out, FOREGROUND_BLUE|FOREGROUND_INTENSITY);
-                    break;
-                default:break;
-            }
+            SetConsoleTextAttribute(h_out, color_table[ map[hash_table[i]].players.back()->e_color ]);
         }
+        //render
         putchar(buf);
         if((i % 29) == 28) printf("\n");
-
     }
-    //SetConsoleScreenBufferInfoEx(h)
-    //SetConsoleCursorPosition(h_out,(COORD){0,0});
-    printf("X:%d, Y%d\n",screen_infoex.dwCursorPosition.X,screen_infoex.dwCursorPosition.Y);
+    SetConsoleCursorPosition(h_out,(COORD){0,10});
 }
 
 
@@ -196,7 +178,7 @@ void apply_item(map_t& map, player_t& player, int item, int pos=0)
         else {
             for (int i = 0; i < 10; ++i)
                 map[player.n_pos + i].item = NONE;
-            player.n_robot -= 1;
+            player.n_robot -= 1; // TODO 机器娃娃效果
             cout << "[机器娃娃] 机器娃娃使用成功" << endl;
         }
     }
@@ -214,7 +196,6 @@ void apply_item(map_t& map, player_t& player, int item, int pos=0)
             }
         }
     }
-    return;
 }
 
 
@@ -387,5 +368,5 @@ bool step_forward(map_t& map, player_t& player, int steps)
 
 int get_estate_price(const map_node_t& map_node)
 {
-    return map_node.value * (map_node.estate_lvl + 1);
+    return static_cast<int>(map_node.value) * (map_node.estate_lvl + 1);
 }

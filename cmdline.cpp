@@ -158,8 +158,7 @@ int parse_cmd(const string& cmd) {
                 std::cerr << "命令格式错误，robot命令格式为：robot" << endl;
                 return -1;
             }
-            auto robot_step = std::strtol(word_vec[1].c_str(), nullptr, 10);
-            do_robot(static_cast<int>(robot_step), next_player);
+            do_robot(next_player);
         } else if (word_vec[0] == "step") {
             if (word_vec.size() != 2) {
                 std::cerr << "命令格式错误，step命令格式为：step n，n为指定的步数" << endl;
@@ -173,12 +172,19 @@ int parse_cmd(const string& cmd) {
                 return -1;
             }
             do_query(*next_player);
+        } else if (word_vec[0] == "help") {
+            if (word_vec.size() != 1) {
+                std::cerr << "命令格式错误，query命令格式为：query" << std::endl;
+                return -1;
+            }
+            do_help();
         }
     }
     return -1;
 }
 
-void do_robot(int step, p_player_t player) {
+void do_robot(p_player_t player) {
+    apply_item(*get_map(), *player, ROBOT);
 
 }
 void do_sell(map_t& map, player_t& player, int map_node_idx)
@@ -188,7 +194,7 @@ void do_sell(map_t& map, player_t& player, int map_node_idx)
         map[map_node_idx].type != VACANCY ||
         map[map_node_idx].owner == nullptr ||
         map[map_node_idx].owner->uid != player.uid) {
-//        cout << "[卖房] 卖出房产失败" << endl;
+        cout << "[卖房] 卖出房产失败" << endl;
         return;
     }
 
@@ -210,11 +216,11 @@ void do_sell(map_t& map, player_t& player, int map_node_idx)
 
 
 void do_bomb(int step, p_player_t player) {
-
+    apply_item(*get_map(), *player, BOMB, static_cast<int>(step));
 }
 
 void do_block(int step, p_player_t player) {
-
+    apply_item(*get_map(), *player, BLOCK, static_cast<int>(step));
 }
 
 
@@ -445,5 +451,20 @@ int do_query(player_t& player)
     printf("%d", player.n_block);
     cout <<" 机器娃娃*";
     printf("%d\n", player.n_robot);
+    return 0;
+}
+
+int do_help() {
+    std::string help_str = "帮助信息\n";
+    help_str.append("start    —— 开始游戏\n");
+    help_str.append("roll     —— 掷随机骰子\n");
+    help_str.append("sell n   —— 卖房子，n指示要卖的房子的地块索引\n");
+    help_str.append("block n  —— 放置路障，n指示路障与使用玩家当前位置的相对距离\n");
+    help_str.append("bomb n   —— 放置炸弹，n表示炸弹与使用玩家当前位置的相对距离\n");
+    help_str.append("robot    —— 使用机器娃娃道具\n");
+    help_str.append("query    —— 查询当前玩家所有资产信息\n");
+    help_str.append("quit     —— 退出游戏\n");
+    help_str.append("help     —— 显示此帮助");
+    std::cout << help_str << std::endl;
     return 0;
 }
