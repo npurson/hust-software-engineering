@@ -53,7 +53,7 @@ void plot_map()
             63, 62, 61, 60, 59, 58, 57, 56, 55, 54, 53, 52, 51, 50, 49, 48, 47, 46, 45, 44, 43, 42, 41, 40, 39, 38, 37, 36, 35
     };
     static const char type_table[9] = { 'S', '0', 'T', 'G', 'M', 'H', 'P', '$', 'P' };
-    static const unsigned short color_table[4] = { FOREGROUND_RED, FOREGROUND_GREEN, FOREGROUND_BLUE, 
+    static const unsigned short color_table[4] = { FOREGROUND_RED, FOREGROUND_GREEN, FOREGROUND_BLUE,
                                                    FOREGROUND_RED | FOREGROUND_GREEN };
     static const char item_table[4] = { '\0', '#', '@', 'R' };
 
@@ -281,7 +281,7 @@ void get_gift(player_t& player)
             break;
         }
         else if (choice == "3") {
-            player.n_god_buff = 6;
+            player.n_god_buff = 5;
             cout << "[财神] 获得财神附身 5 回合" << endl;
             break;
         }
@@ -373,21 +373,19 @@ bool step_forward(map_t& map, player_t& player, int steps)
 
 void magic_house()
 {
-    char inputs[100];
+    string inputs;
     char ntoidx[4] = {'Q', 'A', 'S', 'J'};
     long n;
     while (true){
-        std::cout << "[魔法屋] 请输入您想陷害的玩家编号" << std::endl;
-        std::cin >> inputs;
-        std::cin.clear();
-        std::cin.sync();
-        n = std::strtol(inputs, nullptr, 10);
+        std::cout << "[魔法屋] 请输入您想陷害的玩家: 1-钱夫人 2-阿土伯 3-孙小美 4-金贝贝" << std::endl;
+        getline(cin, inputs);
+        n = std::stol(inputs);
         if (n < 1 || n > 4){
-            std::cout << "[魔法屋] 输入编号范围有误，请重新输入1-4的编号" << std::endl;
+            cout << "[魔法屋] 输入编号范围有误，请重新输入1-4的编号" << endl;
             continue;
         }
-        if ( !get_player_by_uid(ntoidx[n]) || get_player_by_uid(ntoidx[n])->n_money < 0){
-            std::cout << "[魔法屋] 输入角色无效，请重新选择还在场上的角色" << std::endl;
+        if (!get_player_by_uid(ntoidx[n - 1]) || get_player_by_uid(ntoidx[n - 1])->n_money < 0) {
+            cout << "[魔法屋] 输入角色无效，请重新选择还在场上的角色" << endl;
             continue;
         }
         get_player_by_uid(ntoidx[n])->n_empty_rounds += 2;

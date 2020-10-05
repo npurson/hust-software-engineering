@@ -24,5 +24,6 @@ step 5 #A:30->35
 n
 robot # do not remove barrier at 28
 step 20 #Q:15->35 through barrier at 28
+n
 
 dump 
