@@ -339,6 +339,7 @@ bool step_forward(map_t& map, player_t& player, int steps)
                 else if (player.n_money < payment) {
                     map[player.n_pos].owner->n_money += player.n_money;
                     cout << "[破产] 嘤嘤嘤破产辽，游戏结束" << endl;
+                    system("pause");
                     return true;
                 }
                 else {
@@ -353,21 +354,24 @@ bool step_forward(map_t& map, player_t& player, int steps)
             // 买房
             else if (!map[player.n_pos].owner)
                 buy_estate(map, player);
-            return false;
+            break;
 
-        case ITEM_HOUSE: buy_item(player); return false;
-        case GIFT_HOUSE: get_gift(player); return false;
+        case ITEM_HOUSE: buy_item(player); break;
+        case GIFT_HOUSE: get_gift(player); break;
         case MINE:
             player.n_points += map[player.n_pos].value;
             cout << "[矿地] 获得点数 " << map[player.n_pos].value << " 点" << endl;
-            return false;
+            break;
         case PRISON:
             player.n_empty_rounds = 2;
             cout << "[监狱] 打工是不可能打工的，这辈子都不可能打工的" << endl;
-            return false;
-        case MAGIC_HOUSE: magic_house(); return false;
-        default: return false;
+            break;
+        case MAGIC_HOUSE: magic_house(); 
+        break;
+        default: break;
     }
+    system("pause");
+    return false;
 }
 
 
@@ -388,7 +392,7 @@ void magic_house()
             cout << "[魔法屋] 输入角色无效，请重新选择还在场上的角色" << endl;
             continue;
         }
-        get_player_by_uid(ntoidx[n - 1])->n_empty_rounds += 2;
+        get_player_by_uid(ntoidx[n - 1])->n_empty_rounds += 3;
         break;
     }
     return;
