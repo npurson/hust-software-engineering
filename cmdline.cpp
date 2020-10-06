@@ -439,7 +439,7 @@ void do_dump() {
         if (player.n_robot != 0) {
             std::cerr << "gift " << player.uid << " robot " << player.n_robot << endl;
         }
-        if (player.n_god_buff != 0) {
+        if ((player.n_god_buff + player.b_god_buff) != 0) {
             std::cerr << "gift " << player.uid << " god " << player.n_god_buff + player.b_god_buff << endl;
         }
     }
@@ -612,8 +612,16 @@ int do_preset(const std::vector<std::string>& word_vec) {
                     return -1;
                 }
             } else if (prop_name == "god") {
-                player->n_god_buff = number;
-                player->b_god_buff = 0;
+                if (number == 0) {
+                    player->n_god_buff = number;
+                } else {
+                    if (next_player == player) {
+                        player->n_god_buff = number - 1;
+                        player->b_god_buff = 1;
+                    } else {
+                        player->n_god_buff = number;
+                    }
+                }
             } else {
                 return -1;
             }
