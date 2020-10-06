@@ -386,21 +386,28 @@ void magic_house()
 {
     string inputs;
     char ntoidx[4] = {'Q', 'A', 'S', 'J'};
-    long n;
     while (true){
-        cout << "[魔法屋] 请输入您想陷害的玩家: 1-钱夫人 2-阿土伯 3-孙小美 4-金贝贝" << endl;
+        cout << "[魔法屋] 请输入您想陷害的玩家: 1-钱夫人 2-阿土伯 3-孙小美 4-金贝贝，输入0放弃陷害玩家" << endl;
         getline(cin, inputs);
-        n = std::stol(inputs);
-        if (n < 1 || n > 4){
-            cout << "[魔法屋] 输入编号范围有误，请重新输入1-4的编号" << endl;
-            continue;
+        if (check_num(inputs)) {
+            auto n = std::stol(inputs);
+            if (n == 0) {
+                std::cout << "[魔法屋] 选择放弃陷害玩家，自动退出魔法屋" << std::endl;
+                Sleep(1000);
+                break;
+            } else if (n < 0 || n > 4) {
+                std::cout << "[魔法屋] 输入玩家编号无效，请重新选择" << std::endl;
+            } else {
+                if (!get_player_by_uid(ntoidx[n - 1]) || get_player_by_uid(ntoidx[n - 1])->n_money < 0) {
+                    cout << "[魔法屋] 输入角色无效，请重新选择还在场上的角色" << endl;
+                    continue;
+                }
+                get_player_by_uid(ntoidx[n - 1])->n_empty_rounds += 2;
+                break;
+            }
+        } else {
+            std::cout << "[魔法屋] 输入选择无效，请输入正确的数字编号选择陷害玩家" << std::endl;
         }
-        if (!get_player_by_uid(ntoidx[n - 1]) || get_player_by_uid(ntoidx[n - 1])->n_money < 0) {
-            cout << "[魔法屋] 输入角色无效，请重新选择还在场上的角色" << endl;
-            continue;
-        }
-        get_player_by_uid(ntoidx[n - 1])->n_empty_rounds += 2;
-        break;
     }
 }
 
