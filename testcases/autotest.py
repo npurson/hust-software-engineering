@@ -85,10 +85,10 @@ def check(case):
         case[0] = test name
         case[1] = testcase path
     '''
-    with open(os.path.join(basedir, case[1]+'.in'), 'r') as fin:
+    with open(os.path.join(basedir, case[1]+'.in'), 'r', encoding='UTF-8') as fin:
         testcase_input = fin.read()
         pass
-    with open(os.path.join(basedir, case[1]+'.out'), 'r') as f:
+    with open(os.path.join(basedir, case[1]+'.out'), 'r', encoding='UTF-8') as f:
         testcase_answer = f.read()
     proc = Popen(
         args.name, shell=True,
@@ -146,7 +146,7 @@ def run_dir(currdir, basename='', maxlevel=1000):
     dir_list = os.listdir(currdir)
     if CONFIG_JSON_NAME in dir_list:
         # with json configuration file
-        with open(os.path.join(currdir, CONFIG_JSON_NAME), 'r') as conf:
+        with open(os.path.join(currdir, CONFIG_JSON_NAME), 'r', encoding='UTF-8') as conf:
             conf = json.load(conf)
 
         name = os.path.basename(currdir)
