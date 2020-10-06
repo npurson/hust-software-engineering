@@ -321,7 +321,8 @@ int do_roll() {
         }
         if (count == (players->size() - 1)) {
             std::cout << "游戏结束，获胜的玩家是:" << winner.name << std::endl;
-            exit(EXIT_SUCCESS);
+            switch_player(&next_player);
+            do_dump();
         }
     }
     // switch to next player
@@ -371,6 +372,7 @@ void switch_player(p_player_t *p_next_player) {
         }
     }
     *p_next_player = &players->at(c);
+    (*p_next_player)->b_sell_estate = 0;
 }
 
 void do_dump() {
@@ -383,22 +385,22 @@ void do_dump() {
     std::cerr << dump_text << endl;
     for (const auto& player : *player_vec) {
         for (const auto& p_estate : player.estate) {
-            std::cerr << "map " << static_cast<int>(p_estate->id) << " " << player.uid << " " << static_cast<int>(p_estate->estate_lvl) << endl;
+            std::cerr << "map " << p_estate->id << " " << player.uid << " " << p_estate->estate_lvl << endl;
         }
         std::cerr << "fund " << player.uid << " " << player.n_money << endl;
         std::cerr << "credit " << player.uid << " " << player.n_points << endl;
-        std::cerr << "userloc " << player.uid << " " << static_cast<int>(player.n_pos) << " "  << static_cast<int>(player.n_empty_rounds) << endl;
+        std::cerr << "userloc " << player.uid << " " << player.n_pos << " "  << player.n_empty_rounds << endl;
         if (player.n_bomb != 0) {
-            std::cerr << "gift " << player.uid << " bomb " << static_cast<int>(player.n_bomb) << endl;
+            std::cerr << "gift " << player.uid << " bomb " << player.n_bomb << endl;
         }
         if (player.n_block != 0) {
-            std::cerr << "gift " << player.uid << " barrier " << static_cast<int>(player.n_block) << endl;
+            std::cerr << "gift " << player.uid << " barrier " << player.n_block << endl;
         }
         if (player.n_robot != 0) {
-            std::cerr << "gift " << player.uid << " robot " << static_cast<int>(player.n_robot) << endl;
+            std::cerr << "gift " << player.uid << " robot " << player.n_robot << endl;
         }
         if (player.n_god_buff != 0) {
-            std::cerr << "gift " << player.uid << " god " << static_cast<int>(player.n_god_buff) << endl;
+            std::cerr << "gift " << player.uid << " god " << player.n_god_buff + player.b_god_buff << endl;
         }
     }
 
@@ -406,7 +408,7 @@ void do_dump() {
     for (const auto& map_node : *map) {
         switch(map_node.item) {
             case BLOCK:
-                std::cerr << "barrier " << static_cast<int>(map_node.id) << endl;
+                std::cerr << "barrier " << map_node.id << endl;
                 break;
             case NONE:
             default: break;
@@ -454,7 +456,8 @@ int do_step(int step) {
         }
         if (count == (players->size() - 1)) {
             std::cout << "游戏结束，获胜的玩家是:" << winner.name << std::endl;
-            exit(EXIT_SUCCESS);
+            switch_player(&next_player);
+            do_dump();
         }
     }
 
@@ -492,6 +495,10 @@ int do_preset(const std::vector<std::string>& word_vec) {
         for (char uid : word_vec[1]) {
             add_player(uid);
         }
+        if (player_vec->size() < 2 && player_vec->size() > 4) {
+            player_vec->clear();
+            return -1;
+        }
         next_player = &player_vec->front();
     } else if (word_vec[0] == "map") {
         if (word_vec.size() != 4) return -1;
@@ -503,10 +510,14 @@ int do_preset(const std::vector<std::string>& word_vec) {
         }
         p_map = get_map();
         char player_name = word_vec[2].front();
-        if (p_map->at(n_map).owner == get_player_by_uid(player_name)) {
+        auto player = get_player_by_uid(player_name);
+        if (player == nullptr) {
             return -1;
         }
-        p_map->at(n_map).owner = get_player_by_uid(player_name);
+        if (p_map->at(n_map).owner == player) {
+            return -1;
+        }
+        p_map->at(n_map).owner = player;
         int level = std::stoi(word_vec[3]);
         if (level < 0 || level > 3) {
             return -1;
@@ -541,6 +552,9 @@ int do_preset(const std::vector<std::string>& word_vec) {
         if (!check_num(word_vec[3])) return -1;
         char player_name = word_vec[1].front();
         auto player = get_player_by_uid(player_name);
+        if (player == nullptr) {
+            return -1;
+        }
         auto prop_name = word_vec[2];
         int number = std::stoi(word_vec[3]);
         if (number >= 0) {
@@ -621,7 +635,7 @@ int do_query(player_t& player)
 {
     std::cout << "资金: " << player.n_money << std::endl;
     std::cout << "点数: " << player.n_points << std::endl;
-    std::cout << "财神buff剩余轮数: " << player.n_god_buff << std::endl;
+    std::cout << "财神buff轮数: " << player.n_god_buff + player.b_god_buff << std::endl;
     std::cout << std::endl;
     std::cout << "固定资产: " << std::endl;
     for (auto & it : player.estate) {
