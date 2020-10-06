@@ -12,4 +12,7 @@ userloc A 28 0
 userloc Q 31 0
 userloc S 0 0
 
+gift Q barrier 1
+gift A barrier 1
+
 nextuser Q
