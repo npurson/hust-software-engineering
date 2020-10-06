@@ -151,7 +151,7 @@ void update_estate(map_t& curr_map, player_t& player)
 
 void apply_item(map_t& curr_map, player_t& player, int item, int pos)
 {
-    auto item_pos = (player.n_pos + pos) % MAP_SIZE;
+    auto item_pos = (player.n_pos + pos + MAP_SIZE) % MAP_SIZE;
     switch(item) {
         case BLOCK:
             if (!player.n_block) {

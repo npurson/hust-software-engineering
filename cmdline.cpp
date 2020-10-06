@@ -528,6 +528,9 @@ int do_preset(const std::vector<std::string>& word_vec) {
         if (!check_num(word_vec[2])) return -1;
         char player_name = word_vec[1].front();
         auto player = get_player_by_uid(player_name);
+        if (player == nullptr) {
+            return -1;
+        }
         int points = std::stoi(word_vec[2]);
         if (points < 0) {
             return -1;
@@ -588,11 +591,23 @@ int do_preset(const std::vector<std::string>& word_vec) {
         }
     } else {
         auto p_map = get_map();
+        auto players = get_player_vec();
         if (word_vec[0] == "barrier") {
             if (!check_num(word_vec[1])) {
                 return -1;
             }
             int map_id = std::stoi(word_vec[1]);
+            if (map_id < 0 || map_id >= 70) {
+                return -1;
+            }
+            for (const auto& p : *players) {
+                if (p.n_pos == map_id) {
+                    return -1;
+                }
+            }
+            if (p_map->at(map_id).item != NONE) {
+                return -1;
+            }
             p_map->at(map_id).item = BLOCK;
         } else {
             return -1;
