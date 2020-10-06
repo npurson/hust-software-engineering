@@ -1,7 +1,10 @@
-testname,..,4/4
+testname,..,4\7
 testname,testcase,status,time(ms)
-..,magic_2,True,1.1758613586425782e-07
-..,magic_3,True,4.877567291259766e-08
-..,magic_1,True,6.880807876586915e-08
-..,magic_0,True,4.416275024414063e-08
+..,magic_2,True,3346.41695022583
+..,magic_4,False,10000.150442123413
+..,magic_6,False,18619.503259658813
+..,magic_5,False,18620.97454071045
+..,magic_1,True,9625.921249389648
+..,magic_0,True,1305.7448863983154
+..,magic_3,True,356.8310737609863
 
