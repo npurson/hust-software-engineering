@@ -299,6 +299,9 @@ bool roll_dice(map_t& curr_map, player_t& player)
 
 bool step_forward(map_t& curr_map, player_t& player, int steps)
 {
+    if (steps < 0) {
+            return -1;
+    }
     cout << "向前行进 " << steps << " 步" << endl;
     for (auto it = curr_map[player.n_pos].players.begin();
          it != curr_map[player.n_pos].players.end(); ++it) {

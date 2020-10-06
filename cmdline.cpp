@@ -158,12 +158,14 @@ int parse_cmd(const string& cmd) {
         } else if (word_vec[0] == "start") {
             if (word_vec.size() != 1) {
                 std::cerr << "命令格式错误，start命令格式为：start" << endl;
+                Sleep(sleep_time);
                 return -1;
             }
             start_game();
             start = true;
         } else {
             std::cerr << "请输入start开始游戏" << endl;
+            Sleep(sleep_time);
         }
     } else {
         if (word_vec[0] == "preset") {
@@ -173,51 +175,70 @@ int parse_cmd(const string& cmd) {
         } else if (word_vec[0] == "roll") {
             if (word_vec.size() != 1) {
                 std::cerr << "命令格式错误，roll命令格式为：roll" << endl;
+                Sleep(sleep_time);
                 return -1;
             }
             do_roll();
         } else if (word_vec[0] == "dump") {
             if (word_vec.size() != 1) {
                 std::cerr << "命令格式错误，dump命令格式为：dump" << endl;
+                Sleep(sleep_time);
                 return -1;
             }
             do_dump();
         } else if (word_vec[0] == "sell") {
             if (word_vec.size() != 2) {
                 std::cerr << "命令格式错误，sell命令格式为：sell n，n指定玩家房产的地块编号" << endl;
+                Sleep(sleep_time);
                 return -1;
             }
-            auto map_id = std::strtol(word_vec[1].c_str(), nullptr, 10);
-            do_sell(*get_map(), *next_player, static_cast<int>(map_id));
+            if (!check_num(word_vec[1])) return -1;
+            auto map_id = std::stoi(word_vec[1]);
+            if (map_id < 0 || map_id >= MAP_SIZE) {
+                std::cerr << "地块编号错误，请输入0-69的地块编号" << std::endl;
+                Sleep(sleep_time);
+                return -1;
+            }
+            do_sell(*get_map(), *next_player, map_id);
         } else if (word_vec[0] == "query") {
             if (word_vec.size() != 1) {
                 std::cerr << "命令格式错误，query命令格式为：query" << endl;
+                Sleep(sleep_time);
                 return -1;
             }
             do_query(*next_player);
         } else if (word_vec[0] == "block") {
             if (word_vec.size() != 2) {
                 std::cerr << "命令格式错误，block命令格式为：block n，n指定与当前位置的相对距离，范围为[-10,10]" << endl;
+                Sleep(sleep_time);
                 return -1;
             }
-            auto block_step = std::strtol(word_vec[1].c_str(), nullptr, 10);
-            do_block(static_cast<int>(block_step), next_player);
+            if (!check_num(word_vec[1])) return -1;
+            auto block_step = std::stoi(word_vec[1]);
+            do_block(block_step, next_player);
         } else if (word_vec[0] == "robot") {
             if (word_vec.size() != 1) {
                 std::cerr << "命令格式错误，robot命令格式为：robot" << endl;
+                Sleep(sleep_time);
                 return -1;
             }
             do_robot(next_player);
         } else if (word_vec[0] == "step") {
             if (word_vec.size() != 2) {
                 std::cerr << "命令格式错误，step命令格式为：step n，n为指定的步数" << endl;
+                Sleep(sleep_time);
                 return -1;
             }
-            auto step = std::strtol(word_vec[1].c_str(), nullptr, 10);
-            do_step(static_cast<int>(step));
+            if (!check_num(word_vec[1])) return -1;
+            auto step = std::stoi(word_vec[1]);
+            if (step < 0) {
+                return -1;
+            }
+            do_step(step);
         } else if (word_vec[0] == "help") {
             if (word_vec.size() != 1) {
                 std::cerr << "命令格式错误，help命令格式为：help" << std::endl;
+                Sleep(sleep_time);
                 return -1;
             }
             do_help();
@@ -583,13 +604,32 @@ int do_preset(const std::vector<std::string>& word_vec) {
 
 int do_query(player_t& player)
 {
-    cout << "资金: " << player.n_money << endl;
-    cout << "点数: " << player.n_points << endl;
-    cout << "固定资产: ";
+    std::cout << "资金: " << player.n_money << std::endl;
+    std::cout << "点数: " << player.n_points << std::endl;
+    std::cout << "财神buff剩余轮数: " << player.n_god_buff << std::endl;
+    std::cout << std::endl;
+    std::cout << "固定资产: " << std::endl;
     for (auto & it : player.estate) {
-        printf("%d号房屋 ", it->id);
+        int area;
+        switch(it->value) {
+            case AREA_1_PRICE:
+                area = 1;
+                break;
+            case AREA_2_PRICE:
+                area = 2;
+                break;
+            case AREA_3_PRICE:
+                area = 3;
+                break;
+            default:
+                return -1;
+        }
+        std::cout << "地段" << area << ", ";
+        std::cout << it->id << "号房屋" << ", ";
+        std::cout << "等级" << it->estate_lvl << ", ";
+        std::cout << "价值" << get_estate_price(*it) << "元" << std::endl;
     }
-    std::cout << endl;
+    std::cout << std::endl;
     std::cout << "道具:" << " 路障*" << player.n_block << " 机器娃娃*" << player.n_robot << std::endl;
     system("pause");
     return 0;
