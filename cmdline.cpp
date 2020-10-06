@@ -476,30 +476,31 @@ int do_preset(const std::vector<std::string>& word_vec) {
         if (word_vec.size() != 4) return -1;
         if (!check_num(word_vec[1]) || !check_num(word_vec[3])) return -1;
         int n_map = std::stoi(word_vec[1]);
-        p_map_t map;
-        if (n_map == START_POS || n_map == HOSPITAL_POS || n_map == ITEM_HOUSE_POS || n_map == GIFT_HOUSE_POS || n_map == PRISON_POS || n_map == MAGIC_HOUSE_POS) {
-            return -1;
-        } else {
-            map = get_map();
-            char player_name = word_vec[2].front();
-            if (map->at(n_map).owner == get_player_by_uid(player_name)) {
-                return -1;
-            }
-            map->at(n_map).owner = get_player_by_uid(player_name);
-        }
-        if (check_num(word_vec[3])) {
-            int level = std::stoi(word_vec[3]);
-            map->at(n_map).estate_lvl = level;
-            map->at(n_map).owner->estate.push_back(&map->at(n_map));
-        } else {
+        p_map_t p_map;
+        if (n_map < 0 || n_map >= MAP_SIZE || n_map == START_POS || n_map == HOSPITAL_POS || n_map == ITEM_HOUSE_POS || n_map == GIFT_HOUSE_POS || n_map == PRISON_POS || n_map == MAGIC_HOUSE_POS) {
             return -1;
         }
+        p_map = get_map();
+        char player_name = word_vec[2].front();
+        if (p_map->at(n_map).owner == get_player_by_uid(player_name)) {
+            return -1;
+        }
+        p_map->at(n_map).owner = get_player_by_uid(player_name);
+        int level = std::stoi(word_vec[3]);
+        if (level < 0 || level > 3) {
+            return -1;
+        }
+        p_map->at(n_map).estate_lvl = level;
+        p_map->at(n_map).owner->estate.push_back(&p_map->at(n_map));
     } else if (word_vec[0] == "fund") {
         if (word_vec.size() != 3) return -1;
         if (!check_num(word_vec[2])) return -1;
         char player_name = word_vec[1].front();
         auto player = get_player_by_uid(player_name);
         int money = std::stoi(word_vec[2]);
+        if (money < 0) {
+            return -1;
+        }
         player->n_money = money;
     } else if (word_vec[0] == "credit") {
         if (word_vec.size() != 3) return -1;
@@ -507,6 +508,9 @@ int do_preset(const std::vector<std::string>& word_vec) {
         char player_name = word_vec[1].front();
         auto player = get_player_by_uid(player_name);
         int points = std::stoi(word_vec[2]);
+        if (points < 0) {
+            return -1;
+        }
         player->n_points = points;
     } else if (word_vec[0] == "gift") {
         if (word_vec.size() != 4) return -1;
@@ -515,23 +519,40 @@ int do_preset(const std::vector<std::string>& word_vec) {
         auto player = get_player_by_uid(player_name);
         auto prop_name = word_vec[2];
         int number = std::stoi(word_vec[3]);
-        if (prop_name == "barrier") {
-            player->n_block = number;
-        } else if (prop_name == "robot") {
-            player->n_robot = number;
-        } else if (prop_name == "god") {
-            player->n_god_buff = number;
-            player->b_god_buff = 1;
-        } else {
-            return -1;
+        if (number >= 0) {
+            if (prop_name == "barrier") {
+                if ((player->n_robot + number) <= 10) {
+                    player->n_block = number;
+                } else {
+                    return -1;
+                }
+            } else if (prop_name == "robot") {
+                if ((player->n_block + number) <= 10) {
+                    player->n_robot = number;
+                } else {
+                    return -1;
+                }
+            } else if (prop_name == "god") {
+                player->n_god_buff = number;
+                player->b_god_buff = 0;
+            } else {
+                return -1;
+            }
         }
     } else if (word_vec[0] == "userloc") {
         if (word_vec.size() != 4) return -1;
         if (!check_num(word_vec[2]) || !check_num(word_vec[3])) return -1;
         char player_name = word_vec[1].front();
+
         int n_map_id = std::stoi(word_vec[2]);
         int rest_days = std::stoi(word_vec[3]);
+        if (n_map_id < 0 || n_map_id >= MAP_SIZE || rest_days < 0) {
+            return -1;
+        }
         auto player = get_player_by_uid(player_name);
+        if (player == nullptr) {
+            return -1;
+        }
         p_map_t map = get_map();
         erase_player_from_curr_pos(player);
         player->n_empty_rounds = rest_days;
@@ -540,13 +561,16 @@ int do_preset(const std::vector<std::string>& word_vec) {
     } else if (word_vec[0] == "nextuser") {
         if (word_vec.size() != 2) return -1;
         char player_name = word_vec[1].front();
-        next_player = get_player_by_uid(player_name);
+        auto p = get_player_by_uid(player_name);
+        if (p != nullptr) {
+            next_player = p;
+        }
     } else {
         auto p_map = get_map();
-        if (word_vec[0] == "bomb") {
-            int map_id = std::stoi(word_vec[1]);
-            p_map->at(map_id).item = BOMB;
-        } else if (word_vec[0] == "barrier") {
+        if (word_vec[0] == "barrier") {
+            if (!check_num(word_vec[1])) {
+                return -1;
+            }
             int map_id = std::stoi(word_vec[1]);
             p_map->at(map_id).item = BLOCK;
         } else {

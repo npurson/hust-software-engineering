@@ -1,6 +1,4 @@
 #include "cmdline.h"
-#include "map.h"
-
 
 static map_t map;
 extern int sleep_time;
@@ -83,7 +81,7 @@ void plot_map()
         }
 
         // player
-        if (map[hash_table[i]].players.empty() == false) {
+        if (!map[hash_table[i]].players.empty()) {
             buf = map[hash_table[i]].players.back()->uid;
             SetConsoleTextAttribute(h_out, color_table[map[hash_table[i]].players.back()->e_color]);
         }
@@ -95,12 +93,12 @@ void plot_map()
 }
 
 
-void buy_estate(map_t& map, player_t& player)
+void buy_estate(map_t& curr_map, player_t& player)
 {
     int map_node_idx = player.n_pos;
-    if (map[map_node_idx].type != VACANCY ||
-        map[map_node_idx].owner ||
-        player.n_money < map[map_node_idx].value)
+    if (curr_map[map_node_idx].type != VACANCY ||
+        curr_map[map_node_idx].owner ||
+        player.n_money < curr_map[map_node_idx].value)
         return;
 
     string choice;
@@ -111,9 +109,9 @@ void buy_estate(map_t& map, player_t& player)
         getline(cin, choice);
         tolower(choice);
         if (choice == "y") {
-            player.n_money -= map[map_node_idx].value;
-            player.estate.push_back(&map[map_node_idx]);
-            map[map_node_idx].owner = &player;
+            player.n_money -= curr_map[map_node_idx].value;
+            player.estate.push_back(&curr_map[map_node_idx]);
+            curr_map[map_node_idx].owner = &player;
             break;
         }
         else if (choice == "n") break;
@@ -122,18 +120,18 @@ void buy_estate(map_t& map, player_t& player)
 }
 
 
-void update_estate(map_t& map, player_t& player)
+void update_estate(map_t& curr_map, player_t& player)
 {
     int map_node_idx = player.n_pos;
-    if (map[map_node_idx].type != VACANCY ||
-        !(map[map_node_idx].owner)||
-        map[map_node_idx].owner->uid != player.uid ||
-        map[map_node_idx].estate_lvl == SKYSCRAPER ||
-        player.n_money < map[map_node_idx].value)
+    if (curr_map[map_node_idx].type != VACANCY ||
+        !(curr_map[map_node_idx].owner) ||
+        curr_map[map_node_idx].owner->uid != player.uid ||
+        curr_map[map_node_idx].estate_lvl == SKYSCRAPER ||
+        player.n_money < curr_map[map_node_idx].value)
         return;
 
     string choice;
-    cout << "[升级] 升级需支付 " << map[player.n_pos].value << " 元" << endl;
+    cout << "[升级] 升级需支付 " << curr_map[player.n_pos].value << " 元" << endl;
     cout << "      是否需要升级？(y/n)" << endl;
 
     while (true) {
@@ -141,8 +139,8 @@ void update_estate(map_t& map, player_t& player)
         getline(cin, choice);
         tolower(choice);
         if (choice == "y") {
-            player.n_money -= map[map_node_idx].value;
-            map[map_node_idx].estate_lvl += 1;
+            player.n_money -= curr_map[map_node_idx].value;
+            curr_map[map_node_idx].estate_lvl += 1;
             cout << "[升级] 建筑升级成功" << endl;
             Sleep(sleep_time);
             break;
@@ -155,6 +153,7 @@ void update_estate(map_t& map, player_t& player)
 
 void apply_item(map_t& curr_map, player_t& player, int item, int pos)
 {
+    auto item_pos = (player.n_pos + pos) % MAP_SIZE;
     switch(item) {
         case BLOCK:
             if (!player.n_block) {
@@ -169,16 +168,18 @@ void apply_item(map_t& curr_map, player_t& player, int item, int pos)
                     auto p_players = get_player_vec();
                     for (auto & p : *p_players) {
                         if (p.n_money >= 0) {
-                            if ((player.n_pos + pos) == p.n_pos) {
+                            if (item_pos == p.n_pos) {
                                 std::cout << "[路障] 不能在玩家处使用路障" << std::endl;
                                 Sleep(sleep_time);
                                 return;
                             }
                         }
                     }
-                    curr_map[(player.n_pos + pos) % MAP_SIZE].item = BLOCK;
-                    player.n_block -= 1;
-                    cout << "[路障] 路障放置成功" << endl;
+                    if (curr_map[item_pos].item == NONE) {
+                        curr_map[item_pos].item = BLOCK;
+                        player.n_block -= 1;
+                        std::cout << "[路障] 路障放置成功" << std::endl;
+                    }
                 }
             }
             break;
@@ -290,33 +291,33 @@ void get_gift(player_t& player)
 }
 
 
-bool roll_dice(map_t& map, player_t& player)
+bool roll_dice(map_t& curr_map, player_t& player)
 {
-    return step_forward(map, player, rand() % 6 + 1);
+    return step_forward(curr_map, player, rand() % 6 + 1);
 }
 
 
-bool step_forward(map_t& map, player_t& player, int steps)
+bool step_forward(map_t& curr_map, player_t& player, int steps)
 {
     cout << "向前行进 " << steps << " 步" << endl;
-    for (auto it = map[player.n_pos].players.begin();
-         it != map[player.n_pos].players.end(); ++it) {
+    for (auto it = curr_map[player.n_pos].players.begin();
+         it != curr_map[player.n_pos].players.end(); ++it) {
         if (*it == &player) {
-            map[player.n_pos].players.erase(it);
+            curr_map[player.n_pos].players.erase(it);
             break;
         }
     }
     while (steps--) {
         player.n_pos = (player.n_pos + 1) % MAP_SIZE;
         // item judge
-        if (map[player.n_pos].item == BLOCK) {
-            map[player.n_pos].item = NONE;
+        if (curr_map[player.n_pos].item == BLOCK) {
+            curr_map[player.n_pos].item = NONE;
             cout << "[路障] 噢！在这儿停顿" << endl;
             Sleep(sleep_time);
             break;
         }
-        else if (map[player.n_pos].item == BOMB) {
-            map[player.n_pos].item = NONE;
+        else if (curr_map[player.n_pos].item == BOMB) {
+            curr_map[player.n_pos].item = NONE;
             player.n_pos = HOSPITAL_POS;
             player.n_empty_rounds = 3;
             cout << "[炸弹] 你炸了！移动至医院，轮空三回合" << endl;
@@ -325,15 +326,15 @@ bool step_forward(map_t& map, player_t& player, int steps)
     }
 
     // payment judge
-    map[player.n_pos].players.push_back(&player);
-    switch (map[player.n_pos].type) {
+    curr_map[player.n_pos].players.push_back(&player);
+    switch (curr_map[player.n_pos].type) {
         case VACANCY:
             // 租金
-            if (map[player.n_pos].owner &&
-                map[player.n_pos].owner != &player &&
-                !map[player.n_pos].owner->n_empty_rounds
+            if (curr_map[player.n_pos].owner &&
+                curr_map[player.n_pos].owner != &player &&
+                !curr_map[player.n_pos].owner->n_empty_rounds
                 ) {
-                int payment = get_estate_price(map[player.n_pos]) / 2;
+                int payment = get_estate_price(curr_map[player.n_pos]) / 2;
                 cout << "[租金] 需支付过路费 " << payment << " 元" << endl;
                 if (player.b_god_buff) {
                     cout << "[财神] 财神附身，无需付钱" << endl;
@@ -345,25 +346,25 @@ bool step_forward(map_t& map, player_t& player, int steps)
                     return true;
                 }
                 else {
-                    map[player.n_pos].owner->n_money += payment;
+                    curr_map[player.n_pos].owner->n_money += payment;
                     player.n_money -= payment;
                     Sleep(sleep_time);
                 }
             }
             // 升级
-            else if (map[player.n_pos].owner &&
-                     map[player.n_pos].owner == &player)
-                update_estate(map, player);
+            else if (curr_map[player.n_pos].owner &&
+                     curr_map[player.n_pos].owner == &player)
+                update_estate(curr_map, player);
             // 买房
-            else if (!map[player.n_pos].owner)
-                buy_estate(map, player);
+            else if (!curr_map[player.n_pos].owner)
+                buy_estate(curr_map, player);
             return false;
 
         case ITEM_HOUSE: buy_item(player); return false;
         case GIFT_HOUSE: get_gift(player); return false;
         case MINE:
-            player.n_points += map[player.n_pos].value;
-            cout << "[矿地] 获得点数 " << map[player.n_pos].value << " 点" << endl;
+            player.n_points += curr_map[player.n_pos].value;
+            cout << "[矿地] 获得点数 " << curr_map[player.n_pos].value << " 点" << endl;
             Sleep(sleep_time);
             return false;
         case PRISON:
