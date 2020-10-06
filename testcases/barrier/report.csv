@@ -1,4 +1,5 @@
-testname,..,1/1
+testname,..,2\2
 testname,testcase,status,time(ms)
-..,barrier_0,True,2.180953025817871e-07
+..,barrier_1,True,2645.8442211151123
+..,barrier_0,True,2043.8323020935059
 
