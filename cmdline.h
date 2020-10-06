@@ -9,6 +9,8 @@
 
 #include "player.h"
 #include "map.h"
+#define SLEEP_TIME  2000
+
 
 std::string get_cmd();
 bool check_num(const std::string& num_str);

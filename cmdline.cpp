@@ -3,14 +3,14 @@
 
 
 extern p_player_t next_player;
-
+int sleep_time = 0;
 extern int init_money;
 
 std::string get_cmd() {
     std::string command;
-    if (getline(std::cin, command)) {
+    if (std::getline(std::cin, command)) {
         // 去除命令前空格
-        while (command.front() == ' ') {
+        while (!command.empty() && command.front() == ' ') {
             command.erase(command.begin());
         }
         auto pos = command.find('#');
@@ -19,9 +19,12 @@ std::string get_cmd() {
             command.erase(pos, command.size() - pos);
         }
         // 去除命令后空格
-        while (command.back() == ' ') {
+        while (!command.empty() && command.back() == ' ') {
             command.pop_back();
         }
+        tolower(command);
+    } else {
+        command = ""; // 确保出现错误的时候command总是为空
     }
     return command;
 }
@@ -29,16 +32,8 @@ std::string get_cmd() {
 bool check_num(const std::string& num_str) {
     if (num_str.empty()) {
         return false;
-    }
-    if (num_str[0] == 0) {
-        return false;
     } else {
-        for (const auto& c : num_str) {
-            if (!std::isdigit(c)) {
-                return false;
-            }
-        }
-        return true;
+        return std::all_of(num_str.begin(), num_str.end(), isdigit);
     }
 }
 
@@ -46,7 +41,7 @@ bool check_num(const std::string& num_str) {
 void start_game() {
     string inputs;
     int num_players;
-
+    sleep_time = SLEEP_TIME;
     while (true) {
         cout << "请选择初始金钱数量(1000-50000): ";
         getline(cin, inputs);
@@ -344,7 +339,7 @@ void switch_player(p_player_t *p_next_player) {
             if (players->at(c).n_empty_rounds  > 0) {
                 --(players->at(c).n_empty_rounds);
                 std::cout << "玩家" << players->at(c).name << "轮空" << std::endl;
-                Sleep(1000);
+                Sleep(sleep_time);
                 continue;
             } else {
                 break;

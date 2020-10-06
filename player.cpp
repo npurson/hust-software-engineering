@@ -3,7 +3,7 @@
 
 
 static vector<player_t> player_vec;
-
+extern int sleep_time;
 int init_money = DEFAULT_MONEY;
 
 
@@ -62,7 +62,7 @@ p_player_t skip_player(p_player_t next_player) {
         if (next_player->n_god_buff > 0) next_player->n_god_buff -= 1;
 
         std::cout << "玩家" << next_player->name << "轮空" << std::endl;
-        Sleep(1000);
+        Sleep(sleep_time);
 
         auto players = get_player_vec();
         int c = 0;
