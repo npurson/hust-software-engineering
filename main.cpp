@@ -14,7 +14,6 @@ int main() {
     system("chcp 65001");
     system("cls");
     while (true) {
-    // skip_player(next_player);
         show_cmd();
         if (getline(cin, command)) {
             if (command == "quit") {
