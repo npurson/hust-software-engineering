@@ -54,9 +54,9 @@ p_map_t get_map();
 // 绘制地图
 void plot_map();
 // 购买房产
-void buy_estate(map_t& map, player_t& player);
+void buy_estate(map_t& curr_map, player_t& player);
 // 升级房产
-void update_estate(map_t& map, player_t& player);
+void update_estate(map_t& curr_map, player_t& player);
 // 使用道具
 void apply_item(map_t& curr_map, player_t& player, int item, int pos = 0);
 // 购买道具
@@ -64,9 +64,9 @@ void buy_item(player_t& player);
 // 获得礼物
 void get_gift(player_t& player);
 // 投骰子，并调用step_forward
-bool roll_dice(map_t& map, player_t& player);
+bool roll_dice(map_t& curr_map, player_t& player);
 // 向前行进指定步数，返回true则破产
-bool step_forward(map_t& map, player_t& player, int steps);
+bool step_forward(map_t& curr_map, player_t& player, int steps);
 // 获取某地房产的价值，返回true则破产
 int get_estate_price(const map_node_t& map_node);
 // 使用魔法
