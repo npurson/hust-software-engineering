@@ -153,47 +153,48 @@ void update_estate(map_t& map, player_t& player)
 }
 
 
-void apply_item(map_t& map, player_t& player, int item, int pos)
+void apply_item(map_t& curr_map, player_t& player, int item, int pos)
 {
-    if (item == BLOCK) {
-        if (!player.n_block) {
-            cout << "[道具] 没有路障，无法使用道具" << endl;
-        }
-        else {
-            if (pos > 10 || pos < -10 ||
-                map[(player.n_pos + pos) % MAP_SIZE].item)
-                cout << "[路障] 无法在所选位置放置路障" << endl;
-            else {
-                map[(player.n_pos + pos) % MAP_SIZE].item = BLOCK;
-                player.n_block -= 1;
-                cout << "[路障] 路障放置成功" << endl;
+    switch(item) {
+        case BLOCK:
+            if (!player.n_block) {
+                cout << "[道具] 没有路障，无法使用道具" << endl;
             }
-        }
-    }
-    else if (item == ROBOT) {
-        if (!player.n_robot) {
-            cout << "[道具] 没有娃娃，无法使用道具" << endl;
-        }
-        else {
-            for (int i = 0; i <= 10; ++i)
-                map[player.n_pos + i].item = NONE;
-            player.n_robot -= 1;
-            cout << "[机器娃娃] 机器娃娃使用成功" << endl;
-        }
-    }
-    else if (item == BOMB) {
-        if (!player.n_block) {
-            cout << "[道具] 没有炸弹，无法使用道具" << endl;
-        } else {
-            if (pos > 10 || pos < -10 ||
-                map[(player.n_pos + pos) % MAP_SIZE].item)
-                cout << "[炸弹] 无法在所选位置放置炸弹" << endl;
             else {
-                map[(player.n_pos + pos) % MAP_SIZE].item = BLOCK;
-                cout << "[炸弹] 炸弹放置成功" << endl;
-                cout << "      阿姨，开始你的炸弹秀" << endl;
+                if (pos > 10 || pos < -10) {
+                    std::cout << "[路障] 路障使用范围错误，只能在前后十格内使用路障" << std::endl;
+                    Sleep(sleep_time);
+                }
+                else {
+                    auto p_players = get_player_vec();
+                    for (auto & p : *p_players) {
+                        if (p.n_money >= 0) {
+                            if ((player.n_pos + pos) == p.n_pos) {
+                                std::cout << "[路障] 不能在玩家处使用路障" << std::endl;
+                                Sleep(sleep_time);
+                                return;
+                            }
+                        }
+                    }
+                    curr_map[(player.n_pos + pos) % MAP_SIZE].item = BLOCK;
+                    player.n_block -= 1;
+                    cout << "[路障] 路障放置成功" << endl;
+                }
             }
-        }
+            break;
+        case ROBOT:
+            if (!player.n_robot) {
+                cout << "[道具] 没有娃娃，无法使用道具" << endl;
+            }
+            else {
+                for (int i = 0; i <= 10; ++i)
+                    curr_map[player.n_pos + i].item = NONE;
+                player.n_robot -= 1;
+                cout << "[机器娃娃] 机器娃娃使用成功" << endl;
+            }
+            break;
+        default:
+            break;
     }
 }
 

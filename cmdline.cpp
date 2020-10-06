@@ -487,9 +487,13 @@ int do_preset(const std::vector<std::string>& word_vec) {
             }
             map->at(n_map).owner = get_player_by_uid(player_name);
         }
-        int level = std::stoi(word_vec[3]);
-        map->at(n_map).estate_lvl = level;
-        map->at(n_map).owner->estate.push_back(&map->at(n_map));
+        if (check_num(word_vec[3])) {
+            int level = std::stoi(word_vec[3]);
+            map->at(n_map).estate_lvl = level;
+            map->at(n_map).owner->estate.push_back(&map->at(n_map));
+        } else {
+            return -1;
+        }
     } else if (word_vec[0] == "fund") {
         if (word_vec.size() != 3) return -1;
         if (!check_num(word_vec[2])) return -1;

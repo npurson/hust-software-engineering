@@ -58,7 +58,7 @@ void buy_estate(map_t& map, player_t& player);
 // 升级房产
 void update_estate(map_t& map, player_t& player);
 // 使用道具
-void apply_item(map_t& map, player_t& player, int item, int pos = 0);
+void apply_item(map_t& curr_map, player_t& player, int item, int pos = 0);
 // 购买道具
 void buy_item(player_t& player);
 // 获得礼物
