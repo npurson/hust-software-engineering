@@ -344,10 +344,10 @@ int do_roll() {
 
 void do_skip(p_player_t player) {
     // 处理在原地交租的情形
-    player->b_god_buff = 0;
     auto curr_map = *get_map();
     if (curr_map[player->n_pos].owner && curr_map[player->n_pos].owner != player) {
         if (pay_rent(player)) {
+            player->b_god_buff = 0;
             erase_player_from_curr_pos(player);
             for (auto &it : player->estate) {
                 it->estate_lvl = 0;
@@ -377,6 +377,7 @@ void do_skip(p_player_t player) {
             }
         }
     }
+    player->b_god_buff = 0;
 }
 
 void switch_player(p_player_t *p_next_player) {
