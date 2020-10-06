@@ -10,6 +10,10 @@
 
 #include "player.h"
 
+#define AREA_1_PRICE    200
+#define AREA_2_PRICE    500
+#define AREA_3_PRICE    300
+
 #define START_POS           0
 #define HOSPITAL_POS        14
 #define ITEM_HOUSE_POS      28

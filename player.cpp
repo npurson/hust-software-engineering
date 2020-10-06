@@ -20,6 +20,9 @@ void add_player(char uid)
     static std::map<char, color_t> player_color = {
         {'Q', RED}, {'A', GREEN}, {'S', BLUE}, {'J', YELLOW}
     };
+    if (std::isalpha(uid)) {
+        uid = std::toupper(uid);
+    }
     switch (uid) {
         default: return;
         case 'Q': case 'A':
@@ -43,6 +46,9 @@ void add_player(char uid)
 
 
 p_player_t get_player_by_uid(char uid) {
+    if (std::isalpha(uid)) {
+        uid = std::toupper(uid);
+    }
     for (auto &player : player_vec) {
         if (player.uid == uid) {
             return &player;
