@@ -243,7 +243,7 @@ if args.export:
                 writer.writerow([
                     'testname',
                     test,
-                    '%d/%d' % (cnt, len(test_res[test]))
+                    '%d\\%d' % (cnt, len(test_res[test]))
                 ])
                 writer.writerow(['testname', 'testcase', 'status', 'time(ms)'])
                 writer.writerows(test_res[test])

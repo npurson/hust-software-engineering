@@ -270,16 +270,7 @@ int do_roll() {
 
         // empty broken player info
         next_player->n_money = -1;
-        next_player->n_points = 0;
-        next_player->n_pos = 0;
-        next_player->n_empty_rounds = 0;
-        next_player->n_god_buff = 0;
-        next_player->b_god_buff = 0;
         next_player->estate.clear();
-        next_player->n_block = 0;
-        next_player->n_bomb = 0;
-        next_player->n_robot = 0;
-        next_player->b_sell_estate = 0;
 
         // check winner
         auto players = get_player_vec();
@@ -415,16 +406,7 @@ int do_step(int step) {
         }
         // empty broken player info
         next_player->n_money = -1;
-        next_player->n_points = 0;
-        next_player->n_pos = 0;
-        next_player->n_empty_rounds = 0;
-        next_player->n_god_buff = 0;
         next_player->estate.clear();
-        next_player->n_block = 0;
-        next_player->n_bomb = 0;
-        next_player->n_robot = 0;
-        next_player->b_sell_estate = 0;
-        next_player->b_god_buff = 0;
 
         // check winner
         auto players = get_player_vec();
