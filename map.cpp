@@ -3,7 +3,7 @@
 
 
 static map_t map;
-
+extern int sleep_time;
 
 p_map_t init_map()
 {
@@ -143,7 +143,7 @@ void update_estate(map_t& map, player_t& player)
             player.n_money -= map[map_node_idx].value;
             map[map_node_idx].estate_lvl += 1;
             cout << "[升级] 建筑升级成功" << endl;
-            Sleep(1000);
+            Sleep(sleep_time);
             break;
         }
         else if (choice == "n") break;
@@ -253,7 +253,7 @@ void buy_item(player_t& player)
             }
         }
     }
-    Sleep(1000);
+    Sleep(sleep_time);
 }
 
 
@@ -265,8 +265,7 @@ void get_gift(player_t& player)
 
     while (true) {
         show_cmd();
-        getline(cin, choice);
-        tolower(choice);
+        choice = get_cmd();
         if (choice == "1") {
             player.n_money += 2000;
             cout << "[奖金] 获得奖金 2000 元" << endl;
@@ -285,7 +284,7 @@ void get_gift(player_t& player)
         // else if (choice == "q") break;
         else cout << "[礼品屋] 选择无效，退出" << endl; break;
     }
-    Sleep(1000);
+    Sleep(sleep_time);
 }
 
 
@@ -311,7 +310,7 @@ bool step_forward(map_t& map, player_t& player, int steps)
         if (map[player.n_pos].item == BLOCK) {
             map[player.n_pos].item = NONE;
             cout << "[路障] 噢！在这儿停顿" << endl;
-            Sleep(1000);
+            Sleep(sleep_time);
             break;
         }
         else if (map[player.n_pos].item == BOMB) {
@@ -319,7 +318,7 @@ bool step_forward(map_t& map, player_t& player, int steps)
             player.n_pos = HOSPITAL_POS;
             player.n_empty_rounds = 3;
             cout << "[炸弹] 你炸了！移动至医院，轮空三回合" << endl;
-            Sleep(1000);
+            Sleep(sleep_time);
         }
     }
 
@@ -336,17 +335,17 @@ bool step_forward(map_t& map, player_t& player, int steps)
                 cout << "[租金] 需支付过路费 " << payment << " 元" << endl;
                 if (player.b_god_buff) {
                     cout << "[财神] 财神附身，无需付钱" << endl;
-                    Sleep(1000);
+                    Sleep(sleep_time);
                 }
                 else if (player.n_money < payment) {
                     cout << "[破产] 嘤嘤嘤破产辽" << endl;
-                    Sleep(1000);
+                    Sleep(sleep_time);
                     return true;
                 }
                 else {
                     map[player.n_pos].owner->n_money += payment;
                     player.n_money -= payment;
-                    Sleep(1000);
+                    Sleep(sleep_time);
                 }
             }
             // 升级
@@ -363,19 +362,19 @@ bool step_forward(map_t& map, player_t& player, int steps)
         case MINE:
             player.n_points += map[player.n_pos].value;
             cout << "[矿地] 获得点数 " << map[player.n_pos].value << " 点" << endl;
-            Sleep(1000);
+            Sleep(sleep_time);
             return false;
         case PRISON:
             player.n_empty_rounds = 2;
             cout << "[监狱] 打工是不可能打工的，这辈子都不可能打工的" << endl;
-            Sleep(1000);
+            Sleep(sleep_time);
             return false;
         case MAGIC_HOUSE:
             magic_house();
             return false;
         case PARK:
             cout << "[公园] 进入了公园，本轮摸鱼" << endl;
-            Sleep(1000);
+            Sleep(sleep_time);
             return false;
         default: return false;
     }
@@ -393,7 +392,7 @@ void magic_house()
             auto n = std::stol(inputs);
             if (n == 0) {
                 std::cout << "[魔法屋] 选择放弃陷害玩家，自动退出魔法屋" << std::endl;
-                Sleep(1000);
+                Sleep(sleep_time);
                 break;
             } else if (n < 0 || n > 4) {
                 std::cout << "[魔法屋] 输入玩家编号无效，请重新选择" << std::endl;
