@@ -414,7 +414,7 @@ int do_step(int step) {
         int count = 0;
         for (auto &it : *players) {
             if (it.n_money < 0) count += 1;
-            winner = it;
+            else    winner = it;
         }
         if (count == (players->size() - 1)) {
             std::cout << "游戏结束，获胜的玩家是:" << winner.name << std::endl;
