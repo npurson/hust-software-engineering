@@ -544,7 +544,7 @@ int do_preset(const std::vector<std::string>& word_vec) {
         if (!check_num(word_vec[1]) || !check_num(word_vec[3])) return -1;
         int n_map = std::stoi(word_vec[1]);
         p_map_t p_map;
-        if (n_map < 0 || n_map >= MAP_SIZE || n_map == START_POS || n_map == HOSPITAL_POS || n_map == ITEM_HOUSE_POS || n_map == GIFT_HOUSE_POS || n_map == PRISON_POS || n_map == MAGIC_HOUSE_POS || n_map >= 63 || n_map <= 69) {
+        if (n_map < 0 || n_map >= MAP_SIZE || n_map == START_POS || n_map == HOSPITAL_POS || n_map == ITEM_HOUSE_POS || n_map == GIFT_HOUSE_POS || n_map == PRISON_POS || n_map == MAGIC_HOUSE_POS || (n_map >= 63 && n_map <= 69)) {
             return -1;
         }
         p_map = get_map();
