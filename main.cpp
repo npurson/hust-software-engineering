@@ -15,12 +15,11 @@ int main() {
     system("cls");
     while (true) {
         show_cmd();
-        if (getline(cin, command)) {
-            if (command == "quit") {
-                break;
-            } else {
-                parse_cmd(command);
-            }
+        command = get_cmd();
+        if (command == "quit") {
+            break;
+        } else {
+            parse_cmd(command);
         }
         plot_map();
     }
