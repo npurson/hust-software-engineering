@@ -100,7 +100,7 @@ def check(case):
     output = ''
     try:
         t = time.time()
-        _, output = proc.communicate(testcase_input + '\n', timeout=5)
+        _, output = proc.communicate(testcase_input + '\n', timeout=10)
         t = time.time() - t
     except subprocess.TimeoutExpired:
         t = time.time() - t
@@ -120,7 +120,7 @@ def check(case):
         # (not any((e not in out_kv for e in ans_kv))) and
         # (not any((e not in ans_kv for e in out_kv))),
         operator.eq(out_kv, ans_kv),
-        t / 1e6
+        t * 1000
     )
 
 
