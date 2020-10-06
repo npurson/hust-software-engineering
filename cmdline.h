@@ -28,4 +28,5 @@ void show_cmd();
 void tolower(std::string& str);
 void erase_player_from_curr_pos(p_player_t p_player);
 void switch_player(p_player_t *p_next_player);
+void do_skip(p_player_t player);
 #endif // RICH_CMDLINE_H

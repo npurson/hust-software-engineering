@@ -278,6 +278,28 @@ bool roll_dice(map_t& curr_map, player_t& player)
     return step_forward(curr_map, player, rand() % 6 + 1);
 }
 
+bool pay_rent(p_player_t player) {
+    auto curr_map = *get_map();
+    int payment = get_estate_price(curr_map[player->n_pos]) / 2;
+    cout << "[租金] 需支付过路费 " << payment << " 元" << endl;
+    if (player->b_god_buff) {
+        cout << "[财神] 财神附身，无需付钱" << endl;
+        Sleep(sleep_time);
+        return false;
+    }
+    else if (player->n_money < payment) {
+        cout << "[破产] 嘤嘤嘤破产辽" << endl;
+        Sleep(sleep_time);
+        return true;
+    }
+    else {
+        curr_map[player->n_pos].owner->n_money += payment;
+        player->n_money -= payment;
+        Sleep(sleep_time);
+        return false;
+    }
+}
+
 
 bool step_forward(map_t& curr_map, player_t& player, int steps)
 {

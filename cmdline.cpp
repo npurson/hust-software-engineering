@@ -342,6 +342,42 @@ int do_roll() {
     return 0;
 }
 
+void do_skip(p_player_t player) {
+    // 处理在原地交租的情形
+    auto curr_map = *get_map();
+    if (curr_map[player->n_pos].owner && curr_map[player->n_pos].owner != player) {
+        if (pay_rent(player)) {
+            erase_player_from_curr_pos(player);
+            for (auto &it : player->estate) {
+                it->estate_lvl = 0;
+                it->owner = nullptr;
+            }
+
+            // empty broken player info
+            player->n_money = -1;
+            player->estate.clear();
+
+            // check winner
+            auto players = get_player_vec();
+            auto winner = &players->front();
+            int count = 0;
+            for (auto &it : *players) {
+                if (it.n_money < 0) {
+                    count += 1;
+                }
+                else {
+                    winner = &it;
+                }
+            }
+            if (count == (players->size() - 1)) {
+                std::cout << "游戏结束，获胜的玩家是:" << winner->name << std::endl;
+                next_player = winner;
+                do_dump();
+            }
+        }
+    }
+}
+
 void switch_player(p_player_t *p_next_player) {
     auto players = get_player_vec();
     std::vector<player_t>::size_type c = 0;
@@ -365,6 +401,7 @@ void switch_player(p_player_t *p_next_player) {
             if (players->at(c).n_empty_rounds  > 0) {
                 --(players->at(c).n_empty_rounds);
                 std::cout << "玩家" << players->at(c).name << "轮空" << std::endl;
+                do_skip(&players->at(c));
                 Sleep(sleep_time);
                 continue;
             } else {
@@ -507,7 +544,7 @@ int do_preset(const std::vector<std::string>& word_vec) {
         if (!check_num(word_vec[1]) || !check_num(word_vec[3])) return -1;
         int n_map = std::stoi(word_vec[1]);
         p_map_t p_map;
-        if (n_map < 0 || n_map >= MAP_SIZE || n_map == START_POS || n_map == HOSPITAL_POS || n_map == ITEM_HOUSE_POS || n_map == GIFT_HOUSE_POS || n_map == PRISON_POS || n_map == MAGIC_HOUSE_POS) {
+        if (n_map < 0 || n_map >= MAP_SIZE || n_map == START_POS || n_map == HOSPITAL_POS || n_map == ITEM_HOUSE_POS || n_map == GIFT_HOUSE_POS || n_map == PRISON_POS || n_map == MAGIC_HOUSE_POS || n_map >= 63 || n_map <= 69) {
             return -1;
         }
         p_map = get_map();
