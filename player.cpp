@@ -46,6 +46,9 @@ void add_player(char uid)
 
 
 p_player_t get_player_by_uid(char uid) {
+    if (std::isalpha(uid)) {
+        uid = std::toupper(uid);
+    }
     for (auto &player : player_vec) {
         if (player.uid == uid) {
             return &player;

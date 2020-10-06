@@ -402,9 +402,6 @@ void do_dump() {
     auto map = get_map();
     for (const auto& map_node : *map) {
         switch(map_node.item) {
-            case BOMB:
-                std::cerr << "bomb " << static_cast<int>(map_node.id) << endl;
-                break;
             case BLOCK:
                 std::cerr << "barrier " << static_cast<int>(map_node.id) << endl;
                 break;
