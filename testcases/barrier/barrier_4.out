@@ -1,0 +1,25 @@
+user AQSJ
+
+fund A 10000
+fund Q 10000
+fund S 10000
+fund J 12000
+
+credit A 100
+credit Q 200
+credit S 184 #234-50
+credit J 333
+
+gift A barrier 1
+gift S barrier 2
+gift J barrier 2
+
+barrier 0
+barrier 14
+
+userloc A 7 0
+userloc Q 16 0
+userloc S 28 0
+userloc J 35 0
+
+nextuser A
