@@ -325,6 +325,7 @@ int do_roll() {
             do_dump();
         }
     }
+    next_player->b_god_buff = 0;
     // switch to next player
     switch_player(&next_player);
 //    auto players = get_player_vec();
@@ -461,6 +462,7 @@ int do_step(int step) {
         }
     }
 
+    next_player->b_god_buff = 0;
     // switch to next player
     switch_player(&next_player);
 //    auto players = get_player_vec();
