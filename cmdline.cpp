@@ -517,11 +517,11 @@ int do_preset(const std::vector<std::string>& word_vec) {
         if (p_map->at(n_map).owner == player) {
             return -1;
         }
-        p_map->at(n_map).owner = player;
         int level = std::stoi(word_vec[3]);
         if (level < 0 || level > 3) {
             return -1;
         }
+        p_map->at(n_map).owner = player;
         p_map->at(n_map).estate_lvl = level;
         p_map->at(n_map).owner->estate.push_back(&p_map->at(n_map));
     } else if (word_vec[0] == "fund") {
