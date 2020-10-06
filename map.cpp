@@ -7,6 +7,7 @@ extern int sleep_time;
 
 p_map_t init_map()
 {
+    map.clear();
     for (int i = 0; i < MAP_SIZE; ++i) {
         switch (i) {
             case START_POS: map.emplace_back(i, START); break;

@@ -463,7 +463,11 @@ int do_preset(const std::vector<std::string>& word_vec) {
             return -1;
         }
         auto player_vec = get_player_vec();
+        init_map();
+        init_money = DEFAULT_MONEY;
+        sleep_time = 0;
         player_vec->clear();
+        next_player = nullptr;
         for (char uid : word_vec[1]) {
             add_player(uid);
         }
