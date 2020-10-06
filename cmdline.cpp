@@ -29,10 +29,13 @@ std::string get_cmd() {
     return command;
 }
 
-bool check_num(const std::string& num_str) {
+bool check_num(std::string num_str) {
     if (num_str.empty()) {
         return false;
     } else {
+        if (num_str.front() == '-') {
+            num_str.erase(num_str.begin());
+        }
         return std::all_of(num_str.begin(), num_str.end(), isdigit);
     }
 }
@@ -282,7 +285,7 @@ void do_robot(p_player_t player) {
 
 
 void do_block(int step, p_player_t player) {
-    apply_item(*get_map(), *player, BLOCK, static_cast<int>(step));
+    apply_item(*get_map(), *player, BLOCK, step);
 }
 
 void erase_player_from_curr_pos(p_player_t p_player) {

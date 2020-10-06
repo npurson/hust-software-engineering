@@ -13,7 +13,7 @@
 
 
 std::string get_cmd();
-bool check_num(const std::string& num_str);
+bool check_num(std::string num_str);
 int parse_cmd(const std::string& cmd);
 int do_preset(const std::vector<std::string> &word_vec);
 int do_roll();
