@@ -20,6 +20,9 @@ void add_player(char uid)
     static std::map<char, color_t> player_color = {
         {'Q', RED}, {'A', GREEN}, {'S', BLUE}, {'J', YELLOW}
     };
+    if (std::isalpha(uid)) {
+        uid = std::toupper(uid);
+    }
     switch (uid) {
         default: return;
         case 'Q': case 'A':
