@@ -200,28 +200,25 @@ void apply_item(map_t& map, player_t& player, int item, int pos)
 void buy_item(player_t& player)
 {
     if (player.n_bomb + player.n_robot + player.n_block >= 10)
-        cout << "[道具] 道具栏已满，无法购买道具" << endl;
+        std::cout << "[道具] 道具栏已满，无法购买道具" << std::endl;
     else if (player.n_points < 30)
-        cout << "[道具] 点数不足，无法购买道具" << endl;
+        std::cout << "[道具] 点数不足，无法购买道具，自动退出道具屋" << std::endl;
     else {
         string choice;
-        cout << "[道具屋] 欢迎光临道具屋，请选择你需要的道具：" << endl;
-        cout << "        1. 路障    2. 机器娃娃" << endl;
-        // cout << "        1. 路障    2. 机器娃娃    3. 炸弹" << endl;
+        std::cout << "[道具屋] 欢迎光临道具屋，请选择你需要的道具：" << std::endl;
+        std::cout << "        1. 路障    2. 机器娃娃" << std::endl;
 
         while (true) {
-            if (player.n_points < 30)
-                cout << "[道具] 点数不足，无法购买道具" << endl;
+            if (player.n_points < 30) {
+                std::cout << "[道具] 点数不足，已无法再购买任何道具，自动退出道具屋" << std::endl;
+                break;
+            }
             show_cmd();
             getline(cin, choice);
             tolower(choice);
             if (choice == "1") {
-                if (player.n_bomb + player.n_robot + player.n_block >= 10) {
-                    cout << "[道具] 道具栏已满，无法购买道具" << endl;
-                    break;
-                }
                 if (player.n_points < 50) {
-                    cout << "[道具] 点数不足，无法购买道具" << endl;
+                    cout << "[道具] 点数不足，无法购买路障" << endl;
                 }
                 else {
                     player.n_points -= 50;
@@ -230,21 +227,11 @@ void buy_item(player_t& player)
                 }
             }
             else if (choice == "2") {
-                if (player.n_bomb + player.n_robot + player.n_block >= 10) {
-                    cout << "[道具] 道具栏已满，无法购买道具" << endl;
-                    break;
-                }
-                if (player.n_points < 30) {
-                    cout << "[道具] 点数不足，无法购买道具" << endl;
-                    break;
-                }
-                else {
-                    player.n_points -= 30;
-                    player.n_robot += 1;
-                    cout << "[机器娃娃] 购买机器娃娃，失去点数 30 点" << endl;
-                }
+                player.n_points -= 30;
+                player.n_robot += 1;
+                cout << "[机器娃娃] 购买机器娃娃，失去点数 30 点" << endl;
             }
-            // else if (choice == "3") {
+                // else if (choice == "3") {
             //     if (player.n_bomb + player.n_robot + player.n_block >= 10) {
             //         cout << "[道具] 道具栏已满，无法购买道具" << endl;
             //         break;
@@ -258,8 +245,12 @@ void buy_item(player_t& player)
             //         cout << "[炸弹] 购买炸弹，失去点数 50 点" << endl;
             //     }
             // }
-            else if (choice == "f") break;
+            else if (choice == "f") return;
             else cout << "[道具屋] 选择无效，请重新输入。输入f退出" << endl;
+            if (player.n_bomb + player.n_robot + player.n_block == 10) {
+                cout << "[道具] 道具栏已满，已无法再购买道具，自动退出道具屋" << endl;
+                break;
+            }
         }
     }
     Sleep(1000);
@@ -348,7 +339,6 @@ bool step_forward(map_t& map, player_t& player, int steps)
                     Sleep(1000);
                 }
                 else if (player.n_money < payment) {
-                    map[player.n_pos].owner->n_money += player.n_money;
                     cout << "[破产] 嘤嘤嘤破产辽" << endl;
                     Sleep(1000);
                     return true;
@@ -396,21 +386,28 @@ void magic_house()
 {
     string inputs;
     char ntoidx[4] = {'Q', 'A', 'S', 'J'};
-    long n;
     while (true){
-        cout << "[魔法屋] 请输入您想陷害的玩家: 1-钱夫人 2-阿土伯 3-孙小美 4-金贝贝" << endl;
+        cout << "[魔法屋] 请输入您想陷害的玩家: 1-钱夫人 2-阿土伯 3-孙小美 4-金贝贝，输入0放弃陷害玩家" << endl;
         getline(cin, inputs);
-        n = std::stol(inputs);
-        if (n < 1 || n > 4){
-            cout << "[魔法屋] 输入编号范围有误，请重新输入1-4的编号" << endl;
-            continue;
+        if (check_num(inputs)) {
+            auto n = std::stol(inputs);
+            if (n == 0) {
+                std::cout << "[魔法屋] 选择放弃陷害玩家，自动退出魔法屋" << std::endl;
+                Sleep(1000);
+                break;
+            } else if (n < 0 || n > 4) {
+                std::cout << "[魔法屋] 输入玩家编号无效，请重新选择" << std::endl;
+            } else {
+                if (!get_player_by_uid(ntoidx[n - 1]) || get_player_by_uid(ntoidx[n - 1])->n_money < 0) {
+                    cout << "[魔法屋] 输入角色无效，请重新选择还在场上的角色" << endl;
+                    continue;
+                }
+                get_player_by_uid(ntoidx[n - 1])->n_empty_rounds += 2;
+                break;
+            }
+        } else {
+            std::cout << "[魔法屋] 输入选择无效，请输入正确的数字编号选择陷害玩家" << std::endl;
         }
-        if (!get_player_by_uid(ntoidx[n - 1]) || get_player_by_uid(ntoidx[n - 1])->n_money < 0) {
-            cout << "[魔法屋] 输入角色无效，请重新选择还在场上的角色" << endl;
-            continue;
-        }
-        get_player_by_uid(ntoidx[n - 1])->n_empty_rounds += 2;
-        break;
     }
 }
 
