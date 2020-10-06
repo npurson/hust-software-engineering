@@ -85,10 +85,10 @@ def check(case):
         case[0] = test name
         case[1] = testcase path
     '''
-    with open(os.path.join(basedir, case[1]+'.in'), 'r', encoding='UTF-8') as fin:
+    with open(os.path.join(basedir, case[1]+'.in'), 'r') as fin:
         testcase_input = fin.read()
         pass
-    with open(os.path.join(basedir, case[1]+'.out'), 'r', encoding='UTF-8') as f:
+    with open(os.path.join(basedir, case[1]+'.out'), 'r') as f:
         testcase_answer = f.read()
     proc = Popen(
         args.name, shell=True,
@@ -100,7 +100,7 @@ def check(case):
     output = ''
     try:
         t = time.time()
-        _, output = proc.communicate(testcase_input + '\n', timeout=10)
+        _, output = proc.communicate(testcase_input + '\n', timeout=5)
         t = time.time() - t
     except subprocess.TimeoutExpired:
         t = time.time() - t
@@ -146,7 +146,7 @@ def run_dir(currdir, basename='', maxlevel=1000):
     dir_list = os.listdir(currdir)
     if CONFIG_JSON_NAME in dir_list:
         # with json configuration file
-        with open(os.path.join(currdir, CONFIG_JSON_NAME), 'r', encoding='UTF-8') as conf:
+        with open(os.path.join(currdir, CONFIG_JSON_NAME), 'r') as conf:
             conf = json.load(conf)
 
         name = os.path.basename(currdir)
