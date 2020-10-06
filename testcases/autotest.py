@@ -9,6 +9,7 @@ import re
 import signal
 import subprocess
 import time
+import datetime
 
 from subprocess import Popen
 from openpyxl import Workbook
@@ -175,7 +176,7 @@ def check(case):
     if args.fail and (not out_kv == ans_kv):
         # export error
         export_failed_case(
-            'diff-%s-%s.txt' % (case[0], casename),
+            'diff-%s-%s-%s.txt' % (case[0], casename, datetime.datetime.now().strftime("%m-%d %Hh%Mm%Ss")),
             out_kv, ans_kv
         )
         pass
