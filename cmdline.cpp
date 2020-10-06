@@ -6,6 +6,26 @@ extern p_player_t next_player;
 
 extern int init_money;
 
+std::string get_cmd() {
+    std::string command;
+    if (getline(std::cin, command)) {
+        // 去除命令前空格
+        while (command.front() == ' ') {
+            command.erase(command.begin());
+        }
+        auto pos = command.find('#');
+        // 去除注释
+        if (pos != std::string::npos) {
+            command.erase(pos, command.size() - pos);
+        }
+        // 去除命令后空格
+        while (command.back() == ' ') {
+            command.pop_back();
+        }
+    }
+    return command;
+}
+
 bool check_num(const std::string& num_str) {
     if (num_str.empty()) {
         return false;
