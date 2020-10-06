@@ -397,6 +397,7 @@ void magic_house()
     char ntoidx[4] = {'Q', 'A', 'S', 'J'};
     while (true){
         cout << "[魔法屋] 请输入您想陷害的玩家: 1-钱夫人 2-阿土伯 3-孙小美 4-金贝贝，输入0放弃陷害玩家" << endl;
+        show_cmd();
         inputs = get_cmd();
         if (check_num(inputs)) {
             auto n = std::stol(inputs);

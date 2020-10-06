@@ -344,6 +344,7 @@ int do_roll() {
 
 void do_skip(p_player_t player) {
     // 处理在原地交租的情形
+    player->b_god_buff = 0;
     auto curr_map = *get_map();
     if (curr_map[player->n_pos].owner && curr_map[player->n_pos].owner != player) {
         if (pay_rent(player)) {
