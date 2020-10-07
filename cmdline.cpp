@@ -555,10 +555,16 @@ int do_preset(const std::vector<std::string>& word_vec) {
         if (player == nullptr) {
             return -1;
         }
-        if (p_map->at(n_map).owner == player) {
-            return -1;
-        }
         int level = std::stoi(word_vec[3]);
+        if (p_map->at(n_map).owner != nullptr) {
+            if (p_map->at(n_map).owner == player) {
+                if (level < p_map->at(n_map).estate_lvl) {
+                    return -1;
+                }
+            } else {
+                return -1;
+            }
+        }
         if (level < 0 || level > 3) {
             return -1;
         }
