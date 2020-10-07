@@ -67,7 +67,7 @@ p_player_t skip_player(p_player_t next_player) {
         if (next_player->n_empty_rounds > 0) next_player->n_empty_rounds -= 1;
         if (next_player->n_god_buff > 0) next_player->n_god_buff -= 1;
 
-        std::cout << "玩家" << next_player->name << "轮空" << std::endl;
+        cout << "玩家 " << next_player->name << " 轮空" << endl;
         Sleep(sleep_time);
 
         auto players = get_player_vec();

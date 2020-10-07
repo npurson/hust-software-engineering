@@ -3,19 +3,21 @@
 
 
 extern p_player_t next_player;
-int sleep_time = 0;
 extern int init_money;
+int sleep_time = 0;
 
-std::string get_cmd() {
-    std::string command;
-    if (std::getline(std::cin, command)) {
+
+string get_cmd()
+{
+    string command;
+    if (getline(cin, command)) {
         // 去除命令前空格
         while (!command.empty() && command.front() == ' ') {
             command.erase(command.begin());
         }
         auto pos = command.find('#');
         // 去除注释
-        if (pos != std::string::npos) {
+        if (pos != string::npos) {
             command.erase(pos, command.size() - pos);
         }
         // 去除命令后空格
@@ -24,12 +26,14 @@ std::string get_cmd() {
         }
         tolower(command);
     } else {
-        command = ""; // 确保出现错误的时候command总是为空
+        command = "";   // 确保出现错误的时候command总是为空
     }
     return command;
 }
 
-bool check_num(std::string num_str) {
+
+bool check_num(string num_str)
+{
     if (num_str.empty()) {
         return false;
     } else {
@@ -41,7 +45,8 @@ bool check_num(std::string num_str) {
 }
 
 
-void start_game() {
+void start_game()
+{
     string inputs;
     int num_players;
     sleep_time = SLEEP_TIME;
@@ -49,7 +54,7 @@ void start_game() {
         cout << "请选择初始金钱数量(1000-50000): ";
         getline(cin, inputs);
         if (check_num(inputs)) {
-            int money = std::stoi(inputs);
+            int money = stoi(inputs);
             if (money >= 1000 && money <= 50000) {
                 init_money = money;
                 break;
@@ -113,11 +118,12 @@ void start_game() {
 }
 
 
-vector<string> split_cmd(string cmd) {
+vector<string> split_cmd(string cmd)
+{
     vector<string> word_vec;
     auto comment_pos = cmd.find('#');
     if (comment_pos != string::npos) {
-        cmd = cmd.substr(0, comment_pos); // 去除注释
+        cmd = cmd.substr(0, comment_pos);   // 去除注释
     }
     while (!cmd.empty() && std::isspace(cmd.front())) {
         cmd.erase(cmd.begin());
@@ -145,7 +151,8 @@ vector<string> split_cmd(string cmd) {
 }
 
 
-int parse_cmd(const string& cmd) {
+int parse_cmd(const string& cmd)
+{
     static bool start = false;
     vector<string> word_vec = split_cmd(cmd);
     if (word_vec.empty()) {
@@ -198,7 +205,7 @@ int parse_cmd(const string& cmd) {
             if (!check_num(word_vec[1])) return -1;
             auto map_id = std::stoi(word_vec[1]);
             if (map_id < 0 || map_id >= MAP_SIZE) {
-                std::cerr << "地块编号错误，请输入0-69的地块编号" << std::endl;
+                std::cerr << "地块编号错误，请输入 0-69 的地块编号" << endl;
                 Sleep(sleep_time);
                 return -1;
             }
@@ -240,7 +247,7 @@ int parse_cmd(const string& cmd) {
             do_step(step);
         } else if (word_vec[0] == "help") {
             if (word_vec.size() != 1) {
-                std::cerr << "命令格式错误，help命令格式为：help" << std::endl;
+                std::cerr << "命令格式错误，help命令格式为：help" << endl;
                 Sleep(sleep_time);
                 return -1;
             }
@@ -279,16 +286,20 @@ void do_sell(map_t& map, player_t& player, int map_node_idx)
 }
 
 
-void do_robot(p_player_t player) {
+void do_robot(p_player_t player)
+{
     apply_item(*get_map(), *player, ROBOT);
 }
 
 
-void do_block(int step, p_player_t player) {
+void do_block(int step, p_player_t player)
+{
     apply_item(*get_map(), *player, BLOCK, step);
 }
 
-void erase_player_from_curr_pos(p_player_t p_player) {
+
+void erase_player_from_curr_pos(p_player_t p_player)
+{
     p_map_t p_map = get_map();
     auto &node = p_map->at(next_player->n_pos);
     for(auto it=node.players.begin(); it!=node.players.end();++it){
@@ -299,7 +310,9 @@ void erase_player_from_curr_pos(p_player_t p_player) {
     }
 }
 
-int do_roll() {
+
+int do_roll()
+{
     if (roll_dice(*get_map(), *next_player)) {
         erase_player_from_curr_pos(next_player);
         for (auto &it : next_player->estate) {
@@ -320,29 +333,18 @@ int do_roll() {
             winner = it;
         }
         if (count == (players->size() - 1)) {
-            std::cout << "游戏结束，获胜的玩家是:" << winner.name << std::endl;
+            cout << "游戏结束，获胜的玩家是:" << winner.name << endl;
             switch_player(&next_player);
             do_dump();
         }
     }
     next_player->b_god_buff = 0;
-    // switch to next player
     switch_player(&next_player);
-//    auto players = get_player_vec();
-//    int c = 0;
-//    for (auto & it : *players) {
-//        if (it.uid == next_player->uid) {
-//            if (c + 1 > players->size() - 1) next_player = &(*(get_player_vec()))[0];
-//            else next_player = &(*(get_player_vec()))[c + 1];
-//            break;
-//        }
-//        c += 1;
-//    }
-//    skip_player(next_player);
-    return 0;
 }
 
-void do_skip(p_player_t player) {
+
+void do_skip(p_player_t player)
+{
     // 处理在原地交租的情形
     auto curr_map = *get_map();
     if (curr_map[player->n_pos].owner && curr_map[player->n_pos].owner != player) {
@@ -371,7 +373,7 @@ void do_skip(p_player_t player) {
                 }
             }
             if (count == (players->size() - 1)) {
-                std::cout << "游戏结束，获胜的玩家是:" << winner->name << std::endl;
+                cout << "游戏结束，获胜的玩家是:" << winner->name << endl;
                 next_player = winner;
                 do_dump();
             }
@@ -380,9 +382,11 @@ void do_skip(p_player_t player) {
     player->b_god_buff = 0;
 }
 
-void switch_player(p_player_t *p_next_player) {
+
+void switch_player(p_player_t *p_next_player)
+{
     auto players = get_player_vec();
-    std::vector<player_t>::size_type c = 0;
+    vector<player_t>::size_type c = 0;
     for (auto & it : *players) {
         if (it.uid == (*p_next_player)->uid) {
             break;
@@ -402,7 +406,7 @@ void switch_player(p_player_t *p_next_player) {
             }
             if (players->at(c).n_empty_rounds  > 0) {
                 --(players->at(c).n_empty_rounds);
-                std::cout << "玩家" << players->at(c).name << "轮空" << std::endl;
+                cout << "玩家" << players->at(c).name << "轮空" << endl;
                 do_skip(&players->at(c));
                 Sleep(sleep_time);
                 continue;
@@ -415,7 +419,9 @@ void switch_player(p_player_t *p_next_player) {
     (*p_next_player)->b_sell_estate = 0;
 }
 
-void do_dump() {
+
+void do_dump()
+{
     string dump_text = "user ";
     auto player_vec = get_player_vec();
 
@@ -459,7 +465,8 @@ void do_dump() {
 }
 
 
-void show_cmd() {
+void show_cmd()
+{
     HANDLE h_out=GetStdHandle(STD_OUTPUT_HANDLE);
     static const unsigned short color_table[4] = { FOREGROUND_RED, FOREGROUND_GREEN, FOREGROUND_BLUE,
                                                    FOREGROUND_RED | FOREGROUND_GREEN };
@@ -475,7 +482,8 @@ void show_cmd() {
 }
 
 
-int do_step(int step) {
+int do_step(int step)
+{
     if (step_forward(*get_map(), *next_player, step)) {
         erase_player_from_curr_pos(next_player);
         for (auto & it : next_player->estate){
@@ -495,31 +503,20 @@ int do_step(int step) {
             else    winner = it;
         }
         if (count == (players->size() - 1)) {
-            std::cout << "游戏结束，获胜的玩家是:" << winner.name << std::endl;
+            cout << "游戏结束，获胜的玩家是:" << winner.name << endl;
             switch_player(&next_player);
             do_dump();
         }
     }
 
     next_player->b_god_buff = 0;
-    // switch to next player
     switch_player(&next_player);
-//    auto players = get_player_vec();
-//    int c = 0;
-//    for (auto & it : *players) {
-//        if (it.uid == next_player->uid){
-//            if (c + 1 > players->size() - 1) next_player = &(*(get_player_vec()))[0];
-//            else next_player = &(*(get_player_vec()))[c + 1];
-//            break;
-//        }
-//        c += 1;
-//    }
-//    next_player = skip_player(next_player);
     return 0;
 }
 
 
-int do_preset(const std::vector<std::string>& word_vec) {
+int do_preset(const vector<string>& word_vec)
+{
     if (word_vec.empty()) {
         return -1;
     }
@@ -546,7 +543,9 @@ int do_preset(const std::vector<std::string>& word_vec) {
         if (!check_num(word_vec[1]) || !check_num(word_vec[3])) return -1;
         int n_map = std::stoi(word_vec[1]);
         p_map_t p_map;
-        if (n_map < 0 || n_map >= MAP_SIZE || n_map == START_POS || n_map == HOSPITAL_POS || n_map == ITEM_HOUSE_POS || n_map == GIFT_HOUSE_POS || n_map == PRISON_POS || n_map == MAGIC_HOUSE_POS || (n_map >= 63 && n_map <= 69)) {
+        if (n_map < 0 || n_map >= MAP_SIZE || n_map == START_POS || n_map == HOSPITAL_POS ||
+            n_map == ITEM_HOUSE_POS || n_map == GIFT_HOUSE_POS || n_map == PRISON_POS ||
+            n_map == MAGIC_HOUSE_POS || (n_map >= 63 && n_map <= 69)) {
             return -1;
         }
         p_map = get_map();
@@ -666,12 +665,11 @@ int do_preset(const std::vector<std::string>& word_vec) {
                 return -1;
             }
             int map_id = std::stoi(word_vec[1]);
-            if (map_id < 0 || map_id >= MAP_SIZE || map_id == START_POS || map_id == HOSPITAL_POS || map_id == ITEM_HOUSE_POS || map_id == GIFT_HOUSE_POS || map_id == PRISON_POS || map_id == MAGIC_HOUSE_POS || (map_id >= 63 && map_id <= 69)) {
+            if (map_id < 0 || map_id >= MAP_SIZE || map_id == START_POS || map_id == HOSPITAL_POS ||
+                map_id == ITEM_HOUSE_POS || map_id == GIFT_HOUSE_POS || map_id == PRISON_POS ||
+                map_id == MAGIC_HOUSE_POS || (map_id >= 63 && map_id <= 69)) {
                 return -1;
             }
-//            if (map_id < 0 || map_id >= 70) {
-//                return -1;
-//            }
             for (const auto& p : *players) {
                 if (p.n_pos == map_id) {
                     return -1;
@@ -691,11 +689,10 @@ int do_preset(const std::vector<std::string>& word_vec) {
 
 int do_query(player_t& player)
 {
-    std::cout << "资金: " << player.n_money << std::endl;
-    std::cout << "点数: " << player.n_points << std::endl;
-    std::cout << "财神buff轮数: " << player.n_god_buff + player.b_god_buff << std::endl;
-    std::cout << std::endl;
-    std::cout << "固定资产: " << std::endl;
+    cout << "资金: " << player.n_money << endl;
+    cout << "点数: " << player.n_points << endl;
+    cout << "财神buff轮数: " << player.n_god_buff + player.b_god_buff << endl << endl;
+    cout << "固定资产: " << endl;
     for (auto & it : player.estate) {
         int area;
         switch(it->value) {
@@ -711,13 +708,13 @@ int do_query(player_t& player)
             default:
                 return -1;
         }
-        std::cout << "地段" << area << ", ";
-        std::cout << it->id << "号房屋" << ", ";
-        std::cout << "等级" << it->estate_lvl << ", ";
-        std::cout << "价值" << get_estate_price(*it) << "元" << std::endl;
+        cout << "地段" << area << ", ";
+        cout << it->id << "号房屋" << ", ";
+        cout << "等级" << it->estate_lvl << ", ";
+        cout << "价值" << get_estate_price(*it) << "元" << endl;
     }
-    std::cout << std::endl;
-    std::cout << "道具:" << " 路障*" << player.n_block << " 机器娃娃*" << player.n_robot << std::endl;
+    cout << endl;
+    cout << "道具:" << " 路障*" << player.n_block << " 机器娃娃*" << player.n_robot << endl;
     system("pause");
     return 0;
 }

@@ -10,9 +10,9 @@
 
 #include "player.h"
 
-#define AREA_1_PRICE    200
-#define AREA_2_PRICE    500
-#define AREA_3_PRICE    300
+#define AREA_1_PRICE        200
+#define AREA_2_PRICE        500
+#define AREA_3_PRICE        300
 
 #define START_POS           0
 #define HOSPITAL_POS        14
@@ -22,9 +22,6 @@
 #define MAGIC_HOUSE_POS     63
 #define MAP_SIZE            70
 
-using std::cin;
-using std::cout;
-using std::endl;
 using std::getline;
 
 
@@ -75,7 +72,7 @@ bool step_forward(map_t& curr_map, player_t& player, int steps);
 int get_estate_price(const map_node_t& map_node);
 // 使用魔法
 void magic_house();
-// 交租金
+// 支付租金
 bool pay_rent(p_player_t player);
 
 #endif // RICH_MAP_H

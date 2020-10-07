@@ -3,6 +3,7 @@
 static map_t map;
 extern int sleep_time;
 
+
 p_map_t init_map()
 {
     map.clear();
@@ -85,6 +86,7 @@ void plot_map()
             buf = map[hash_table[i]].players.back()->uid;
             SetConsoleTextAttribute(h_out, color_table[map[hash_table[i]].players.back()->e_color]);
         }
+
         // render
         putchar(buf);
         if ((i % 29) == 28) printf("\n");
@@ -159,29 +161,30 @@ void apply_item(map_t& curr_map, player_t& player, int item, int pos)
             }
             else {
                 if (pos > 10 || pos < -10) {
-                    std::cout << "[路障] 路障使用范围错误，只能在前后十格内使用路障" << std::endl;
+                    cout << "[路障] 路障使用范围错误，只能在前后十格内使用路障" << endl;
                     Sleep(sleep_time);
                 }
                 else {
                     auto p_players = get_player_vec();
                     for (auto & p : *p_players) {
-                        if (p.n_money >= 0) {
-                            if (item_pos == p.n_pos) {
-                                std::cout << "[路障] 不能在玩家处使用路障" << std::endl;
-                                Sleep(sleep_time);
-                                return;
-                            }
+                        if (p.n_money >= 0 && item_pos == p.n_pos) {
+                            cout << "[路障] 不能在玩家处使用路障" << endl;
+                            Sleep(sleep_time);
+                            return;
                         }
                     }
-                    if (item_pos < 0 || item_pos >= MAP_SIZE || item_pos == START_POS || item_pos == HOSPITAL_POS || item_pos == ITEM_HOUSE_POS || item_pos == GIFT_HOUSE_POS || item_pos == PRISON_POS || item_pos == MAGIC_HOUSE_POS || (item_pos >= 63 && item_pos <= 69)) {
-                        std::cout << "[路障] 不能在特殊位置处使用路障" << std::endl;
+                    if (item_pos < 0 || item_pos >= MAP_SIZE || item_pos == START_POS ||
+                        item_pos == HOSPITAL_POS || item_pos == ITEM_HOUSE_POS || item_pos == GIFT_HOUSE_POS
+                        || item_pos == PRISON_POS || item_pos == MAGIC_HOUSE_POS
+                        || (item_pos >= 63 && item_pos <= 69)) {
+                        cout << "[路障] 不能在特殊位置处使用路障" << endl;
                         Sleep(sleep_time);
                         return;
                     }
                     if (curr_map[item_pos].item == NONE) {
                         curr_map[item_pos].item = BLOCK;
                         player.n_block -= 1;
-                        std::cout << "[路障] 路障放置成功" << std::endl;
+                        cout << "[路障] 路障放置成功" << endl;
                     }
                 }
             }
@@ -206,17 +209,17 @@ void apply_item(map_t& curr_map, player_t& player, int item, int pos)
 void buy_item(player_t& player)
 {
     if (player.n_bomb + player.n_robot + player.n_block >= 10)
-        std::cout << "[道具] 道具栏已满，无法购买道具" << std::endl;
+        cout << "[道具] 道具栏已满，无法购买道具" << endl;
     else if (player.n_points < 30)
-        std::cout << "[道具] 点数不足，无法购买道具，自动退出道具屋" << std::endl;
+        cout << "[道具] 点数不足，无法购买道具，自动退出道具屋" << endl;
     else {
         string choice;
-        std::cout << "[道具屋] 欢迎光临道具屋，请选择你需要的道具：" << std::endl;
-        std::cout << "        1. 路障    2. 机器娃娃" << std::endl;
+        cout << "[道具屋] 欢迎光临道具屋，请选择你需要的道具：" << endl;
+        cout << "        1. 路障    2. 机器娃娃" << endl;
 
         while (true) {
             if (player.n_points < 30) {
-                std::cout << "[道具] 点数不足，已无法再购买任何道具，自动退出道具屋" << std::endl;
+                cout << "[道具] 点数不足，已无法再购买任何道具，自动退出道具屋" << endl;
                 break;
             }
             show_cmd();
@@ -283,7 +286,9 @@ bool roll_dice(map_t& curr_map, player_t& player)
     return step_forward(curr_map, player, rand() % 6 + 1);
 }
 
-bool pay_rent(p_player_t player) {
+
+bool pay_rent(p_player_t player)
+{
     auto curr_map = *get_map();
     int payment = get_estate_price(curr_map[player->n_pos]) / 2;
     cout << "[租金] 需支付过路费 " << payment << " 元" << endl;
@@ -308,9 +313,7 @@ bool pay_rent(p_player_t player) {
 
 bool step_forward(map_t& curr_map, player_t& player, int steps)
 {
-    if (steps < 0) {
-            return -1;
-    }
+    if (steps < 0) return true;
     cout << "向前行进 " << steps << " 步" << endl;
     for (auto it = curr_map[player.n_pos].players.begin();
          it != curr_map[player.n_pos].players.end(); ++it) {
@@ -319,6 +322,7 @@ bool step_forward(map_t& curr_map, player_t& player, int steps)
             break;
         }
     }
+
     while (steps--) {
         player.n_pos = (player.n_pos + 1) % MAP_SIZE;
         // item judge
@@ -406,11 +410,11 @@ void magic_house()
         if (check_num(inputs)) {
             auto n = std::stol(inputs);
             if (n == 0) {
-                std::cout << "[魔法屋] 选择放弃陷害玩家，自动退出魔法屋" << std::endl;
+                cout << "[魔法屋] 选择放弃陷害玩家，自动退出魔法屋" << endl;
                 Sleep(sleep_time);
                 break;
             } else if (n < 0 || n > 4) {
-                std::cout << "[魔法屋] 输入玩家编号无效，请重新选择" << std::endl;
+                cout << "[魔法屋] 输入玩家编号无效，请重新选择" << endl;
             } else {
                 if (!get_player_by_uid(ntoidx[n - 1]) || get_player_by_uid(ntoidx[n - 1])->n_money < 0) {
                     cout << "[魔法屋] 输入角色无效，请重新选择还在场上的角色" << endl;
@@ -420,7 +424,7 @@ void magic_house()
                 break;
             }
         } else {
-            std::cout << "[魔法屋] 输入选择无效，请输入正确的数字编号选择陷害玩家" << std::endl;
+            cout << "[魔法屋] 输入选择无效，请输入正确的数字编号选择陷害玩家" << endl;
         }
     }
 }
@@ -428,5 +432,5 @@ void magic_house()
 
 int get_estate_price(const map_node_t& map_node)
 {
-    return static_cast<int>(map_node.value) * (map_node.estate_lvl + 1);
+    return map_node.value * (map_node.estate_lvl + 1);
 }
