@@ -660,9 +660,12 @@ int do_preset(const std::vector<std::string>& word_vec) {
                 return -1;
             }
             int map_id = std::stoi(word_vec[1]);
-            if (map_id < 0 || map_id >= 70) {
+            if (map_id < 0 || map_id >= MAP_SIZE || map_id == START_POS || map_id == HOSPITAL_POS || map_id == ITEM_HOUSE_POS || map_id == GIFT_HOUSE_POS || map_id == PRISON_POS || map_id == MAGIC_HOUSE_POS || (map_id >= 63 && map_id <= 69)) {
                 return -1;
             }
+//            if (map_id < 0 || map_id >= 70) {
+//                return -1;
+//            }
             for (const auto& p : *players) {
                 if (p.n_pos == map_id) {
                     return -1;

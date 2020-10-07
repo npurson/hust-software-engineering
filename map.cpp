@@ -173,6 +173,11 @@ void apply_item(map_t& curr_map, player_t& player, int item, int pos)
                             }
                         }
                     }
+                    if (item_pos < 0 || item_pos >= MAP_SIZE || item_pos == START_POS || item_pos == HOSPITAL_POS || item_pos == ITEM_HOUSE_POS || item_pos == GIFT_HOUSE_POS || item_pos == PRISON_POS || item_pos == MAGIC_HOUSE_POS || (item_pos >= 63 && item_pos <= 69)) {
+                        std::cout << "[路障] 不能在特殊位置处使用路障" << std::endl;
+                        Sleep(sleep_time);
+                        return;
+                    }
                     if (curr_map[item_pos].item == NONE) {
                         curr_map[item_pos].item = BLOCK;
                         player.n_block -= 1;
@@ -338,8 +343,7 @@ bool step_forward(map_t& curr_map, player_t& player, int steps)
         case VACANCY:
             // 租金
             if (curr_map[player.n_pos].owner &&
-                curr_map[player.n_pos].owner != &player &&
-                !curr_map[player.n_pos].owner->n_empty_rounds
+                curr_map[player.n_pos].owner != &player
                 ) {
                 int payment = get_estate_price(curr_map[player.n_pos]) / 2;
                 cout << "[租金] 需支付过路费 " << payment << " 元" << endl;
