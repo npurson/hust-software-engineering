@@ -24,7 +24,7 @@ block -2 #Q
 step 0#Q:16->16
 n
 block 6#S put barrier at tool house
-step 8 #S:22->30 through
+step 6 #S:22->28 through
 1
 f
 block 1 #J

@@ -10,7 +10,7 @@ credit S 0
 gift A barrier 1
 
 userloc A 8 0
-userloc Q 0 0
-userloc S 0 0
+userloc Q 5 0
+userloc S 7 0
 
 nextuser Q

@@ -10,12 +10,10 @@ credit Q 200
 credit S 184 #234-50
 credit J 333
 
-gift A barrier 1
-gift S barrier 2
-gift J barrier 2
-
-barrier 0
-barrier 14
+gift A barrier 2
+gift Q barrier 1
+gift S barrier 3
+gift J barrier 3
 
 userloc A 7 0
 userloc Q 16 0

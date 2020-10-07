@@ -7,7 +7,7 @@ preset gift A barrier 2
 preset gift Q barrier 0
 
 block 3 #A put barrier at 63
-step 5#A:60->65
+step 3#A:60->63
 1 #Q
 block -6 #barrier at 57
 step 3 #A:63->66
